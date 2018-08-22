@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.castlabs.player:player-ui-plugin-4.2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/player-ui-plugin-4.2.0.aar/6e28267051e172313e58e7d9f2802e2f/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/player-ui-plugin-4.2.0.aar/6e28267051e172313e58e7d9f2802e2f/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../repository/com/castlabs/player/player-ui-plugin/4.2.0/player-ui-plugin-4.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

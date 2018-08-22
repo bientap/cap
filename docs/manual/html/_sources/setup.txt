@@ -1,0 +1,253 @@
+Project Setup
+=============
+
+.. javaimport::
+    com.castlabs.*
+    com.castlabs.android.*
+    com.castlabs.android.player.*
+    com.castlabs.android.player.hardware.*
+    android.content.*
+
+Requirements
+------------
+The |SDK| is delivered as a *Maven Repository* that can be added to
+your application build. All required dependencies are either:
+
+ * Contained in the bundle repository
+ * Available on a public repository like *jcenter* or *Maven Central*
+ * Part of the Android *Support Repository* that can be installed with the Android
+   SDK-Manager.
+
+To work with the |SDK| you need to use the Gradle build system for your
+application builds.
+
+
+Project Configuration
+---------------------
+The SDK bundle contains a ``repository`` folder. This folder is a local *Maven
+Repository* that is used to find and integrate the |SDK| as a dependency
+within your project.
+
+You can enable the repository for your project in your `build.gradle`
+script by adding it as a local Maven repository::
+
+    repositories{
+        maven{
+            url '<path/to/castlabs/repository>'
+        }
+        jcenter()
+    }
+
+The `<path/to/castlabs/repository>` needs to be replaced with the actual path
+to the ``repository`` folder that is bundled with the SDK. The repository does
+not need to be part of your project structure explicitly and you do not need to
+add it to your version control system. Instead, you can host the repository
+outside of your project structure. You can for example use a Gradle property to
+denote the path to the repository folder. 
+
+The repository contains all the required `pom.xml` files to be uploaded to
+a hosted *Maven* or *Ivy* repository. 
+
+With the repository added to your build script, you can reference and load the
+|SDK| and its components using::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:castlabs-sdk:3.0.0'
+        ...
+    }
+
+This will add the SDK and its dependencies to the classpath of your application
+and you can start referencing classes within the SDK.
+
+After the SDK is added as a dependency, you need to initialize it before
+you can use it. This is typically done in your Application class using the
+:javaref:`PlayerSDK.init() <com.castlabs.android.PlayerSDK#init(Context)>`
+method. For example:
+
+.. code-block:: java
+
+    public class DemoApp extends Application{
+        @Override
+        public void onCreate() {
+            super.onCreate();
+            ...
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+    
+.. _license-loading:
+
+License Loading
+---------------
+The |SDK| requires a license that needs to be distributed with your
+application. By default, the SDK expects to find the license in your Application Manifest
+as the `castlabs-license` meta-data Attribute. For example:
+
+.. code-block:: xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+    ...
+    <application ...>
+        ...
+        <meta-data android:name="castlabs-license"
+                   android:value="<your-license-key>" />
+        ...
+    </application>
+</manifest>
+
+The license key is bound to your Applications SHA-1 Fingerprint and Package name. You can
+generate license keys on the  `castLabs Download Portal <https://downloads.castlabs.com/browse/licenses/>`_.
+In the `Licenses` section, you can create License Keys for your Application.
+
+Depending on how you decide to manage your license file, you might want to load
+it from a different location or use a different name. For
+this, you can use an implementation of the
+:javaref:`com.castlabs.LicenseLoader` interface. The SDK already comes
+with an implementation to load the licenses from the application's Manifest
+with the :javaref:`ManifestLicenseLoader <com.castlabs.ManifestLicenseLoader>`. This
+is the default implementation. If you want to use a different loader, you can pass an
+instance of the :javaref:`LicenseLoader
+<com.castlabs.LicenseLoader>` to :javaref:`PlayerSDK.init()
+<com.castlabs.android.PlayerSDK#init(Context, LicenseLoader)>`. For example:
+
+.. code-block:: java
+
+    PlayerSDK.init(getContext(),
+                   new MyLicenseLoader());
+
+
+Note that in case the license key is invalid the SDK will not be initialized and the error will be sent via the 
+:javaref:`PlayerListener.onError(CastlabsPlayerException) <com.castlabs.android.player.PlayerListener#onError(CastlabsPlayerException)>`.
+The SDK however can still be re-initialized with a valid key if applicable.
+
+.. _oma_integration:
+
+OMA Integration
+---------------
+
+.. warning::
+   The OMA plugin contains native code with text relocations, which are
+   not supported when you are target Android API **23+**. Set the target API to
+   **22** if you are deploying a singel APK with the OMA plugin.
+   Alternatively, you can deploy multiple-apks and have a dedicated APK
+   with OMA support for older devices that do not support Widevine (see
+   :ref:`variant_builds`.)
+
+The OMA plugin is bundled in the local repository that ships
+with the |SDK|. You need to add the OMA dependency in your build
+setup. For example::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:oma-plugin:3.4.0'
+        ...
+    }
+
+Note that you should keep the base version of the plugin (in the example above
+``3.5.0``) in sync with the version of the SDK you are loading.
+
+Because the OMA integration is delivered as a plugin, you will need to
+register it **before** you initialize the ``PlayerSDK``. You can register the
+plugin using the :javaref:`PlayerSDK.register(PlayerPlugin)
+<PlayerSDK#register(PlayerPlugin)>` method. For example:
+
+.. code-block:: java
+
+    PlayerSDK.register(new OmaPlugin());
+    PlayerSDK.init(getApplicationContext());
+
+.. _variant_builds:
+
+Variant Builds
+--------------
+
+The OMA support is typically needed to support DRM protected content playback
+on devices with Android 4.1 and 4.2. You can leverage the support of the
+Android build plugin for `"build variants"
+<http://developer.android.com/tools/building/configuring-gradle.html#workBuildVariants>`_
+to create different variants of your application and reduce the size of
+your final APK for Android versions 4.3 and beyond. A detailed discussion of
+build variants is out of scope for this documentation, but a simple example
+looks like this::
+
+    ...
+    android {
+        ...
+        defaultConfig {
+            minSdkVersion 16
+        }
+        signingConfigs { ... }
+        buildTypes { ... }
+        productFlavors {
+            modern {
+                versionName "1.0-modern"
+                versionCode 10020
+                minSdkVersion 19
+            }
+            oma {
+                versionName "1.0-oma"
+                versionCode 10010
+                maxSdkVersion 18
+            }
+        }
+    }
+    ...
+    dependencies {
+        ...
+        compile 'com.castlabs.player:castlabs-sdk:3.4.0'
+        omaCompile 'com.castlabs.player:oma-plugin:3.4.0'
+        ...
+    }
+    ...
+
+In this example, we create two variants: "modern" and "oma". The SDK
+itself is added using `compile` as a compile time dependency to all variants.
+Using `omaCompile` when referencing the OMA plugin ensures that it is only
+added to the "oma" variant. In addition to the build setup, you will need to
+make sure that the "oma" variant of the application has registered the plugin
+before the SDK is initialized. 
+
+Note also that we set the `minSdkVersion` for the `modern` variant to 19
+while limiting deployment of the `maxSdkVersion` to API 18 and below. This
+will separate the target platforms based on the API level. Further note
+that the Google Play store `rules for Multiple APK Support
+<https://developer.android.com/google/play/publishing/multiple-apks.html>`_
+require to provide a higher version code for the modern variant. This
+allows users who update their phones to get access to the modern build
+variant. 
+
+
+.. note::
+   If you already deployed an application with `targetSdkVersion` set to 
+   23, you need to keep targetting 23 also for the lower variants. This is 
+   because with 23, the permission scheme changed and Applications that 
+   are installed with the new permission scheme can not be downgraded to 
+   the old scheme. However, targetting API 23 will cause an issue with the
+   OMA library on x86 devices because the OMA library contains
+   text-relocations, which are no longer allowed on Android 6 when
+   targetting API level 23. In this case, use a multi-APK build and deploy 
+   OMA only to devices < 23 while keeping the `targetSdkVersion` set to 
+   23 for all variants.
+
+Split APK Builds
+----------------
+
+The SDK itself as well as the OMA plugin includes native components for ARM
+and x86 architectures bundled in their AAR files. Similar to the variant builds
+(see :ref:`variant_builds`), you can use the *split APK* feature of the Android
+Gradle plugin to generate APK versions specific to ARM and x86 architectures
+and further reduce the APK size of the final application for a single variant.
+You can find more information about ABI splits and variant builds in `the
+Android Tools wiki
+<http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits>`_.
+
+
+Proguard Configuration
+----------------------
+
+The |SDK| and all the plugins embed a Proguard configuration in their ``aar``
+files and there is no need to specify anything specific to the castLabs SDK in
+your Proguard configuration file.
+

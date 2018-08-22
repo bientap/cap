@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Global Configuration &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="Extensions and Plugins" href="extensions.html" />
+    <link rel="prev" title="DRM Protection" href="drm.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="global-configuration">
+<h1>Global Configuration<a class="headerlink" href="#global-configuration" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html"><code class="docutils literal"><span class="pre">PlayerSDK</span></code></a> provides a few fields
+that can be used to configure defaults for certain behaviors.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#SECONDARY_DISPLAY"><code class="docutils literal"><span class="pre">PlayerSDK.SECONDARY_DISPLAY</span></code></a></dt>
+<dd>This field configures the default setting for secondary displays. See
+<a class="reference internal" href="player_controller.html#secondary-displays"><span>Secondary Displays</span></a> for more information.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#PLAYBACK_HD_CONTENT"><code class="docutils literal"><span class="pre">PlayerSDK.PLAYBACK_HD_CONTENT</span></code></a></dt>
+<dd>Configures the default HD playback filters. See <a class="reference internal" href="player_controller.html#hd-playback"><span>Video Resolution Filters</span></a> for
+more information.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#DEFAULT_KEY_STORE"><code class="docutils literal"><span class="pre">PlayerSDK.DEFAULT_KEY_STORE</span></code></a></dt>
+<dd>Set the default implementation that will be used to store offline
+keys. See <a class="reference internal" href="extensions.html#offline-keys"><span>Offline Keys</span></a> for more information.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#SSL_KEY_STORE"><code class="docutils literal"><span class="pre">PlayerSDK.SSL_KEY_STORE</span></code></a></dt>
+<dd>Set the custom SSL key store containing the desired certificates for successful SSL handshake.
+Setting the custom store might be necessary when the system does not have (yet) the needed
+CA certificates.
+Note that the custom key store is NOT a replacement of the system default one and is only used
+when the system default store cannot verify the certificate during SSL handshake. The client application
+shall be responsible of keeping the custom key store with up-to-date certificates.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#FAST_BITRATE_SWITCHING"><code class="docutils literal"><span class="pre">PlayerSDK.FAST_BITRATE_SWITCHING</span></code></a></dt>
+<dd>The default behavior of the player is to query the selected video codec
+for its capabilities to quickly adopt to a new video resolution. This
+means that the player can reconfigure the codec to a new resolution quickly.
+There are however devices where the codec implementation reports that it
+supports fast bitrate switching but it does not work correctly under
+all circumstances. You can use this flag to disable the automatic selection
+and force the player to either enable or disable dynamic reconfigurations
+of the codec.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#PRESCAN_DASH_MANIFESTS"><code class="docutils literal"><span class="pre">PlayerSDK.PRESCAN_DASH_MANIFESTS</span></code></a></dt>
+<dd>By default, the DASH Manifest parser assumes that the Manifest is spec conform and
+BaseURL appear before any other entries. If this is not the case, other entries will
+get parsed first and the wrong BaseURL will be assigned. This options enabled a pre-scanning
+step in the Manifest parser, which will search for BaseURL entries first, to ensure
+the the correct BaseURL is used for all entries. You need to enabled this option of you
+have Manifests where the BaseURL in the Period is defined after other entries, for example
+AdaptationSets&#8217;. Please note that enabling this option forces the parser to scan the
+Manifest twice and should only be enabled if it is necessary.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#ENABLE_CONNECTIVITY_CHECKS"><code class="docutils literal"><span class="pre">PlayerSDK.ENABLE_CONNECTIVITY_CHECKS</span></code></a></dt>
+<dd>By default, the player will not automatically recover from loss of
+connectivity. Setting this flag to <cite>true</cite> will enable automatic
+recovery in case the device looses internet connectivity. See
+<a class="reference internal" href="extensions.html#connectivity-checks"><span>Recovering From Loss Of Connectivity</span></a> for more information about this feature.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#CONNECTIVITY_CHECKER"><code class="docutils literal"><span class="pre">PlayerSDK.CONNECTIVITY_CHECKER</span></code></a></dt>
+<dd>Customize the default implementation that will be used to check for
+internet connectivity.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#CRASHLOG_AUTO_REPORT"><code class="docutils literal"><span class="pre">PlayerSDK.CRASHLOG_AUTO_REPORT</span></code></a></dt>
+<dd>Configure which exceptions should be reported through the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/Crashlog.html"><code class="docutils literal"><span class="pre">Crashlog</span></code></a> interface automatically.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#FORCE_SINGLE_DRM_SESSION"><code class="docutils literal"><span class="pre">PlayerSDK.FORCE_SINGLE_DRM_SESSION</span></code></a></dt>
+<dd>By default the player creates two DRM sessions, one for Audio, and one for Video. If you
+are certain that the DRM backend returns all required license keys with one request, you
+can use this flag to enforce only one DRM session. Note that this is not required if you
+are using DRMtoday and specify the asset ID. In that case the only a single session will
+be used automatically.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#FORCE_WIDEVINE_L3"><code class="docutils literal"><span class="pre">PlayerSDK.FORCE_WIDEVINE_L3</span></code></a></dt>
+<dd>Setting this flag to <cite>true</cite> will force the player to use Widevine L3 even if the device
+supports higher security levels. This flag can be used to avoid issues on devices with
+broken secure decoders.</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="drm.html" title="previous chapter">DRM Protection</a></li>
+      <li>Next: <a href="extensions.html" title="next chapter">Extensions and Plugins</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

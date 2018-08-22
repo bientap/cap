@@ -1,0 +1,854 @@
+The Player Controller
+=====================
+
+.. javaimport::
+    com.castlabs.android.player.PlayerController
+    com.castlabs.android.player.PlaybackState
+    com.castlabs.android.player.PlayerController.State
+    com.castlabs.android.player.PlayerListener
+    com.castlabs.android.player.StreamingEventListener
+    com.castlabs.android.player.AbstractPlayerListener
+    com.castlabs.android.player.exceptions.CastlabsPlayerException
+    com.castlabs.android.player.models.*
+    com.castlabs.android.network.DataSourceFactory
+    com.castlabs.android.network.RequestModifier
+    com.castlabs.android.network.Request
+    com.castlabs.android.player.models.VideoTrackQuality
+    com.castlabs.android.drm.DrmUtils
+    com.castlabs.android.SdkConsts
+
+This chapter covers the details about the :javaref:`PlayerController` class.
+The controller class is the primary way to interact with the video player
+backend. It is used to trigger interactions such as starting and pausing
+playback, or seeking to a given position. In addition, the controller provides
+ways to register callback listeners for various events issued by the player.
+
+The controller is also used to configure certain parts of the player backend
+such as the handling of secondary screens and additional parameters that need
+to be sent when content is requested.
+
+.. _basic_controlls:
+
+Basic Controls
+---------------
+
+The player controller offers the following methods for basic playback controls:
+
+``PlayerController.open()``
+    The controller provides two methods to load content. The
+    :javaref:`open(PlaybackState) <PlayerController#open(PlaybackState)>` takes
+    a :javaref:`PlaybackState` that contains all the mandatory information
+    required to load content. :javaref:`open(Bundle)
+    <PlayerController#open(android.os.Bundle)>` can be used to provide the
+    mandatory playback information as well as addition configuration options.
+    See :ref:`start_from_intent` for an example on how to use a ``Bundle`` to
+    configure the player.
+
+:javaref:`PlayerController#play()`
+    Call this method to start playback. Once enough data is provided,
+    playback will start.
+
+:javaref:`PlayerController#pause()`
+    Call this method to pause playback.
+
+:javaref:`PlayerController#setPosition(long)`
+    Call this method to seek to a give position.
+
+:javaref:`PlayerController#release()`
+    Call this method to release the player if you want to use the same instance
+    to play different content. You need to call this method before you can
+    call ``open()`` again. Please note that you
+    do **not need to call this** explicitly if you are using the ``PlayerView``
+    life cycle delegate (see :ref:`lifecycle_delegate`) and you are leaving
+    an activity. This method needs to be called usually only when you want to
+    reuse a given controller instance and load different content.
+
+:javaref:`PlayerController#destroy()`
+    Call this method to release the player and all it resources. This needs to be called
+    when the player activity is stopped or destroyed. Please note that you
+    do **not need to call this** explicitly if you are using the ``PlayerView``
+    life cycle delegate (see :ref:`lifecycle_delegate`).
+
+
+.. _player_listener:
+
+Player Callbacks
+----------------
+
+The primary way to get information about the current playback state and events
+that occur during a playback session is to use the
+:javaref:`addPlayerListener(PlayerListener)
+<PlayerController#addPlayerListener(PlayerListener)>` method on the controller
+to register a new :javaref:`PlayerListener`.
+
+Please note that the SDK offers the :javaref:`AbstractPlayerListener` class and
+we encourage you to use that instead of the interface implementation. It will
+allow you to overwrite only a subset of the callback methods and it will make
+updates to the listener API easier. In case we need to change the
+``PlayerListener`` API (and for instance add another callback method), your
+application implementation will not be effected by this if you are relying on
+the abstract implementation rather than the interface.
+
+Once a listener is added to the controller, the following callbacks will be
+triggered:
+
+onError
+    The :javaref:`onError() <PlayerListener#onError(CastlabsPlayerException)>`
+    will be called by the player if an error occur during preparation or playback.
+    See :ref:`controller_error_handling` for more information about the different
+    error scenarios.
+
+onStateChanged
+    The ``onStateChanged()`` is called when the player switches state. See
+    :ref:`controller_player_states` for more information about the states and
+    state transitions.
+
+onSeekTo
+    The :javaref:`onSeekTo(long) <PlayerListener#onSeekTo(long)>` will be
+    called when the controller's :javaref:`setPosition(long) <PlayerController#setPosition(long)>`
+    is called.
+
+onVideoSizeChanged
+    The :javaref:`onVideoSizeChanged() <PlayerListener#onVideoSizeChanged(int, int, float)>` will be
+    called whenever the size of the video changes. Please consider using a :javaref:`StreamingEventListener`
+    if you are interested in resolution and bitrate changes for analytical purposes.
+    See :ref:`streaming_events` for more information.
+
+onSeekRangeChanged
+    The :javaref:`onSeekRangeChanged() <PlayerListener#onSeekRangeChanged(long, long)>` is triggered
+    when the available seek range changes. This is the event you should use if you are implementing
+    DVR playback of live events. In these cases, the seek range is dynamic and the player will
+    report a duration of a region of media currently available for playback. Use the seek range reported by this event.
+
+onPlaybackPositionChanged
+    The :javaref:`onPlaybackPositionChanged() <PlayerListener#onPlaybackPositionChanged(long)>`
+    is triggered regularly but at most once per second. Use this callback if you need
+    to update seekbars or the current playback position in your UI. This event will
+    not be triggered when playback is paused.
+
+onDisplayChanged
+    The :javaref:`onDisplayChanged() <PlayerListener#onDisplayChanged(com.castlabs.android.player.DisplayInfo, boolean)>`
+    is the callback triggered to handle secondary displays. See :ref:`secondary_displays`
+    for more information about how to configure the SDK to handle multiple displays and screen
+    mirroring.
+
+onDurationChanged
+    The :javaref:`onDurationChanged() <PlayerListener#onDurationChanged(long)>` is the callback triggered when the
+    stream duration has been refreshed.
+
+onPlayerModelChanged
+    The :javaref:`onPlayerModelChanged() <PlayerListener#onPlayerModelChanged()>` is the callback triggered when the
+    player model has been changed and the :javaref:`PlayerController <PlayerController>` can now be queried for
+    available video tracks and qualities, audio tracks and subtitle tracks and also selected tracks.
+    The player model is changed every time upon the playback initial start-up or the media period change.
+
+
+.. _controller_player_states:
+
+Player States
+-------------
+
+During preparation and playback, the player transitions through different
+states. The states are reported through an attached ``PlayerListener`` (see
+:ref:`player_listener`).
+
+.. figure:: _static/img/player_states.png
+    :align: center
+    :figclass: align-center
+
+    The possible player states and their transitions.
+
+The following states are reported by the player:
+
+Idle
+    The ``Idle`` state is the initial state of the player when no data is
+    loaded and no preparation is in progress. The player also goes back to the
+    ``Idle`` state when it is released.
+
+Preparing
+    The player goes into ``Preparing`` state after a content URL was passed
+    through one of the ``open()`` methods in the controller.
+
+Buffering
+    When the buffers do not contain enough data to start or continue playback,
+    the player will be in the ``Buffering`` state.
+
+Pausing
+    When enough data is available to play but playback is paused, the player is
+    in the ``Pausing`` state.
+
+Playing
+    The player switches to the ``Playing`` state when enough data is available and
+    playback is enabled.
+
+Finished
+    Once the end of a stream is reached, the player goes into the ``Finished``
+    state.
+
+.. _controller_error_handling:
+
+Error Handling
+--------------
+
+Because all player preparations and most of the playback operations occur
+asynchronously, errors are reported through the ``PlayerListener`` (see
+:ref:`player_listener`) and you are encouraged to attach at least one listener
+to the ``PlayerController`` once it is available and **before** opening any content.
+Opening content *might* already raise an issue, for example if the Manifest URL
+does not provide data, and these issues will only be reported through the
+``onError`` callback in the listener.
+
+The ``onError`` callback provides a :javaref:`CastlabsPlayerException` that
+contains details about the error event and wraps the original exception that
+caused the issue. The :javaref:`API documentation <CastlabsPlayerException>` of
+the ``CastlabsPlayerException`` contains information about the different errors
+that are reported by the system.
+
+.. _hd_playback:
+
+Video Resolution Filters
+------------------------
+
+The SDK default setting is to allow HD content playback only for unencrypted
+clear content or if a DRM is used that provides video decryption and rendering
+through a secure media path. The latter requirement is met on most Android
+devices with API level > 18 and Widevine DRM. Also the PlayReady implementation
+on devices such as the Amazon FireTV is considered safe. The OMA DRM
+implementation on the other hand is a pure software-based DRM solution and does
+not offer a fully protected media path.
+
+The :javaref:`DrmUtils` class provides static methods to query the available
+DRM systems and their security level on a given device.
+
+The |SDK| allows playback of HD content. The ``PlayerController`` can be
+configured through the :javaref:`PlayerController#setHdPlaybackEnabled(int)`
+method programmatically or through the
+:javaref:`SdkConsts#INTENT_HD_CONTENT_FILTER` ``Intent`` parameter. The setting
+is a bit field that can be constructed from the following constants:
+
+:javaref:`SdkConsts#ALLOW_HD_CLEAR_CONTENT`
+    If this bit is set, the player allows playback of HD content for clear
+    unprotected content.
+
+:javaref:`SdkConsts#ALLOW_HD_DRM_SECURE_MEDIA_PATH`
+    If this bit is set, the player allows playback of DRM protected HD content
+    only of the selected DRM system support a secure media path and its
+    security level is reported as
+    :javaref:`com.castlabs.android.drm.SecurityLevel#SECURE_MEDIA_PATH`.
+
+``SdkConsts.ALLOW_HD_DRM_ROOT_OF_TRUST``
+    If this bit is set, the player allows playback of DRM protected HD content
+    only if the selected DRM system supports a root of trust security and its
+    security level is reported at least as
+    :javaref:`com.castlabs.android.drm.SecurityLevel#ROOT_OF_TRUST`.
+
+``SdkConsts.ALLOW_HD_DRM_SOFTWARE``
+    If this bit is set, the player allows playback of DRM protected HD content.
+    All DRM systems offer at least software protection.
+
+:javaref:`SdkConsts#ALLOW_HD_NEVER`
+    If this bit is set, the player will never allow HD content playback.
+
+See :ref:`drm_security_levels` for more information on security levels.
+
+The flag is evaluated when the playback manifest is loaded and applied to
+all video representations after the manifest is parsed. Discarded
+representations will not be listed in the controller.
+
+You can apply these filter setting programmatically:
+
+.. code-block:: java
+
+    playerView.getPlayerController().setHdPlaybackEnabled(
+           SdkConsts.ALLOW_HD_CLEAR_CONTENT | SdkConsts.ALLOW_HD_DRM_SECURE_MEDIA_PATH);
+
+The HD filter setting can also be configured using an ``Intent`` parameter:
+
+.. code-block:: java
+
+    Intent intent = ...
+    intent.putExtra(SdkConsts.INTENT_HD_CONTENT_FILTER,
+            SdkConsts.ALLOW_HD_CLEAR_CONTENT | SdkConsts.ALLOW_HD_DRM_SECURE_MEDIA_PATH
+            );
+
+
+Beside the per-controller configuration, you can also configure the HD filter
+globally using the
+:javaref:`com.castlabs.android.PlayerSDK#PLAYBACK_HD_CONTENT` field.
+
+This is not the only filter that might discard video representations. The
+SDK includes a content-to-device resolution matching.
+
+When a user plays an adaptive bitrate format (such as MPEG-DASH, HLS, or Smooth
+Streaming) on their device, the *maximum* bitrate resolution the SDK will stream
+from the content’s available file-set will always be the best-quality match
+based on the device’s resolution limit.
+
+This is done to provide the best picture quality on a user’s device while
+avoiding unnecessary bandwidth usage.
+
+Examples:
+
+ * A stream is available in four resolutions (480p, 720p, 1080p, and 4K), but
+   the user's device only supports up to 1080p. In this case, the 1080p bitrate
+   would be the maximum resolution streamed, with the 4K bitrate ignored. This is
+   because the 4K resolution would need to be down-sampled to 1080p in order to
+   display on the device's screen which would waste bandwidth and provide no
+   benefit to picture quality.
+
+ * A stream is available in three resolutions (480p, 720p, and 1090p), but the
+   user’s device only supports up to 1080p. In this case, the 1090p bitrate would
+   be the maximum resolution streamed. Even though the user’s device can only
+   render 1080p, down-sampling the video to 1080p would provide a superior picture
+   quality compared to using the 720p bitrate option.
+
+Please note that this field is a bit-field. To disable all HD filtering,
+you have to enable it for all scenarios:
+
+.. code-block:: java
+
+    intent.putExtra(SdkConsts.INTENT_HD_CONTENT_FILTER,
+        SdkConsts.ALLOW_HD_CLEAR_CONTENT
+        | SdkConsts.ALLOW_HD_DRM_SOFTWARE
+        | SdkConsts.ALLOW_HD_DRM_ROOT_OF_TRUST
+        | SdkConsts.ALLOW_HD_DRM_SECURE_MEDIA_PATH);
+
+.. _track_selection:
+
+Player Model and Track Selection
+--------------------------------
+
+Once the controller has loaded content, it's internal player model is created and the
+event :javaref:`onPlayerModelChanged() <PlayerListener#onPlayerModelChanged()>` is sent.
+At this point, you can get information about the loaded content from the controller such as
+duration, available and selected audio tracks, subtitles, video tracks and qualities.
+
+:javaref:`PlayerController#getAudioTracks()`
+    This method exposes a list of :javaref:`AudioTrack` instances.
+    You can get the currently selected audio track using
+    :javaref:`getAudioTrack() <PlayerController#getAudioTrack()>` and select a track using
+    :javaref:`setAudioTrack(AudioTrack) <PlayerController#setAudioTrack(AudioTrack)>`.
+
+:javaref:`PlayerController#getSubtitleTracks()`
+    This method exposes a list of :javaref:`SubtitleTrack` instances.
+    You can get the currently selected subtitle track using
+    :javaref:`getSubtitleTrack() <PlayerController#getSubtitleTrack()>` and select a track using
+    :javaref:`setSubtitleTrack(SubtitleTrack) <PlayerController#setSubtitleTrack(SubtitleTrack)>`.
+    Note that the playback will not be blocked whilst the subtitles are loading.
+
+:javaref:`PlayerController#getVideoQualities()`
+    This method exposes a list of :javaref:`VideoTrackQuality` instances.
+    You can get the currently selected quality using
+    :javaref:`getVideoQuality() <PlayerController#getVideoQuality()>` and manually select a quality
+    using :javaref:`setVideoQuality(VideoTrackQuality)
+    <PlayerController#setVideoQuality(VideoTrackQuality)>`. Please note that
+    manually selecting a video quality will disable adaptive bitrate switching.
+    You can pass ``null`` to re-enable adaptive bitrate switching.
+
+In addition to these setters, you can configure audio, subtitle, and video
+quality selection before you open content. For example, if the user has a
+known preference for a specific language or quality setting. You can control
+the initial selections programmatically using the :javaref:`PlaybackState` for
+audio and subtitle selections and the
+:javaref:`com.castlabs.android.player.AbrConfiguration`
+for the video quality. Alternatively, you can use ``Intent`` parameters with
+following keys:
+
+ * :javaref:`SdkConsts#INTENT_AUDIO_TRACK_IDX` to pre-select an audio track
+
+ * :javaref:`SdkConsts#INTENT_SUBTITLE_TRACK_IDX` to pre-select a subtitle track
+
+ * :javaref:`SdkConsts#INTENT_ABR_CONFIGURATION` to specify a custom ABR configuration. See :ref:`abr` for more information.
+
+When selecting an initial video quality, you can also leverage the constants
+:javaref:`SdkConsts#VIDEO_QUALITY_LOWEST` and
+:javaref:`SdkConsts#VIDEO_QUALITY_HIGHEST` to select the lowest or highest
+available bitrate respectively.
+
+Because the initial track selection happens before the content is loaded and
+the track model is generated, the initial selection is index based. For
+example, you can get the current index for the audio tracks using:
+
+.. code-block:: java
+
+    PlayerController controller = playerView.getPlayerController();
+    AudioTrack currentAudioTrack = controller.getAudioTrack();
+    if(currentAudioTrack != null) {
+        int currentTrackIndex = controller.getAudioTracks().indexOf(
+            currentAudioTrack);
+    }
+
+If you want to save the current playback state including the selections for
+audio and subtitle tracks into a ``Bundle``, please consider using the
+:javaref:`saveState(Bundle) <PlayerController#saveState(android.os.Bundle)>`
+method. This method will save the current player state with all supported
+``Intent`` parameters into the given bundle. The bundle can then be used to
+resume playback with the exact same settings using the controller's
+:javaref:`open(Bundle) <PlayerController#open(android.os.Bundle)>` method. All
+states will be recovered, except for the video quality settings.
+
+The video quality will be stored as the initial quality in the bundle if
+adaptive bitrate switching is turned off and the quality was selected manually.
+In that case, adaptive bitrate switching will be turned off when the bundle is
+used to re-open content.
+
+In case all tracks of the particular type e.g. video, audio or text are filtered out,
+the :javaref:`com.castlabs.android.player.exceptions.FilterException` is raised with the
+reason being set. This exception is not critical and will not stop the playback thus
+enabling the application to handle the exception on its own way.
+
+
+Video track selection
+---------------------
+
+When multiple video tracks (e.g. DASH Adaptation sets) are present in the manifest, the |SDK| will
+select the default one to play based on the following:
+
+ * The track with maximum number of pixels to display and
+ * The track with preferred codec type.
+
+Preferred codec types are defined as codec weights and can be customized by changing
+the parameters
+:javaref:`com.castlabs.android.PlayerSDK#CODEC_WEIGHT_H265`,
+:javaref:`com.castlabs.android.PlayerSDK#CODEC_WEIGHT_H264` and
+:javaref:`com.castlabs.android.PlayerSDK#CODEC_WEIGHT_OTHER`. By default, the preferred
+codec type is H265 having the weight 1.0f.
+
+
+Video tracks merging option
+---------------------------
+
+This option is currently available only for DASH streams and is enabled by default.
+When needed, it can be switched off or on either globally with the
+:javaref:`com.castlabs.android.PlayerSDK#MERGE_VIDEO_TRACKS` or per play session with
+:javaref:`SdkConsts#INTENT_MERGE_VIDEO_TRACKS`.
+
+When multiple video Adaptation sets are present in the manifest the |SDK| will try
+to merge them according to their Representation types thus allowing the ABR algorithm
+to walk over the video Adaptation sets. The default types are SD, HD and UHD.
+
+ * Example: there are two SD (SD1, SD2) and two HD (HD1, HD2) Adaptation sets, the merge will result in
+   four video tracks with each of them having  SD+HD combinations: SD1+HD1, SD1+HD2, SD2+HD1, SD2+HD2.
+
+The default Representation types can be overwritten by implementing custom
+:javaref:`TrackTypeProvider <com.castlabs.android.player.TrackTypeProvider>`.
+
+
+.. _abr:
+
+Adaptive Bitrate Switching
+--------------------------
+
+When multiple Representations or Renditions are available, the player will try
+to automatically use the Representation best suited for the current network
+environment. This is called Adaptive Bitrate Switching (ABR).
+
+The Intent Parameter :javaref:`SdkConsts#INTENT_ABR_CONFIGURATION` can be used
+to specify a custom ABR configuration. The ABR configuration is provided as an
+instance of :javaref:`AbrConfiguration
+<com.castlabs.android.player.AbrConfiguration>`, which controls the details of
+the algorithm used to decide which Representation to play at a given time.
+
+ABR Log Statements And Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ABR algorithm will log information for each decision. This log statements contain
+the most crucial information considered by the Algorithm and the resulting selection.
+For example::
+
+    VideoTrackSelection: Track selection [T: Initial (ABR)] [BT: C:00:26|Min:00:15|Max:01:00] [BM: 30.47% C:4.88 MB|T:16 MB] [BE: 6.8 Mbps (Effective: 5.1 Mbps Fraction: 0.75)] [SB: 00:10/00:25] [I: 0/4] [F: 960x540 @ 1.6 Mbps avc1.4D401F 25.00 fps]
+
+The following fields are logged:
+
+ * `T` - ABR type and mode. This idicates a reason for a specific selection, i.e `ABR` or `Manual`
+ * `BT` - Buffer Times. Information about the current Buffer (C) and the :javaref:`minimum <com.castlabs.android.player.BufferConfiguration#lowMediaTimeMs>` and :javaref:`maximum <com.castlabs.android.player.BufferConfiguration#highMediaTimeMs>` parameters of the current :javaref:`BufferConfiguration <com.castlabs.android.player.BufferConfiguration>`. These parameters are used to control the fill and drain behaviour of the buffer (see API docs for :javaref:`BufferConfiguration <com.castlabs.android.player.BufferConfiguration>` for more information).
+ * `BM` - Buffer Memory. The current buffer memory in percentage as well as in bytes (C) and the target buffer size in bytes (T). Note that the target size is not a hard bound. If the player needs more memory to fullfill the current buffer configuration with respect to minimum times, the memory bound might be exceeded.
+ * `BE` - Bandwidth Estimation. The reported bandwidth estimation for the current ABR decision. The Effective value is what is used by the algorithm. The Fraction controls how the effective value is calcualted and can be controlled through the configurations :javaref:`bandwidthFraction <com.castlabs.android.player.AbrConfiguration#bandwidthFraction>` parameter.
+ * `SB` - Switch Boudaries. The configurations :javaref:`minDurationForQualityIncreaseUs <com.castlabs.android.player.AbrConfiguration#minDurationForQualityIncreaseUs>` and :javaref:`maxDurationForQualityDecreaseUs <com.castlabs.android.player.AbrConfiguration#maxDurationForQualityDecreaseUs>`. These parameters configure how much data need to be available in the buffer before the ABR algorithm is allowed to switch up (min) and until how much data in the buffer down switches by the ABR algorithm are prevented (max).
+ * `I` - The selected Index and number of available formats. The formats are ordered in decreasing orders, which means that a selection of `0` represents the selection of the highest available bitrate.
+ * `F` - The selected video rendition Format
+
+.. _query_params:
+
+Additional Query Parameter
+--------------------------
+
+If you need to send additional parameters when downloading content, i.e. MP4
+segments or Manifest data, you can use the ``PlayerController`` to set those
+parameters. This is required for example when you are using a CDN where you
+need to pass a token to access the data.
+
+The player supports two kinds of parameters:
+
+ * Header Parameters are added to the HTTP header of the request
+ * Query Parameters are appended to the request URL directly
+
+You have two possibilities to set additional parameters. Programmatically
+using the ``PlayerController`` or using ``Bundle`` parameters (see
+:ref:`start_from_intent`).
+
+If you prefer to set the parameters programmatically, use the
+:javaref:`PlayerController#getDataSourceFactory()` to access the
+:javaref:`DataSourceFactory` of the controller. If no factory was set
+explicitly, the default implementation will be returned.
+
+The ``DataSourceFactory`` is used by the controller to create requests and it
+provides the :javaref:`DataSourceFactory#addHeaderParameter(String, String)`
+method to add header parameters and
+:javaref:`DataSourceFactory#addQueryParameter(String, String)` to add query
+parameters. For example:
+
+.. code-block: java
+
+    DataSourceFactory dataSourceFactory = playerView.getPlayerController().getDataSourceFactory();
+    dataSourceFactory.addHeaderParameter("t", "15128381afe8e8f7a6e");
+    dataSourceFactory.addQueryParameter("e", "12345");
+
+If you are using a ``Bundle`` to configure the player controller, an alternative
+approach is to add the additional parameters directly to the ``Bundle``. The ``PlayerController`` will
+set them automatically. For example:
+
+.. code-block:: java
+
+    Bundle headerParams = new Bundle();
+    headerParams.putString("t", "15128381afe8e8f7a6e");
+
+    Bundle queryParams = new Bundle();
+    queryParams.putString("e", "12345");
+
+    Intent intent = ...
+    intent.putExtra(SdkConsts.INTENT_QUERY_PARAMS_BUNDLE, queryParams);
+    intent.putExtra(SdkConsts.INTENT_HEADER_PARAMS_BUNDLE, headerParams);
+    ...
+
+To store the additional parameters in the Intents’ bundle, you need to put
+the keys and values into a separate ``Bundle`` that works as a key/value map
+and store that ``Bundle`` in the ``Intent`` using either
+:javaref:`com.castlabs.android.SdkConsts#INTENT_QUERY_PARAMS_BUNDLE` or
+:javaref:`com.castlabs.android.SdkConsts#INTENT_HEADER_PARAMS_BUNDLE` as key.
+
+
+Request Modifiers
+^^^^^^^^^^^^^^^^^
+
+Since version 4.1.2 you can also use the new :javaref:`RequestModifier`.
+Request modifiers can be added on the ``PlayerController`` (see
+:javaref:`addRequestModifier() <PlayerController#addRequestModifier(RequestModifier)>`) and you should
+do that before you load content. The modifier will then receive a callback with
+a :javaref:`Request` instance that you can modify to change the URI or add
+header parameters.
+
+Note that you can also add query parameters by changing the URI directly.
+`request.getUri().buildUpon()` will give you a builder that can be used to
+change the URI. Once changed you can set the new URI in the request.
+
+Here is an example of a request modifier that adds a header parameter and a
+query parameter for all manifest requests:
+
+.. code-block:: java
+
+    // We need the player controller to attach a modifier
+    PlayerController pc = ...
+
+    // Add a custom modifier that add a header and query parameter
+    pc.addRequestModifier(new RequestModifier() {
+        @NonNull
+        @Override
+        public Request onRequest(@NonNull Request request) {
+            // Add a header parameter
+            if(request.type == Request.DATA_TYPE_MANIFEST){
+                request.headers.put("Header-Key", "Header Value");
+
+                // add a query parameter to the URI by building upon the current URI
+                // and then set the new URL
+                request.setUri(request
+                        .getUri()
+                        .buildUpon()
+                        .appendQueryParameter("Query-Param", "Query Value")
+                        .build()
+                );
+            }
+            return request;
+        }
+    });
+    ...
+
+Please note that request modifiers are evaluated _after_ header and query
+parameter modifications of the underlying data source factory are applied. That
+means that request modifiers will not interfere with any existing setups but
+can be used as a new extension. All header and query modifications that you
+apply using the `DataSourceFactory` exposed by the controller will also apply
+to all request modifier. Modifiers however will grant you more fine grained
+control over the request type and you can differentiate for example between
+manifest and segment requests.
+
+
+Network Configuration
+^^^^^^^^^^^^^^^^^^^^^
+
+The underlying network configuartion can controlled through the
+:javaref:`NetworkConfiguration`.  The configuration can be passed as an intent
+parameter when configuring the player and allows you to specify network timeouts
+globally as well as for Manifest and Segment downloads separately. In addition,
+the network configuration can be used to configure the retry behaviour of the player
+through the :javaref:`RetryConfiguration`. The retry configuration specifies how
+often and with which delays the player will try to download a segment or manifest
+after a loading error such as a 404 response from the server.
+
+The following example shows how the configuration can be used:
+
+.. code-block:: java
+
+    bundle.put(SdkConsts.INTENT_NETWORK_CONFIGURATION, new NetworkConfiguration.Builder()
+        // You can configure the global connection and read timeouts.
+        // The connection timeout is used when a connection is opened
+        // while the read timeout is used when we read data from an
+        // open connection. Using the general method will use the values
+        // for both manifests and segment downloads
+        .connectionTimeoutMs(5000)
+        .readTimeoutMs(8000)
+
+        // You can also specify the timeouts separately for
+        // manifest and segments downloads
+        .manifestConnectionTimeoutMs(3000)
+        .manifestReadTimeoutMs(5000)
+        .segmentsConnectionTimeoutMs(8000)
+        .segmentsConnectionTimeoutMs(10000)
+
+        // Configure the global retry behaviour. This will be applied
+        // for both segment and manifest. Please take a look at the
+        // API documentation of the RetryConfiguration for more
+        // information about the effect of the parameters and how
+        // the backoff algorithm works
+        .retryConfiguration(new RetryConfiguration.Builder()
+                // We allow for 5 attempts at most. That means the
+                // first load and then at most 4 retries in case
+                // of any download errors
+                .maxAttempts(5)
+                // We configure the base delay for the first retry
+                .baseDelayMs(500)
+                .get())
+
+        // Similar to the timeouts you can also set separate
+        // retry configurations for manifest and segment downloads
+        .manifestRetryConfiguration(new RetryConfiguration.Builder()
+                .maxAttempts(2)
+                .baseDelayMs(1000)
+                .get())
+        .segmentsRetryConfiguration(new RetryConfiguration.Builder()
+                .maxAttempts(4)
+                .baseDelayMs(800)
+                .get())
+        .get());
+
+
+.. _sideload_subtitles:
+
+Sideloaded Subtitle Tracks
+--------------------------
+
+You can use the ``PlayerController`` to side-load additional subtitles tracks
+that are not part of your Manifest or HLS playlists. Please note that you will
+need to do the side-loading **before** you use ``open()`` on the
+``PlayerController`` to load the Manifest or playlist.
+
+Loading additional subtitles can be done either programmatically through the
+controllers :javaref:`addSubtitleTrack()
+<PlayerController#addSubtitleTrack(String, String, String, String)>` or using
+:javaref:`com.castlabs.android.SdkConsts#INTENT_SUBTITLE_BUNDLE_ARRAYLIST` as
+the key and storing the additional tracks as ``Intent`` parameters.
+
+Adding a subtitle track through the controller looks like:
+
+.. code-block:: java
+
+    playerView.getPlayerController().addSubtitleTrack(
+            "http://myserver.com/extra_subtitles.vtt", // the URL
+            SdkConsts.MIME_TYPE_VTT, // The mime type
+            "en", // Two letter language code (optional)
+            "English Subtitles" // Name (optional)
+    );
+
+The method expects a URL and a MIME type as mandatory parameters. The last two
+parameters are a two letter language code and a name and. Both can be ``null``.
+
+Adding the same track through the ``Intent`` would look like:
+
+.. code-block:: java
+
+    ArrayList<Bundle> tracks = new ArrayList<>();
+    Bundle bundle = new Bundle();
+    bundle.putString(SdkConsts.INTENT_SUBTITLE_URL, "http://myserver.com/extra_subtitles.vtt");
+    bundle.putString(SdkConsts.INTENT_SUBTITLE_MIME_TYPE, SdkConsts.MIME_TYPE_VTT);
+    bundle.putString(SdkConsts.INTENT_SUBTITLE_LANGUAGE, "en");
+    bundle.putString(SdkConsts.INTENT_SUBTITLE_NAME, "English Subtitles");
+    tracks.add(bundle);
+
+    Intent intent = new Intent(...);
+    intent.putExtra(SdkConsts.INTENT_SUBTITLE_BUNDLE_ARRAYLIST, tracks);
+    ...
+
+The subtitle track information is added to a ``Bundle`` and a list of these
+bundles is added to the ``Intent``. The ``PlayerController`` will then take
+care of adding the side-loaded track when the Intents' bundle is passed to
+the controller's ``open()`` method.
+
+.. _streaming_events:
+
+Streaming and Playback Events
+-----------------------------
+
+If you are interested in download and bitrate statistics,
+the SDK offers the :javaref:`StreamingEventListener` interface. Instances of
+this listener can be registered using the controller's
+:javaref:`addStreamingEventListener() <PlayerController#addStreamingEventListener(StreamingEventListener)>`
+method. The following callbacks will be triggered during playback:
+
+onVideoFormatChange
+    This callback will be triggered when the video format changes. The passed
+    ``Format`` instance and the :javaref:`VideoTrackQuality` contain information
+    about the new format and its bitrate.
+
+onAudioFormatChange
+    The same as the ``onVideoFormatChange`` callback, but this time for the audio
+    track.
+
+onLoadCompleted
+    Triggered when a download completed.
+
+onLoadStarted
+    Triggered when a download was started.
+
+onLoadCanceled
+    Triggered when a download was canceled.
+
+onUpstreamDiscarded
+    Invoked when data is removed from the back of the buffer, typically so that
+    it can be re-buffered using a different representation.
+
+Both the video and audio format change callbacks provide information about the
+trigger that caused the format change (the second parameter of the callback method).
+The following triggers are currently reported:
+
+.. list-table::
+   :widths: 20 30
+   :header-rows: 1
+
+   * - Trigger
+     - Description
+   * - ``TRIGGER_UNSPECIFIED``
+     - The reason for the trigger is unknown
+   * - ``TRIGGER_INITIAL``
+     - The initial format selection triggered the event
+   * - ``TRIGGER_MANUAL``
+     - The manual format selection triggered the event
+   * - ``TRIGGER_ADAPTIVE``
+     - The adaptation algorithm triggered this event and selected a format
+
+All the download-related callbacks provide information about the track that
+caused the event as a first parameter. The following tracks are currently
+supported and report download events:
+
+.. list-table::
+   :widths: 20 30
+   :header-rows: 1
+
+   * - Track Type
+     - Description
+   * - :javaref:`PlayerController#VIDEO_RENDERER`
+     - Events triggered by the video track
+   * - :javaref:`PlayerController#AUDIO_RENDERER`
+     - Events triggered by the audio track
+   * - :javaref:`PlayerController#TEXT_RENDERER`
+     - Events triggered by the subtitle track
+
+
+.. _live_playback:
+
+Live Playback
+-------------
+
+Live playback is supported for MPEG-DASH, SmoothStreaming, and HLS. The setup and
+configuration is the same as for video-on-demand (VoD) content. In order to check
+whether the stream is live or not :javaref:`isLive() <PlayerController#isLive()>` can be used.
+If you want to provide the ability to seek back in the live stream, you
+can use the :javaref:`onSeekRangeChanged()
+<PlayerListener#onSeekRangeChanged(long, long)>` callback of the
+``PlayerListener``. This callback will provide information about the available
+window in which you can seek in the stream. If you want to seek back to the
+live edge of the stream, specify a position **beyond** the current seek range,
+and the player will seek to the current live edge. Additionally the current position
+of the playback since epoch can be calculated as :javaref:`getLiveStartTime()
+<PlayerController#getLiveStartTime()>` + :javaref:`getPosition()
+<PlayerController#getPosition()>`
+
+By default, live streams will start playback at the live edge. If you do
+not want to start at the edge but somewhere within the seek window, or at
+the beginning of the stream, you can use the intent parameter
+:javaref:`com.castlabs.android.SdkConsts#INTENT_LIVE_EDGE_LATENCY_MS`.
+This key specifies an ``int`` that defines the number of milliseconds that
+the playback start should lag behind the "live edge". Choosing a small
+value will minimize latency introduced by the player, it might however
+increase the probability of rebuffering and playback failures since this
+will reduce the amount of data the player can buffer.
+
+A large value for this parameter can be used to start the live stream at
+a different position. For example, if you have an event stream with
+a large seek window and you do not want to start at the live edge but
+further behind, use this parameter to specify how much behind the live
+edge you want to start. Note that the value must be specified as an
+`Integer`.
+
+.. _secondary_displays:
+
+Secondary Displays
+------------------
+
+Secondary screens in this context are supplementary displays connected through an HDMI
+connection or Wifi screen mirroring. The default behavior of the player is to
+prevent playback on secondary screens for protected content if the secondary
+screen does not provide a secure media path. Unprotected content can always be
+displayed on a secondary screen.
+
+You can configure the behavior using the controller's
+:javaref:`PlayerController#setSecondaryDisplay(int)` method explicitly, or send
+the configuration through the `Intent` bundle using the
+:javaref:`com.castlabs.android.SdkConsts#INTENT_SECONDARY_DISPLAY` key.
+
+When a secondary display is connected, two things happen:
+
+ * The ``PlayerListener`` :javaref:`onDisplayChanged() <PlayerListener#onDisplayChanged(com.castlabs.android.player.DisplayInfo, boolean)>`
+   callback will be triggered, containing information about the display. This
+   callback is also triggered when the display is disconnected and the last
+   parameter of the method indicates if playback will continue.
+
+ * If the secondary display settings prevent playback while the display is
+   connected, a ``CastlabsPlayerException`` is thrown to the ``onError`` callback
+   of any connected ``PlayerListener``. The type of the exception will be
+   :javaref:`CastlabsPlayerException#TYPE_SECONDARY_DISPLAY`.
+
+Beside the per-controller configuration, you can also configure this behavior
+globally using the :javaref:`com.castlabs.android.PlayerSDK#SECONDARY_DISPLAY`
+field.
+
+Tunneling Support
+-----------------
+
+Since API 21 some Android devices, especially Android TV, support "tunneling" or
+"tunneled video playback". Since version 4.0.0 the |SDK| supports tunneling and you can enable
+it either in the `PlaybackState` or by setting the Intent Bundle Parameter
+`SdkConsts.INTENT_TUNNELING_ENABLED` to `true` when you open content. This will only have an
+effect on devices that support tunneling.
+
+Please note that although tunneled playback provides some advantages on supported platforms
+such as better AV sync, support for HDR, and better performance for 4k and high frame rate
+content, it also has some limitations:
+
+ * You can only use a `SurfaceView` to render the video, which mean 360 video playback will
+   not be possible.
+
+ * Tunneling is only supported if the content has both an active video and audio track.
+
+ * Not all codec implementations on a device might be supported.
+
+

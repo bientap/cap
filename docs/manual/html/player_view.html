@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Player View &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="DRM Protection" href="drm.html" />
+    <link rel="prev" title="The Player Controller" href="player_controller.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-player-view">
+<h1>The Player View<a class="headerlink" href="#the-player-view" title="Permalink to this headline">¶</a></h1>
+<p>This chapter covers some details and configuration options of the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a>, the main visual component that provides the surface
+view for video playback.</p>
+<div class="section" id="basic-integration">
+<h2>Basic Integration<a class="headerlink" href="#basic-integration" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">PlayerView</span></code> is a visual Android component that you can add to your layouts.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;FrameLayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+             <span class="na">xmlns:tools=</span><span class="s">&quot;http://schemas.android.com/tools&quot;</span>
+             <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+             <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span>
+             <span class="na">android:background=</span><span class="s">&quot;#000000&quot;</span>
+             <span class="na">tools:context=</span><span class="s">&quot;com.castlabs.sdk.demos.SimplePlaybackDemo&quot;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;com.castlabs.android.player.PlayerView</span>
+        <span class="na">android:id=</span><span class="s">&quot;@+id/player_view&quot;</span>
+        <span class="na">android:layout_gravity=</span><span class="s">&quot;center&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+        <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/com.castlabs.android.player.PlayerView&gt;</span>
+<span class="nt">&lt;/FrameLayout&gt;</span>
+</pre></div>
+</div>
+<p>The view supports two different surface types: the default <code class="docutils literal"><span class="pre">SurfaceView</span></code> and
+a <code class="docutils literal"><span class="pre">TextureView</span></code>. This is configurable through an attribute setting in the
+layout file:</p>
+<div class="highlight-xml"><div class="highlight"><pre>&lt;FrameLayout ...
+             xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+             ...&gt;
+
+    &lt;com.castlabs.android.player.PlayerView
+        ...
+        app:surface=&quot;textureView&quot;
+        ...
+    &lt;/com.castlabs.android.player.PlayerView&gt;
+&lt;/FrameLayout&gt;
+</pre></div>
+</div>
+<p>The possible values are <code class="docutils literal"><span class="pre">textureView</span></code> to select a <code class="docutils literal"><span class="pre">TextureView</span></code> or
+<code class="docutils literal"><span class="pre">surfaceView</span></code> to use a <code class="docutils literal"><span class="pre">SurfaceView</span></code>.</p>
+<p>Alternatively, you can also configure the surface type programmatically using
+the view&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#setSurfaceType-int-"><code class="docutils literal"><span class="pre">PlayerView.setSurfaceType(int)</span></code></a> method.</p>
+<p>The surface type that you choose here has a direct implication on the
+content that you can play. While a <code class="docutils literal"><span class="pre">TextureView</span></code> integrates nicely
+with other user interface elements and allows smooth animations and transitions,
+it is not secure. If your DRM system enforces a secure media path, <strong>only</strong> the
+<code class="docutils literal"><span class="pre">SurfaceView</span></code> will be able to render video. In general, we encourage you to
+always use the <code class="docutils literal"><span class="pre">SurfaceView</span></code> setting, which is also the default, for playback
+of DRM protected content.</p>
+</div>
+<div class="section" id="hiding-the-surface">
+<h2>Hiding the Surface<a class="headerlink" href="#hiding-the-surface" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned before, <code class="docutils literal"><span class="pre">SurfaceView</span></code> is required for DRM protected content
+playback, but it is a heavy component that does not play nicely with other
+components, specifically other <code class="docutils literal"><span class="pre">SurfaceView</span></code> instances.</p>
+<p>If you need to overlay another <code class="docutils literal"><span class="pre">SurfaceView</span></code> over the current player, for
+example when you are implementing ad insertion, the <code class="docutils literal"><span class="pre">PlayerView</span></code> allows you
+to hide or remove its current surface.</p>
+<p>The best option is to use the view&#8217;s
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#setSurfaceVisibility-boolean-"><code class="docutils literal"><span class="pre">PlayerView.setSurfaceVisibility(boolean)</span></code></a> method to hide or show the
+current surface. This method will not remove the surface from the scene but
+rather resize it to become invisible. This has the benefit that the surface
+will not be detached from the player and, once made visible again, video
+playback and video rendering will start immediately.</p>
+<p>If you cannot use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#setSurfaceVisibility-boolean-"><code class="docutils literal"><span class="pre">PlayerView.setSurfaceVisibility(boolean)</span></code></a>
+method, or you want to completely detach and remove the surface, you can use
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#removeSurface--"><code class="docutils literal"><span class="pre">PlayerView.removeSurface()</span></code></a> and <code class="docutils literal"><span class="pre">PlayerView#attachSurface()</span></code>
+to remove and attach the surface. The downside of this method is that video
+rendering can only continue at the next i-frame.</p>
+</div>
+<div class="section" id="scaling-mode">
+<h2>Scaling Mode<a class="headerlink" href="#scaling-mode" title="Permalink to this headline">¶</a></h2>
+<p>By default, the <code class="docutils literal"><span class="pre">PlayerView</span></code> will scale its surface to match the aspect ratio
+of the video. You can, however, change that using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#setScalingMode-int-"><code class="docutils literal"><span class="pre">PlayerView.setScalingMode(int)</span></code></a>. The supported modes are:</p>
+<dl class="docutils">
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#SCALING_MODE_FIT"><code class="docutils literal"><span class="pre">PlayerView.SCALING_MODE_FIT</span></code></a></dt>
+<dd>This is the default mode. The video will be scaled using its original
+aspect ratio to fit inside the player view.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#SCALING_MODE_CROP"><code class="docutils literal"><span class="pre">PlayerView.SCALING_MODE_CROP</span></code></a></dt>
+<dd>The video will be displayed in its original size. If the video is larger
+than the screen size, any overflow will not be visible and cut off (&#8220;cropped&#8221;).</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html#SCALING_MODE_STRETCH"><code class="docutils literal"><span class="pre">PlayerView.SCALING_MODE_STRETCH</span></code></a></dt>
+<dd>The video will be scaled to fully utilize the available screen size. The
+original aspect ratio of the video will not be kept.</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> The Player View</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-integration">Basic Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hiding-the-surface">Hiding the Surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scaling-mode">Scaling Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="player_controller.html" title="previous chapter">The Player Controller</a></li>
+      <li>Next: <a href="drm.html" title="next chapter">DRM Protection</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

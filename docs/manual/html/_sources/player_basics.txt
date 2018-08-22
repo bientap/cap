@@ -1,0 +1,388 @@
+Player Basics 
+=============
+
+.. javaimport::
+    com.castlabs.*
+    com.castlabs.android.*
+    com.castlabs.android.drm.*
+    com.castlabs.android.player.*
+    android.content.*
+    android.view.*
+
+This chapter explains the steps required to create a custom player
+``Activity`` and start playback manually or using an Intent. The chapter
+follows closely the examples demonstrated in the ``demos`` application
+(see :ref:`example_demos`).
+
+Activity and Layout
+-------------------
+
+The SDK comes with a custom view component: the :javaref:`PlayerView`.
+You will need to add this view to your Activities layout. The Activity
+that hosts the view can be any Android Activity or Fragment
+implementation. However, if you want to support orientation changes, where
+the user can turn the device, consider adding ``orientation`` to the
+Activities ``configChanges`` setup in your Manifest. With that setting in
+place, you need to handle the orientation change manually. The Activity
+will not be recreated by the system. However, this will allow you to
+continue playback without any interruptions. 
+
+In addition to the ``orientation`` configuration, you should also consider
+using a custom theme for your player Activity in order to be able to
+properly customize the behavior of the application's toolbar and the
+systems status bar.
+
+We can start implementing a custom player Activity using the following
+entry in the Manifest:
+
+.. code-block:: xml
+
+    <activity
+        android:name=".SimplePlaybackDemo"
+        android:configChanges="orientation|keyboardHidden|screenSize"
+        android:label="@string/title_activity_simple_playback_demo"
+        android:theme="@style/PlayerTheme"
+        android:parentActivityName=".MainActivity">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.castlabs.sdk.demos.MainActivity"/>
+    </activity>
+
+Here, we are implementing a custom Activity ``SimplePlaybackDemo`` in our
+application package and setting the ``configChanges`` accordingly to support
+orientation changes while playback continues.
+
+Our demo application leverages Googles Material Design theme and the
+extended theme of our player activity consists of only one entry:
+
+.. code-block:: xml
+   
+    <style name="PlayerTheme" parent="AppTheme">
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+We extend the application's theme and change the primary color to black.
+This ensures that the status bar is rendered with a black background in
+Android M. 
+
+The layout of the demo Activity contains only one component: the
+:javaref:`PlayerView`. The layout file looks like this:
+
+.. code-block:: xml
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="#000000"
+                 tools:context="com.castlabs.sdk.demos.SimplePlaybackDemo">
+
+        <com.castlabs.android.player.PlayerView
+            android:id="@+id/player_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.castlabs.android.player.PlayerView>
+    </FrameLayout>
+
+We are using a simple ``FrameLayout`` and adding the ``PlayerView`` as its
+primary centered component. 
+
+Starting Playback
+-----------------
+
+Now that we have the Activity in place and a ``PlayerView`` added to its
+layout, we can already start playback. All interactions with the player
+happen through a :javaref:`PlayerController` instance. The ``PlayerView``
+exposes a controller through its
+:javaref:`PlayerView#getPlayerController()` method. You can use the player
+controller for example, in the Activity's ``onCreate()`` callback:
+
+.. code-block:: java
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_simple_playback_demo);
+
+        // Get the view components from the layout
+        playerView = (PlayerView) findViewById(R.id.player_view);
+        // Get the player controller
+        PlayerController controller = playerView.getPlayerController();
+        // Start playback of a clear stream at position 0
+        controller.open(new PlaybackState("...", 0, true));
+    }
+
+Here, we first get access to the `PlayerView` component. Then we use the
+component to access the `PlayerController` and send
+a :javaref:`PlaybackState` to the controller's
+:javaref:`open(PlaybackState) <PlayerController#open(PlaybackState)>`
+method. The last parameter passed to the `PlaybackState` indicates that
+playback should start once enough data is available. Please note that it
+might be more convenient to use the `Intent` extra data to send
+a ``Bundle`` to the ``PlayerController`` to configure it and start
+playback (see :ref:`start_from_intent`).
+
+The example above will already be enough to start playback, but we are
+missing a few mandatory callbacks to ensure that the Activity behaves
+correctly when the user leaves it through the back button or switches
+applications and comes back to the activity. 
+
+.. _start_from_intent:
+
+Starting Playback from an ``Intent``
+------------------------------------
+
+Instead of configuring the ``PlayerController`` programatically and
+passing a ``PlaybackState`` to its ``open`` method, it can be more
+convenient to pack all required parameters into a ``Bundle``. The bundle
+can then be sent the through an ``Intent`` and passed to the
+``PlayerController``
+:javaref:`open(Bundle) <PlayerController#open(Bundle)>` method to
+initialize and configure the controller and start playback. See the 
+:javaref:`API documentation <PlayerController#open(Bundle)>` of the
+``open`` method to get a list of all the supported bundle keys. The most
+important parameters are the following:
+
+.. list-table::
+   :widths: 20 30
+   :header-rows: 1
+
+   * - Key
+     - Description
+   * - :javaref:`SdkConsts#INTENT_URL`
+     - Expects a ``String`` and denotes the URL to the content. This is
+       a **mandatory** parameter
+   * - :javaref:`SdkConsts#INTENT_START_PLAYING`
+     - Expects a ``boolean``. If ``true`` playback will start
+       automatically once enough data is available.
+   * - :javaref:`SdkConsts#INTENT_POSITION_TO_PLAY`
+     - Expects a ``long``. The playback start position in microseconds.
+       (default: 0)
+   * - :javaref:`SdkConsts#INTENT_DRM_CONFIGURATION`
+     - Expects a :javaref:`DrmConfiguration`. The DRM configuration for 
+       encrypted content. See :ref:`drm_config`. (default: null)
+
+The :javaref:`API documentation <PlayerController#open(Bundle)>` contains
+a complete list of supported intent parameters, including support for
+:ref:`additional query parameters <query_params>` and :ref:`side-loaded
+subtitle tracks <sideload_subtitles>`.
+
+With the support for bundles, you can now prepare the Intent, for example, in
+your main Activity and then start your player Activity already configured.
+Your main Activity might contain code like this to prepare the Intent:
+
+.. code-block:: java
+   
+    Intent intent = new Intent(this, PlayerActivity.class);
+    intent.putExtra(SdkConsts.INTENT_URL, "...");
+    intent.putExtra(SdkConsts.INTENT_POSITION_TO_PLAY, 0);
+    intent.putExtra(SdkConsts.INTENT_START_PLAYING, false);
+    startActivity(intent);
+
+In the ``PlayerActivity``, you could then take the intent parameters and pass
+them to the ``PlayerController`` to configure it and start playback:
+
+.. code-block:: java
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ...
+        // Get the view components from the layout
+        playerView = (PlayerView) findViewById(R.id.player_view);
+
+        if (getIntent() != null) {
+            try {
+                playerView.getPlayerController().open(getIntent().getExtras());
+            } catch (Exception e) {
+                Log.e(TAG, "Error while opening player: " + e.getMessage(), e);
+                ...
+            }
+        }
+    }
+
+Please note the ``try/catch`` block around the call to ``open()``. This is
+required because the ``open`` method will check for mandatory parameters and
+their types and throw an exception if either a mandatory parameter is
+missing or a parameter type does not match. The player will then delegate all
+further data loading to a dedicated thread, so you should always setup the
+error handlers appropriately (see :ref:`controller_error_handling`) before the
+call to ``open``.
+
+Playback Local Content
+^^^^^^^^^^^^^^^^^^^^^^
+
+The player can be use to playback content that is stored on the device.
+For that, you need to specify the content URL with a `file://` or
+`content://` scheme prefix. The same applies also for side-loaded tracks.
+
+.. _lifecycle_delegate:
+
+Mandatory Callbacks
+-------------------
+
+In order to ensure that the player activity behaves correctly when it's
+finished or the user leaves the application and comes back to the Activity,
+we need to overwrite a few callbacks to delegate the Activity's life cycle
+events and shutdown or resume playback accordingly. This will also ensure
+that the Activity acquires and releases locks on the devices screen saver
+to ensure that the display stays on while a video is played. 
+
+The ``PlayerView`` exposes a :javaref:`PlayerViewLifecycleDelegate`
+through its :javaref:`PlayerView#getLifecycleDelegate()` method. The
+delegate instance can be used to ensure the correct behavior for basic
+Activity life cycle changes. We need to overwrite the following methods in
+the Activity implementation:
+
+.. code-block:: java
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        playerView.getLifecycleDelegate().start(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        playerView.getLifecycleDelegate().resume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        playerView.getLifecycleDelegate().releasePlayer(false);
+    }
+
+Overwriting ``onStart`` and delegating to :javaref:`start()
+<PlayerViewLifecycleDelegate#start(Activity)>` ensures that the required
+locks are acquired. The call to :javaref:`resume()
+<PlayerViewLifecycleDelegate#resume()>` ensures that playback will be
+resumed when the user comes back to the Activity after leaving the app.
+Finally, :javaref:`releasePlayer()
+<PlayerViewLifecycleDelegate#releasePlayer(boolean)>` is called in
+``onStop()`` to save the current playback state and shutdown the player.
+This **needs** to be called to release any resources occupied.
+
+Please note that up until now, no errors are handled. You need to setup the
+required error handlers appropriately (see :ref:`controller_error_handling`) to
+catch any runtime issues during download or playback.
+
+Background Playback
+-------------------
+
+The SDK comes with a :javaref:`PlayerService` implementation. The service can
+be used to send the player to the background continuing with audio-only
+playback and recover the player when coming back to the Activity. 
+
+Because a `Bound-Service
+<http://developer.android.com/guide/components/services.html>`_ is used, the
+usage pattern slightly differs. Essentially, you will first need to connect to
+the service and postpone all usage of the ``PlayerController`` until the
+service is connected. The ``demos`` application contains a working example of
+the ``PlayerService`` integration. The main concepts are as follows. 
+
+The Activity layout and setup is the same. You still add the ``PlayerView`` to 
+your layout and use it to access the ``PlayerController``, but you have to 
+wait until the ``PlayerService`` is connected and initialized. 
+
+.. code-block:: java
+
+    public class PlayServiceDemo extends Activity {
+        private PlayerView playerView;
+        private PlayerService.Binder playerServiceBinder;
+        private final ServiceConnection playerServiceConnection = new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                playerServiceBinder = (PlayerService.Binder) service;
+                boolean backgrounded = playerServiceBinder.init(playerView);
+                if (!backgrounded) {
+                    playerView.getPlayerController().open(...);
+                }
+                playbackBundle = null;
+            }
+
+            public void onServiceDisconnected(ComponentName name) {
+                playerServiceBinder.release(playerView, true);
+                playerServiceBinder = null;
+            }
+        };
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_simple_playback_demo);
+            playerView = (PlayerView) findViewById(R.id.player_view);
+        }
+
+        @Override
+        protected void onStart() {
+            super.onStart();
+            playerView.getLifecycleDelegate().start(this);
+        }
+
+        @Override
+        protected void onResume() {
+            super.onResume();
+            Intent serviceIntent = new Intent(this, PlayerService.class);
+            bindService(serviceIntent, playerServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+
+        @Override
+        protected void onStop() {
+            super.onStop();
+            if (playerServiceBinder == null) {
+                playerView.getLifecycleDelegate().releasePlayer(false);
+            } else {
+                if (!isFinishing()) {
+                    playerServiceBinder.releaseToBackground(
+                            playerView,
+                            NOTIFICATION_ID,
+                            createBackgroundNotification(),
+                            true);
+                } else {
+                    playerServiceBinder.release(playerView, true);
+                }
+                unbindService(playerServiceConnection);
+                playerServiceBinder = null;
+            }
+        }
+        ...
+    }
+
+The differences in contrast to the non-service implementation are in the work
+we can do in ``onCreate()`` and how the life cycle callbacks are implemented. 
+
+In ``onCreate()`` we are not allowed to use the ``PlayerController`` or start
+playback. We need to wait for a service connection before we can get access
+to a valid and initialized ``PlayerController``. 
+                
+Because we are using a service, we are not delegating directly to the player
+view's life cycle event in ``onResume()``. Instead, we make sure that a
+connection to the player service is established. The binder implementation will
+then take care of initializing playback or to recovering from a background
+playback session. 
+
+The call to ``playerServiceBinder.init(playerView)`` in the service connection
+is mandatory to initialize the player view and its controller. After that
+call, the controller is ready to be used and we can start playback if we are
+not already recovering from a background session. This is also the place where
+you can add listeners to the ``PlayerController``.
+
+
+With the player service, we have to cover a few use cases on the ``onStop()``
+callback implementation:
+
+ 1. If we have no service connection, we delegate the view to release the
+    player and any locks acquired when the activity started.
+
+ 2. If ``isFinishing()`` returns ``true``, we assume the user wants to actually
+    leave the Activity and not start background playback. In that case we release
+    the player through the binder implementation.
+
+ 3. If the activity is not finishing, we send the player to the background using
+    the service binder implementation.
+
+In both cases, we unbind from the service and reset the binder in the ``onStop()``
+callback.

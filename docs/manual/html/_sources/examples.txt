@@ -1,0 +1,31 @@
+Example Projects
+================
+
+The SDK bundle comes with example projects that you can find in the
+``examples`` folder. These projects lack a license, but are otherwise
+configured, ready to use, and can be opened in Android Studio.
+
+In order get started and run the any of the example projects, please add
+your license (typically the development license) file to the *assets* of
+the demo project in ``src/main/assets`` (see :ref:`license-loading` for
+more information about license loading).
+
+Streams Demo
+------------
+
+The `streams_demo` project is a simple demo that allows the playback of
+various clear and protected samples using the embedded player activity that
+comes bundled with the |SDK|.
+
+.. _example_demos:
+
+Demos
+-----
+
+The `demos` project contains source code to demonstrate various use cases
+of the SDK. The demos usually start in the ``MainActivity`` where an
+``Intent`` is generated. The generated intent is then send to each of the
+code examples. 
+
+Please take a look at the various activities demonstrated in the project.
+The source files contain comments that explain the various steps.

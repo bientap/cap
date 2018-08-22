@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.castlabs.player:debug-plugin-4.2.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/debug-plugin-4.2.0.aar/7d22a5aaebc46f74386f5a7a7d52903f/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/debug-plugin-4.2.0.aar/7d22a5aaebc46f74386f5a7a7d52903f/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../repository/com/castlabs/player/debug-plugin/4.2.0/debug-plugin-4.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

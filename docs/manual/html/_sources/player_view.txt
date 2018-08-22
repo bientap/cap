@@ -1,0 +1,112 @@
+The Player View
+===============
+
+.. javaimport::
+    com.castlabs.*
+    com.castlabs.android.*
+    com.castlabs.android.drm.*
+    com.castlabs.android.player.*
+
+This chapter covers some details and configuration options of the
+:javaref:`PlayerView`, the main visual component that provides the surface
+view for video playback.
+
+Basic Integration
+-----------------
+
+The ``PlayerView`` is a visual Android component that you can add to your layouts.
+
+.. code-block:: xml
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:tools="http://schemas.android.com/tools"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="#000000"
+                 tools:context="com.castlabs.sdk.demos.SimplePlaybackDemo">
+
+        <com.castlabs.android.player.PlayerView
+            android:id="@+id/player_view"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.castlabs.android.player.PlayerView>
+    </FrameLayout>
+
+The view supports two different surface types: the default ``SurfaceView`` and 
+a ``TextureView``. This is configurable through an attribute setting in the 
+layout file:
+
+.. code-block:: xml
+
+    <FrameLayout ...
+                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                 ...>
+
+        <com.castlabs.android.player.PlayerView
+            ...
+            app:surface="textureView"
+            ...
+        </com.castlabs.android.player.PlayerView>
+    </FrameLayout>
+
+The possible values are ``textureView`` to select a ``TextureView`` or
+``surfaceView`` to use a ``SurfaceView``.
+
+Alternatively, you can also configure the surface type programmatically using 
+the view's :javaref:`PlayerView#setSurfaceType(int)` method.
+
+The surface type that you choose here has a direct implication on the
+content that you can play. While a ``TextureView`` integrates nicely
+with other user interface elements and allows smooth animations and transitions,
+it is not secure. If your DRM system enforces a secure media path, **only** the
+``SurfaceView`` will be able to render video. In general, we encourage you to 
+always use the ``SurfaceView`` setting, which is also the default, for playback
+of DRM protected content. 
+
+
+Hiding the Surface
+------------------
+
+As mentioned before, ``SurfaceView`` is required for DRM protected content
+playback, but it is a heavy component that does not play nicely with other
+components, specifically other ``SurfaceView`` instances. 
+
+If you need to overlay another ``SurfaceView`` over the current player, for 
+example when you are implementing ad insertion, the ``PlayerView`` allows you 
+to hide or remove its current surface. 
+
+The best option is to use the view's
+:javaref:`PlayerView#setSurfaceVisibility(boolean)` method to hide or show the
+current surface. This method will not remove the surface from the scene but
+rather resize it to become invisible. This has the benefit that the surface
+will not be detached from the player and, once made visible again, video
+playback and video rendering will start immediately.
+
+If you cannot use the :javaref:`PlayerView#setSurfaceVisibility(boolean)`
+method, or you want to completely detach and remove the surface, you can use
+:javaref:`PlayerView#removeSurface()` and :javaref:`PlayerView#attachSurface()`
+to remove and attach the surface. The downside of this method is that video
+rendering can only continue at the next i-frame.
+
+Scaling Mode
+------------
+
+By default, the ``PlayerView`` will scale its surface to match the aspect ratio
+of the video. You can, however, change that using
+:javaref:`PlayerView#setScalingMode(int)`. The supported modes are:
+
+
+:javaref:`PlayerView#SCALING_MODE_FIT`
+    This is the default mode. The video will be scaled using its original 
+    aspect ratio to fit inside the player view. 
+
+:javaref:`PlayerView#SCALING_MODE_CROP`
+    The video will be displayed in its original size. If the video is larger
+    than the screen size, any overflow will not be visible and cut off ("cropped").
+
+:javaref:`PlayerView#SCALING_MODE_STRETCH`
+    The video will be scaled to fully utilize the available screen size. The
+    original aspect ratio of the video will not be kept.
+
+

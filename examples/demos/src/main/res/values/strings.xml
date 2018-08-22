@@ -1,0 +1,4 @@
+<resources>
+	<string name="app_name">Castlabs Demos</string>
+	<string name="title_activity_simple_playback_demo">Playback Demo</string>
+</resources>

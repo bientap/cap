@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.castlabs.sdk.demos"
+    android:versionCode="1"
+    android:versionName="1.0.0" >
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
+    <application
+        android:name="com.castlabs.sdk.demos.DemoApp"
+        android:allowBackup="true"
+        android:debuggable="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="castlabs-license"
+            android:value="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYWNrYWdlTmFtZSI6ImNvbS5jYXN0bGFicy5zZGsiLCJzaGExIjoiOEQ6Q0Q6MUM6Q0Y6NzM6NEM6N0Q6OTA6NEE6N0Y6MTg6NUE6OEQ6Njg6OEU6Mjk6RjY6Rjg6MTA6NDQiLCJraWQiOjQ0OH0.TnQNz69sAxdJ7bUw_-Nd2YOL5XfeodOA3w6vFSszPV_vjUGuHfR2JzFMVCjkpXLWnOzUAkUiff3ou5zBeK64pur_fdTJqtvTdpNXat5IiqvBzJpMvcnU0uZuN5x-NkEnHbTy7pOs1VkSol2rbxwh1O7NblYN9NqV95KFET9C9NoUboENU-WgLi9uoSHkMiM_6WgsKJheNGavMjrkemQyAf7arKOOiUtP8OwqI8Xjsu52ZaZmEhLn3-UhfZkeIqoSSInQHv-falWYkKKvlks6yULeWLgyFZqXlDv9u_V_dAU1hYTb-SCKpz3GwzJKxyMxa-7PdaVgXogr0M90E8KvZA" />
+        <!-- config Peer -->
+        <meta-data
+            android:name="com.peer5.ApiKey"
+            android:value="9n9thtz67vkh03hzlf8n" />
+
+        <activity android:name="com.castlabs.sdk.demos.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.castlabs.sdk.demos.SimplePlaybackDemo"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_simple_playback_demo"
+            android:parentActivityName="com.castlabs.sdk.demos.MainActivity"
+            android:theme="@style/PlayerTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.castlabs.sdk.demos.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.castlabs.sdk.demos.PlaybackWithSurfaceDemo"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_simple_playback_demo"
+            android:parentActivityName="com.castlabs.sdk.demos.MainActivity"
+            android:theme="@style/PlayerTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.castlabs.sdk.demos.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.castlabs.sdk.demos.SimplePlayServiceDemo"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_simple_playback_demo"
+            android:parentActivityName="com.castlabs.sdk.demos.MainActivity"
+            android:theme="@style/PlayerTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.castlabs.sdk.demos.MainActivity" />
+        </activity>
+
+        <receiver android:name="com.castlabs.sdk.drm.TimeChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.castlabs.android.player.PlayerService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <meta-data
+            android:name="player_sdk_error_handling"
+            android:value="REPORT" />
+
+        <activity
+            android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <!--
+Service handling Google Sign-In user revocation. For apps that do not integrate with
+            Google Sign-In, this service will never be started.
+        -->
+        <service
+            android:name="com.google.android.gms.auth.api.signin.RevocationBoundService"
+            android:exported="true"
+            android:permission="com.google.android.gms.auth.api.signin.permission.REVOCATION_NOTIFICATION" />
+
+        <activity
+            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" /> <!-- Include the AdActivity and InAppPurchaseActivity configChanges and themes. -->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="android.arch.lifecycle.VERSION"
+            android:value="27.0.0-SNAPSHOT" />
+    </application>
+
+</manifest>

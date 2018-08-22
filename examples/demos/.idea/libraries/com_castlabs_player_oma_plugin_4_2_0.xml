@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.castlabs.player:oma-plugin-4.2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/oma-plugin-4.2.0.aar/fa430f9a00fe21687b9d93f5e491881a/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/oma-plugin-4.2.0.aar/fa430f9a00fe21687b9d93f5e491881a/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../repository/com/castlabs/player/oma-plugin/4.2.0/oma-plugin-4.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

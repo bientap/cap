@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.google.android.exoplayer</groupId>
+  <artifactId>library-testutils</artifactId>
+  <versioning>
+    <release>r2.8.0-cl-7ed6e70</release>
+    <versions>
+      <version>r2.8.0-cl-7ed6e70</version>
+    </versions>
+    <lastUpdated>20180731132434</lastUpdated>
+  </versioning>
+</metadata>

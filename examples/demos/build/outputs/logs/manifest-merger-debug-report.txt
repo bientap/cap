@@ -1,0 +1,356 @@
+-- Merging decision tree log ---
+meta-data#castlabs-license
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:12:9-14:50
+	android:value
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:14:13-47
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:13:13-44
+manifest
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+MERGED from [com.castlabs.player:player-ui-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\player-ui-plugin-4.2.0.aar\6e28267051e172313e58e7d9f2802e2f\AndroidManifest.xml:2:1-10:12
+MERGED from [com.castlabs.player:oma-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\oma-plugin-4.2.0.aar\fa430f9a00fe21687b9d93f5e491881a\AndroidManifest.xml:2:1-11:12
+MERGED from [com.castlabs.player:subtitles-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\subtitles-plugin-4.2.0.aar\acd79b90ef6bdd12757ce96fe3cb1e38\AndroidManifest.xml:2:1-11:12
+MERGED from [com.castlabs.player:ima-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\ima-plugin-4.2.0.aar\5a9f2c80bfdb9485bae6145e9df18eed\AndroidManifest.xml:2:1-10:12
+MERGED from [com.castlabs.player:debug-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\debug-plugin-4.2.0.aar\7d22a5aaebc46f74386f5a7a7d52903f\AndroidManifest.xml:2:1-10:12
+MERGED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:2:1-22:12
+MERGED from [com.castlabs.player:okhttp-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\okhttp-plugin-4.2.0.aar\3e13048e59c0de7d1b4e383aee2c45c8\AndroidManifest.xml:2:1-10:12
+MERGED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:2:1-26:12
+MERGED from [com.android.support:design:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\design-27.0.0.aar\bbd0c37eeefb48ea74f563a249ada412\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:appcompat-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.0.0.aar\12756caf4b07166f78d4db00e3beba40\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:17:1-28:12
+MERGED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:16:1-26:12
+MERGED from [com.google.android.gms:play-services-auth-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-11.0.4.aar\655cf6edae71ba8d81abd90688e558bf\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-ads:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-11.0.4.aar\b10ff34f893e7160b23f5e196a21933e\AndroidManifest.xml:16:1-18:12
+MERGED from [com.google.android.gms:play-services-clearcut:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-clearcut-11.0.4.aar\90179191ef1de112d5a5efd97a8dc7f4\AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-safetynet:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-11.0.4.aar\94eaef8d32d26da61605af5b9b428c54\AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.android.gms:play-services-tasks:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.0.4.aar\01b4d5c66d291165aacc7fbd24af04b6\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:16:1-27:12
+MERGED from [com.google.android.gms:play-services-gass:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-gass-11.0.4.aar\f21c076b817ed8fbe1c9ff616a34d540\AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.0.4.aar\ff8ce9ad0ab127eddcb7f8f868010747\AndroidManifest.xml:16:1-23:12
+MERGED from [com.android.support:support-v4:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-v4-27.0.0.aar\9438760025a16c1010c898806af0b040\AndroidManifest.xml:17:1-22:12
+MERGED from [com.castlabs.abr:castlabs-abr:0.9.2] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-abr-0.9.2.aar\6fa0d7bb94bbf0dbf9b55a861ed4fae8\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.exoplayer:library-dash:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-dash-r2.8.0-cl-7ed6e70.aar\eb75cf66c8ec27ad0e7652ff599c0d49\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:library-hls:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-hls-r2.8.0-cl-7ed6e70.aar\c96d2c0c4545c0e2dc6079a4f9ffea0a\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:library-smoothstreaming:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-smoothstreaming-r2.8.0-cl-7ed6e70.aar\c842b7dd20479b227feddb3fae1baf56\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:library-ui:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-ui-r2.8.0-cl-7ed6e70.aar\727f517b2d2eda8fbe6e7230f96f364a\AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.exoplayer:library-core:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-core-r2.8.0-cl-7ed6e70.aar\6959e585d76969d77947f43acb99efb9\AndroidManifest.xml:17:1-26:12
+MERGED from [com.android.support:support-fragment:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.0.aar\caa8d60f0152a9468c77dcec7c1c522a\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.0.aar\af79b195bca1fa491301e343d61e9a78\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.0.0.aar\d3076ed71fd3b73fc208e838d8a74bac\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.0.0.aar\4c89fdc5147f47b5cfafd2a92298898d\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:recyclerview-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.0.0.aar\bba2b563afecc0ab998a75b00f9b49a7\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:transition:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\transition-27.0.0.aar\1692cbf0d28ed81bea0ed8cdf04f4e97\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-media-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.0.0.aar\853e664a5d6cf0538ae67d5aff5c66ff\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.0.aar\28157fbade64cf741f4c30b992c75337\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.0.aar\142f00f2f93b17d6e5f7fba29ee5f78c\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:17:1-30:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+	package
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:3:5-37
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+	android:versionCode
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:1-60:12
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:2:11-69
+application
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:5:5-58:19
+MERGED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:12:5-20:19
+MERGED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:12:5-20:19
+MERGED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:15:5-24:19
+MERGED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:15:5-24:19
+MERGED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:19:5-25:19
+MERGED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:19:5-25:19
+MERGED from [com.google.android.gms:play-services-clearcut:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-clearcut-11.0.4.aar\90179191ef1de112d5a5efd97a8dc7f4\AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-clearcut:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-clearcut-11.0.4.aar\90179191ef1de112d5a5efd97a8dc7f4\AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-safetynet:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-11.0.4.aar\94eaef8d32d26da61605af5b9b428c54\AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-safetynet:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-11.0.4.aar\94eaef8d32d26da61605af5b9b428c54\AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-tasks:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.0.4.aar\01b4d5c66d291165aacc7fbd24af04b6\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-tasks:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.0.4.aar\01b4d5c66d291165aacc7fbd24af04b6\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:23:5-26:19
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:23:5-26:19
+MERGED from [com.google.android.gms:play-services-gass:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-gass-11.0.4.aar\f21c076b817ed8fbe1c9ff616a34d540\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-gass:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-gass-11.0.4.aar\f21c076b817ed8fbe1c9ff616a34d540\AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-basement:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.0.4.aar\ff8ce9ad0ab127eddcb7f8f868010747\AndroidManifest.xml:19:5-21:19
+MERGED from [com.google.android.gms:play-services-basement:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.0.4.aar\ff8ce9ad0ab127eddcb7f8f868010747\AndroidManifest.xml:19:5-21:19
+MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:24:5-28:19
+MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:24:5-28:19
+	android:supportsRtl
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:10:9-35
+	android:label
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:9:9-41
+	android:icon
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:8:9-43
+	android:allowBackup
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:7:9-35
+	android:theme
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:11:9-40
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:6:9-32
+meta-data#com.peer5.ApiKey
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:16:9-18:52
+	android:value
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:18:13-49
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:17:13-44
+activity#com.castlabs.sdk.demos.MainActivity
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:20:9-26:20
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:20:19-47
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:21:13-25:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:22:17-69
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:22:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:24:17-77
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:24:27-74
+activity#com.castlabs.sdk.demos.SimplePlaybackDemo
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:27:9-36:20
+	android:parentActivityName
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:31:13-55
+	android:label
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:30:13-72
+	android:configChanges
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:29:13-74
+	android:theme
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:32:13-47
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:28:13-47
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:33:13-35:71
+	android:value
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:35:17-68
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:34:17-63
+activity#com.castlabs.sdk.demos.PlaybackWithSurfaceDemo
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:38:9-47:20
+	android:parentActivityName
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:42:13-55
+	android:label
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:41:13-72
+	android:configChanges
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:40:13-74
+	android:theme
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:43:13-47
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:39:13-52
+activity#com.castlabs.sdk.demos.SimplePlayServiceDemo
+ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:48:9-57:20
+	android:parentActivityName
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:52:13-55
+	android:label
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:51:13-72
+	android:configChanges
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:50:13-74
+	android:theme
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:53:13-47
+	android:name
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml:49:13-50
+uses-sdk
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+MERGED from [com.castlabs.player:player-ui-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\player-ui-plugin-4.2.0.aar\6e28267051e172313e58e7d9f2802e2f\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:player-ui-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\player-ui-plugin-4.2.0.aar\6e28267051e172313e58e7d9f2802e2f\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:oma-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\oma-plugin-4.2.0.aar\fa430f9a00fe21687b9d93f5e491881a\AndroidManifest.xml:7:5-9:41
+MERGED from [com.castlabs.player:oma-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\oma-plugin-4.2.0.aar\fa430f9a00fe21687b9d93f5e491881a\AndroidManifest.xml:7:5-9:41
+MERGED from [com.castlabs.player:subtitles-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\subtitles-plugin-4.2.0.aar\acd79b90ef6bdd12757ce96fe3cb1e38\AndroidManifest.xml:7:5-9:41
+MERGED from [com.castlabs.player:subtitles-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\subtitles-plugin-4.2.0.aar\acd79b90ef6bdd12757ce96fe3cb1e38\AndroidManifest.xml:7:5-9:41
+MERGED from [com.castlabs.player:ima-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\ima-plugin-4.2.0.aar\5a9f2c80bfdb9485bae6145e9df18eed\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:ima-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\ima-plugin-4.2.0.aar\5a9f2c80bfdb9485bae6145e9df18eed\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:debug-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\debug-plugin-4.2.0.aar\7d22a5aaebc46f74386f5a7a7d52903f\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:debug-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\debug-plugin-4.2.0.aar\7d22a5aaebc46f74386f5a7a7d52903f\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:okhttp-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\okhttp-plugin-4.2.0.aar\3e13048e59c0de7d1b4e383aee2c45c8\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:okhttp-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\okhttp-plugin-4.2.0.aar\3e13048e59c0de7d1b4e383aee2c45c8\AndroidManifest.xml:6:5-8:41
+MERGED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:7:5-9:41
+MERGED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:design:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\design-27.0.0.aar\bbd0c37eeefb48ea74f563a249ada412\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\design-27.0.0.aar\bbd0c37eeefb48ea74f563a249ada412\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.0.0.aar\12756caf4b07166f78d4db00e3beba40\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\appcompat-v7-27.0.0.aar\12756caf4b07166f78d4db00e3beba40\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-auth-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-11.0.4.aar\655cf6edae71ba8d81abd90688e558bf\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-auth-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-11.0.4.aar\655cf6edae71ba8d81abd90688e558bf\AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-ads:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-11.0.4.aar\b10ff34f893e7160b23f5e196a21933e\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-ads:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-11.0.4.aar\b10ff34f893e7160b23f5e196a21933e\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-clearcut:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-clearcut-11.0.4.aar\90179191ef1de112d5a5efd97a8dc7f4\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-clearcut:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-clearcut-11.0.4.aar\90179191ef1de112d5a5efd97a8dc7f4\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-safetynet:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-11.0.4.aar\94eaef8d32d26da61605af5b9b428c54\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-safetynet:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-safetynet-11.0.4.aar\94eaef8d32d26da61605af5b9b428c54\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.0.4.aar\01b4d5c66d291165aacc7fbd24af04b6\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-tasks-11.0.4.aar\01b4d5c66d291165aacc7fbd24af04b6\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:22:5-43
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:22:5-43
+MERGED from [com.google.android.gms:play-services-gass:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-gass-11.0.4.aar\f21c076b817ed8fbe1c9ff616a34d540\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-gass:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-gass-11.0.4.aar\f21c076b817ed8fbe1c9ff616a34d540\AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.0.4.aar\ff8ce9ad0ab127eddcb7f8f868010747\AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-basement-11.0.4.aar\ff8ce9ad0ab127eddcb7f8f868010747\AndroidManifest.xml:17:5-43
+MERGED from [com.android.support:support-v4:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-v4-27.0.0.aar\9438760025a16c1010c898806af0b040\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-v4-27.0.0.aar\9438760025a16c1010c898806af0b040\AndroidManifest.xml:20:5-44
+MERGED from [com.castlabs.abr:castlabs-abr:0.9.2] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-abr-0.9.2.aar\6fa0d7bb94bbf0dbf9b55a861ed4fae8\AndroidManifest.xml:5:5-7:41
+MERGED from [com.castlabs.abr:castlabs-abr:0.9.2] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-abr-0.9.2.aar\6fa0d7bb94bbf0dbf9b55a861ed4fae8\AndroidManifest.xml:5:5-7:41
+MERGED from [com.google.android.exoplayer:library-dash:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-dash-r2.8.0-cl-7ed6e70.aar\eb75cf66c8ec27ad0e7652ff599c0d49\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-dash:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-dash-r2.8.0-cl-7ed6e70.aar\eb75cf66c8ec27ad0e7652ff599c0d49\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-hls:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-hls-r2.8.0-cl-7ed6e70.aar\c96d2c0c4545c0e2dc6079a4f9ffea0a\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-hls:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-hls-r2.8.0-cl-7ed6e70.aar\c96d2c0c4545c0e2dc6079a4f9ffea0a\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-smoothstreaming:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-smoothstreaming-r2.8.0-cl-7ed6e70.aar\c842b7dd20479b227feddb3fae1baf56\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-smoothstreaming:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-smoothstreaming-r2.8.0-cl-7ed6e70.aar\c842b7dd20479b227feddb3fae1baf56\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-ui:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-ui-r2.8.0-cl-7ed6e70.aar\727f517b2d2eda8fbe6e7230f96f364a\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-ui:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-ui-r2.8.0-cl-7ed6e70.aar\727f517b2d2eda8fbe6e7230f96f364a\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-core:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-core-r2.8.0-cl-7ed6e70.aar\6959e585d76969d77947f43acb99efb9\AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.exoplayer:library-core:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-core-r2.8.0-cl-7ed6e70.aar\6959e585d76969d77947f43acb99efb9\AndroidManifest.xml:20:5-22:41
+MERGED from [com.android.support:support-fragment:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.0.aar\caa8d60f0152a9468c77dcec7c1c522a\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-fragment-27.0.0.aar\caa8d60f0152a9468c77dcec7c1c522a\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.0.aar\af79b195bca1fa491301e343d61e9a78\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-utils-27.0.0.aar\af79b195bca1fa491301e343d61e9a78\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.0.0.aar\d3076ed71fd3b73fc208e838d8a74bac\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-27.0.0.aar\d3076ed71fd3b73fc208e838d8a74bac\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.0.0.aar\4c89fdc5147f47b5cfafd2a92298898d\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-27.0.0.aar\4c89fdc5147f47b5cfafd2a92298898d\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.0.0.aar\bba2b563afecc0ab998a75b00f9b49a7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-27.0.0.aar\bba2b563afecc0ab998a75b00f9b49a7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\transition-27.0.0.aar\1692cbf0d28ed81bea0ed8cdf04f4e97\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\transition-27.0.0.aar\1692cbf0d28ed81bea0ed8cdf04f4e97\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.0.0.aar\853e664a5d6cf0538ae67d5aff5c66ff\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-media-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-media-compat-27.0.0.aar\853e664a5d6cf0538ae67d5aff5c66ff\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.0.aar\28157fbade64cf741f4c30b992c75337\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-core-ui-27.0.0.aar\28157fbade64cf741f4c30b992c75337\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.0.aar\142f00f2f93b17d6e5f7fba29ee5f78c\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:27.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\support-compat-27.0.0.aar\142f00f2f93b17d6e5f7fba29ee5f78c\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:20:5-22:41
+MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:20:5-22:41
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		ADDED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\huyvq\Desktop\castlabs-android-ng-sdk-4.2.0\examples\demos\src\main\AndroidManifest.xml
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:10:5-81
+	android:name
+		ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:10:22-78
+receiver#com.castlabs.sdk.drm.TimeChangeReceiver
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:13:9-19:20
+	android:name
+		ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:13:19-73
+intent-filter#action:name:android.intent.action.ACTION_BOOT_COMPLETED+action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIME_SET
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:14:13-18:29
+action#android.intent.action.TIME_SET
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:15:17-73
+	android:name
+		ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:15:25-70
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:16:17-79
+	android:name
+		ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:16:25-76
+action#android.intent.action.ACTION_BOOT_COMPLETED
+ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:17:17-86
+	android:name
+		ADDED from [com.castlabs.player:drm-device-time-checker-plugin:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\drm-device-time-checker-plugin-4.2.0.aar\1b9f4cd614003d6ee8a6b3f22672f9fb\AndroidManifest.xml:17:25-83
+uses-permission#android.permission.INTERNET
+ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:11:5-67
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:19:5-66
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:19:5-66
+	android:name
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:11:22-64
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:12:5-81
+	android:name
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:12:22-78
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:13:5-79
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.exoplayer:library-core:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-core-r2.8.0-cl-7ed6e70.aar\6959e585d76969d77947f43acb99efb9\AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.exoplayer:library-core:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\library-core-r2.8.0-cl-7ed6e70.aar\6959e585d76969d77947f43acb99efb9\AndroidManifest.xml:24:5-79
+	android:name
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:13:22-76
+service#com.castlabs.android.player.PlayerService
+ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:16:9-19:40
+	android:enabled
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:18:13-35
+	android:exported
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:19:13-37
+	android:name
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:17:13-69
+meta-data#player_sdk_error_handling
+ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:21:9-23:38
+	android:value
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:23:13-35
+	android:name
+		ADDED from [com.castlabs.player:castlabs-sdk:4.2.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\castlabs-sdk-4.2.0.aar\5be3e3d113a48234873bd1838c44daf5\AndroidManifest.xml:22:13-53
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:24:5-26:65
+	android:value
+		ADDED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:26:9-62
+	android:name
+		ADDED from [com.google.android.exoplayer:extensions-ima:r2.8.0-cl-7ed6e70] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\extensions-ima-r2.8.0-cl-7ed6e70.aar\d720fb76e763a69e70c965241852c766\AndroidManifest.xml:25:9-54
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:20:9-189
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:20:129-162
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:20:163-187
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:20:69-128
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:20:19-68
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:24:9-184
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:24:64-87
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:24:88-182
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-auth-11.0.4.aar\e108f87af3eec30b3918eab31107819b\AndroidManifest.xml:24:18-63
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:19:9-172
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:19:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:19:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-base-11.0.4.aar\2a60966c661ef67ea3f7b8124f5e6fc7\AndroidManifest.xml:19:19-85
+activity#com.google.android.gms.ads.AdActivity
+ADDED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:25:9-232
+	android:configChanges
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:25:72-181
+	android:theme
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:25:182-230
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.0.4] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\play-services-ads-lite-11.0.4.aar\b918a99d81b0573d4583b095c90a8e12\AndroidManifest.xml:25:19-71
+meta-data#android.arch.lifecycle.VERSION
+ADDED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:25:9-27:47
+	android:value
+		ADDED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:27:13-44
+	android:name
+		ADDED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\huyvq\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\a8c81975d5b7e2dbb8041546bd2579c8\AndroidManifest.xml:26:13-58

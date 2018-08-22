@@ -1,0 +1,424 @@
+DRM Protection
+==============
+
+.. javaimport::
+    com.castlabs.android.drm.*
+    com.castlabs.android.player.DrmLiceseLoader
+    com.castlabs.android.player.PlayerController
+    com.castlabs.android.network.RequestModifier
+    com.castlabs.android.network.ResponseModifier
+
+This chapter explains how to perform secure playback using different DRM
+options with the |SDK|.
+
+.. _drm_security_levels:
+
+DRM Systems and Security Levels
+-------------------------------
+
+DRM systems supported by the SDK are classified into three security levels.
+The :javaref:`DrmUtils` class provides static methods to query the available
+DRM systems and their security level on a given device.
+
+:javaref:`SecurityLevel#SECURE_MEDIA_PATH`
+    Equals to `L1` in Widevine. The Hardware must provide a secure Bootloader, a
+    secure trust zone, and the key shall never be exposed in clear. The samples
+    are provided encrypted to the rendering core and never exposed in clear.
+
+:javaref:`SecurityLevel#ROOT_OF_TRUST`
+    Equals to `L2` in Widevine. The Hardware must provide a secure trust zone,
+    and the key shall never be exposed in clear. A custom Android Bootloader
+    could be provided by the Hardware manufacturer if the required security is
+    met. The samples are provided encrypted to the rendering core and never
+    exposed in clear.
+
+:javaref:`SecurityLevel#SOFTWARE`
+    Equals to `L3` in Widevine. The key may be exposed in clear on the CPU, the
+    Hardware does not need to protect the content. The Decryption happens in
+    software, and the samples are passed to the rendering core in clear.
+
+
+.. _drm_config:
+
+DRMtoday Integration
+--------------------
+
+The |SDK| comes with a ready to use integration with castLabs' DRMtoday
+services.
+
+Our SDK supports both OMA-DRM on all platforms and versions as well as Widevine
+Modular from API 18 onwards. PlayReady is supported, but only on devices where the
+DRM system is implemented.
+
+The OMA-DRM module is fully implemented by castLabs in C++ code and
+distributed as a native shared library within an Android AAR library. The
+OMA-DRM agent is protected with Arxan's EnsureIT and Arxan's TransformIT. If
+you want to use OMA-DRM, you will need to load and register the OMA plugin with
+the SDK (see :ref:`oma_integration`).
+
+The Widevine Modular implementation is provided by the Android operating
+system. It is only available on some devices from API 18, and all devices
+from API 19.
+
+We recommend that Widevine is used always if possible. Widevine offers
+hardware protection on the video samples and rendering, and can be used
+together with the output protection configuration from DRMtoday.
+
+OMA-DRM only offers software level protection and should not be used
+on HD content.
+
+Using DRMtoday
+---------------
+
+The easiest way to integrate with DRMtoday is by using the provided
+:javaref:`DrmTodayConfiguration <com.castlabs.android.drm.DrmTodayConfiguration>`
+class.
+
+Instances of the ``DrmTodayConfiguration`` can be passed to the
+:javaref:`PlayerController <com.castlabs.android.player.PlayerController>`
+either as an :ref:`Intent parameter <start_from_intent>` or as a member of
+the :javaref:`PlaybackState <com.castlabs.android.player.PlaybackState>`, and
+all DRM related configuration happens through this object.
+
+New instances of the ``DrmTodayConfiguration`` class must be created through its
+:javaref:`Builder <com.castlabs.android.drm.DrmTodayConfiguration.Builder>`. The
+builders constructor takes all the mandatory parameters. Additional parameters
+can then be set using the methods provided by the builder.
+
+The following parameters are mandatory:
+
+Environment
+    The URL to the DRMtoday environment. The possible values are
+    :javaref:`DrmTodayConfiguration#DRMTODAY_TEST`,
+    :javaref:`DrmTodayConfiguration#DRMTODAY_STAGING`, or
+    :javaref:`DrmTodayConfiguration#DRMTODAY_PRODUCTION`.
+
+UserID
+    The DRMtoday user id. Please refer to the DRMtoday documentation
+    for details about this value.
+
+SessionID
+    The DRMtoday session id. Please refer to the DRMtoday documentation
+    for details about this value.
+
+Merchant
+    Your DRMtoday merchant name.
+
+AssetID
+    The DRMtoday asset id of the content. You may wish to further
+    classify the content by also specifying a variant ID using the
+    :javaref:`variantId(String) <DrmTodayConfiguration.Builder#variantId(String)>`
+    method on the builder instance.
+
+Drm
+    Use the values of the :javaref:`com.castlabs.android.drm.Drm` enum to specify
+    which DRM system should be used for playback. You can use
+    :javaref:`com.castlabs.android.drm.Drm#BestAvailable` to let the player pick
+    the best DRM system available on the current device. This usually picks Widevine
+    first, then PlayReady, and then OMA as a fall back solution. Please note that
+    the auto selection also considers the security level of the DRM implementation. For
+    example, on an Amazon FireTV, PlayReady offers hardware level protection while
+    Widevine is only implemented as a software based solution. In such case,
+    Playready will be selected since it offers the higher security level.
+
+    If you are explicitly selecting a DRM system here, please note that you will
+    need to ensure that the system is supported on the current device and
+    that it offers enough security for your content. The SDK provides utility methods
+    in the :javaref:`com.castlabs.android.drm.DrmUtils` class that you can
+    use to get information about supported DRM systems and their security levels
+    on the current device.
+
+Using the Builder, you can create an instance of the DRMtoday
+configuration object as follows:
+
+.. code-block:: java
+
+    DrmTodayConfiguration cfg = new DrmTodayConfiguration.Builder(
+            DrmTodayConfiguration.DRMTODAY_STAGING,
+            "purchase", // The user ID
+            "sessionId", // The session ID
+            "six", // The merchant
+            "demo", // The asset ID
+            Drm.BestAvailable) // Auto-select the DRM system
+            .get();
+
+You can then pass this instance either to the constructor of your
+``PlaybackState`` or, if you are using Intent parameters and Bundles to
+start playback (see :ref:`start_from_intent`), you can pass it to the
+bundle using:
+
+.. code-block:: java
+
+   intent.putExtra(SdkConsts.INTENT_DRM_CONFIGURATION, cfg);
+
+Upfront Authentication
+^^^^^^^^^^^^^^^^^^^^^^
+
+If you are using DRMtoday upfront authentication, please make sure that
+you are using the builders :javaref:`authToken(String)
+<DrmTodayConfiguration.Builder#authToken(String)>` method to set the
+token.
+
+.. _drm_offline_setting:
+
+Offline Key Storage
+-------------------
+
+Some DRM systems allow you to store the license key on the device to allow
+offline playback or to ensure faster startup times when no additional
+request needs to be performed to obtain the key. To enable basic
+support for offline key storage, you will need to specify a unique id to
+store and retrieve the key using the builder's :javaref:`offlineId(String)
+<DrmTodayConfiguration.Builder#offlineId(String)>` method. See
+:ref:`offline_keys` for more information.
+
+When the offline ID is specified and no key is available yet, the first
+startup of the playback will fetch and store the key. In addition, you can
+use the :javaref:`DrmLicenseLoader <com.castlabs.android.player.DrmLicenseLoader>`
+to fetch licenses without explicitly starting playback.
+This enables fetching the licenses _headless_ without a player instance.
+Note however that access to the content might be required if not all DRM
+related initialization data are specified in the Manifest.
+
+The license loader works asynchronously and you need to specify a callback
+implementation to get informed about errors or successful license
+deliveries. The following example demonstrates the usage of the license
+loader:
+
+.. code-block:: java
+
+    // Create and show a progress dialog to indicate license loading
+    final ProgressDialog progress = ProgressDialog.show(
+            context, "Offline License",
+            "Fetching offline License", true, false);
+
+    // Implement a basic callback that hides the progress and reports
+    // messages.
+    DrmLicenseLoader.Callback callback = new DrmLicenseLoader.Callback() {
+        @Override
+        public void onError(CastlabsPlayerException e) {
+            Log.e(TAG, "Error while fetching license: " + e.getMessage(), e);
+            progress.dismiss();
+            showMessage(e.getMessage());
+        }
+
+        @Override
+        public void onLicenseLoaded() {
+            progress.dismiss();
+            showMessage("License fetched");
+        }
+    };
+
+    // Setup the basic configuration parameters. Note that you need
+    // to specify the offlineId in the DrmConfiguration
+    String contentUrl = ...
+    DrmTodayConfiguration drmConfiguration = ...
+
+    // Create the license loader passing the basic configuration options
+    DrmLicenseLoader.Builder licenseLoaderBuilder = new DrmLicenseLoader.Builder(
+            context, contentUrl, drmConfiguration, callback);
+    DrmLicenseLoader licenseLoader = licenseLoaderBuilder.get();
+
+    // Trigger license loading
+    licenseLoader.load();
+
+The example above passes the mandatory parameters to the license loader.
+The :javaref:`DrmLicenseLoader.Builder <com.castlabs.android.player.DrmLicenseLoader.Builder>`
+class provides additional methods
+to specify query and header parameters or configure the key store.
+
+Offline key removal
++++++++++++++++++++
+
+You can remove already stored keys. The required steps to perform the deletion are similar to
+the ones required for the license loading.
+
+.. code-block:: java
+
+    // Create and show a progress dialog to indicate license loading
+    final ProgressDialog progress = ProgressDialog.show(
+            context, "Offline License",
+            "Removing offline License", true, false);
+
+    // Implement a basic callback that hides the progress and reports
+    // messages.
+    DrmLicenseLoader.Callback callback = new DrmLicenseLoader.Callback() {
+        @Override
+        public void onError(CastlabsPlayerException e) {
+            Log.e(TAG, "Error while removing license: " + e.getMessage(), e);
+            progress.dismiss();
+            showMessage(e.getMessage());
+        }
+
+        @Override
+        public void onLicenseLoaded() {
+        }
+
+        @Override
+        public void onLicenseLoaded() {
+            Log.i(TAG, "License removed"
+        }
+    };
+
+    // Setup the basic configuration parameters. Note that you need
+    // to specify the offlineId in the DrmConfiguration
+    String contentUrl = ...
+    DrmTodayConfiguration drmConfiguration = ...
+
+    // Create the license loader passing the basic configuration options
+    DrmLicenseLoader.Builder licenseLoaderBuilder = new DrmLicenseLoader.Builder(
+            context, contentUrl, drmConfiguration, callback);
+    DrmLicenseLoader licenseLoader = licenseLoaderBuilder.get();
+
+    // Trigger license removal
+    licenseLoader.remove();
+
+This operation will remove the local reference to the offline key, usually stored in SharedPreferences,
+indexed by offlineId, and also perform any DRM vendor-required action to remove the internal key.
+
+Depending on which DRM vendor are you using, this operation may perform a request to the licensing
+server in order to properly remove the local license. Meaning that license removal will fail if
+the licensing server is not reachable.
+
+Multi-DRM Environments
+----------------------
+
+You might run into situations where you need to use different DRM systems for
+video and audio tracks. You can do this by using the builder's
+:javaref:`audioDrm(Drm) <DrmTodayConfiguration.Builder#audioDrm(Drm)>` method
+and set a dedicated DRM used for decryption of audio tracks. This is useful on
+devices such as the Amazon FireTV, where the hardware protected PlayReady DRM
+can only be used for video decryption. In that case, you will need to specify a
+different DRM system for audio playback. *Note* that this is not strictly
+necessary for the Amazon FireTV. For that particular device, the SDK already
+implements the selection and will choose Widevine as the DRM for audio playback
+automatically.
+
+Clear Lead
+----------
+
+If you have encoded your encrypted content with a clear lead of a few seconds, the
+player will leverage that by default and start playback immediately while
+fetching the required license keys in the background. If you do not want this
+behavior and instead want the player to wait until license keys are fetched, use
+the builder's :javaref:`playClearSamplesWithoutKeys(boolean)
+<DrmTodayConfiguration.Builder#playClearSamplesWithoutKeys(boolean)>` method to
+disable the feature.
+
+DRMtoday OnBoard
+----------------
+
+When the player is used together with DRMtoday OnBoard, you need to configure
+additional parameters in the `DrmTodayConfiguration`. Specifically, you need
+to enable *DRMtoday OnBoard* and you need to set the base URL to the
+*DRMtoday OnBoard* server. The following example shows how you can create
+a configuration that can be use with the *OnBoard* server:
+
+.. code-block:: java
+
+    DrmTodayConfiguration.Builder builder  = new DrmTodayConfiguration.Builder(
+            DrmTodayConfiguration.DRMTODAY_STAGING,
+            "purchase", // The user ID
+            "sessionId", // The session ID
+            "six", // The merchant
+            "demo", // The asset ID
+            Drm.BestAvailable); // Select a DRM
+    builder.drmTodayMobile(true); // Set the DRM Mobile flag
+    builder.drmTodayMobileUrl("..."); // Set the DRMToday Mobile url
+
+
+DRM Integration with Other Service Providers
+--------------------------------------------
+
+You can also use DRM systems other than DRMtoday with the SDK. To do this, create
+instances of :javaref:`DrmConfiguration` instead of the DRMtoday specific one.
+
+This will not work for OMA-DRM, but you can use it for Widevine and PlayReady.
+
+You can use the :javaref:`DrmConfiguration` object to configure the DRM
+backend URL. If you need to pass additional parameters, you can use the
+``DrmConfiguration#requestParameters`` Bundle. All key/value pairs
+in that bundle will be added as request (header) parameters to the license
+request.
+
+If you need to modify not only the headers but you would like to dynamically
+add query parameters, change the headers, or modify and transform the data that
+is send to or received from a custom DRM server, you can use your own implementations of :javaref:`RequestModifier` and :javaref:`ResponseModifier`.
+
+Modifiers can be added on the ``PlayerController`` (see
+:javaref:`addRequestModifier()
+<PlayerController#addRequestModifier(RequestModifier)>` and
+:javaref:`addResponseModifier()
+<PlayerController#addResponseModifier(ResponseModifier)>`) and you should do
+that before you load content. The modifier will then receive a callback with a
+:javaref:`Request` or :javaref:`Response` instance that you can modify to
+change the URI or add header parameters or transform the payload or reponse
+data.
+
+Note that you can also add query parametersf or requests by changing the URI
+directly.  `request.getUri().buildUpon()` will give you a builder that can be
+used to change the URI. Once changed you can set the new URI in the request.
+The same is true for payload data.
+
+Here is an example of a request and response modifier that adds a header parameter and a query parameter for license requests and modifies the request and reponse payload:
+
+.. code-block:: java
+
+    // We need the player controller to attach a modifier
+    PlayerController pc = ...
+
+    pc.addRequestModifier(new RequestModifier() {
+        @NonNull
+        @Override
+        public Request onRequest(@NonNull Request request) {
+            if (request.type == Request.DATA_TYPE_DRM_LICENSE) {
+                try {
+                    // add a query parameter to the URI by building upon the current URI
+                    // and then set the new URL
+                    request.setUri(request
+                            .getUri()
+                            .buildUpon()
+                            .appendQueryParameter("Query-Param", "Query Value")
+                            .build();
+                    // Assume you need to send some custom JSON to the license backend
+                    // instead of the original payload.
+                    request.headers.put("Content-Type", "application/json");
+                    JSONObject jsonData = new JSONObject();
+                    jsonData.put("licenseData", Base64.encode(request.getData(), Base64.DEFAULT));
+                    // Pass the transformed data back to the request
+                    request.setData(jsonData.toString().getBytes());
+                } catch (JSONException e) {
+                    // something went wrong while encoding the json object
+                }
+            }
+            // Note that we always need to return the request!
+            return request;
+        }
+    });
+
+    pc.addResponseModifier(new ResponseModifier() {
+        @NonNull
+        @Override
+        public Response onResponse(@NonNull Response response) {
+            if (response.type == Request.DATA_TYPE_DRM_LICENSE) {
+                try {
+                    // Lets assume that the license server responds with some
+                    // JSON object. In that case we need to extract the license data
+                    // here and transform it so that the underlying CDM accepts the
+                    // data
+                    JSONObject jsonResponse = new JSONObject(new String(response.getData()));
+                    // Pass the transformed data back to the response
+                    response.setData(
+                            Base64.decode(jsonResponse.getString("licenseData"), Base64.DEFAULT)
+                    );
+                } catch (JSONException e) {
+                    // something went wrong while decoding the response
+                }
+            }
+            // note that we always need to return the response
+            return response;
+        }
+    });
+
+    ...
+

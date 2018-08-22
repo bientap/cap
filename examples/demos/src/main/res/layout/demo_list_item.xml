@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout android:id="@+id/streams_list_item"
+			  xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:minHeight="?android:attr/listPreferredItemHeightSmall"
+			  android:orientation="vertical">
+
+	<TextView
+		android:id="@+id/title"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingEnd="8dp"
+		android:paddingStart="8dp"
+		android:paddingTop="4dp"
+		android:text="@null"
+		android:textAppearance="?android:attr/textAppearanceListItemSmall"/>
+
+	<TextView
+		android:id="@+id/description"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:paddingBottom="4dp"
+		android:paddingEnd="8dp"
+		android:paddingStart="16dp"
+		android:paddingTop="4dp"
+		android:text="@null"
+		android:textAppearance="?android:attr/textAppearanceSmall"/>
+</LinearLayout>

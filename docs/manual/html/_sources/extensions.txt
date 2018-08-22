@@ -1,0 +1,1466 @@
+Extensions and Plugins
+======================
+
+.. javaimport::
+    com.castlabs.analytics.*
+    com.castlabs.android.player.*
+    com.castlabs.sdk.subtitles.*
+
+.. subtitles:
+   
+Subtitles and Closed Captions
+-----------------------------
+
+The |SDK| comes with two plugins that support subtitles and closed
+captions. The default plugin leverages the ExoPlayer subtitles parser
+and renderer. In addition, the |SDK| bundles the castLabs subtitles
+plugins, that offers full support for FCC requirements and an extended
+TTML renderer that provides styling.
+
+In order to use the castLabs subtitles plugin, you need to add it as a 
+dependency to your application, and register the plugin with the SDK::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:subtitles-plugin:3.0.0'
+        ...
+    }
+
+The example above will add the dependency to you build file. You then need
+to register the plugin to enable it:
+
+.. code-block:: java
+
+    PlayerSDK.register(new SubtitlesPlugin());
+    PlayerSDK.init(getApplicationContext());
+
+Both, the ExoPlayer as well as the castLabs subtitles plugin style can be 
+configured through the ``PlayerContorller``. For that, you will need to
+create a :javaref:`SubtitlesStyle
+<com.castlabs.android.subtitles.SubtitlesStyle>` that can be passed to the
+controller. The style can also be loaded from the system settings and the
+``Builder`` that creates the style provides the necessary methods to be
+initialized from the system settings. Please note that only since Android
+API version 21, all required FCC settings can be set on a system level.
+
+Subtitle FCC Fonts
+^^^^^^^^^^^^^^^^^^
+
+To fulfill the FCC requirements for closed captions, you need to allow the user
+to select from different fonts, including "casual", "cursive", "small
+capitals", and a "serif monospace" font. These fonts are not available on all
+Android devices. The |SDK| bundles a module that offers a set of fonts to 
+fill the gap. You can add the module to your dependencies::
+
+    dependencies{
+        ...
+        compile 'com.castlabs.player:subtitles-fonts:3.0.5'
+        ...
+    }
+
+This will bundle the missing font types with your Application. You can also add
+different fonts yourself and use the :javaref:`SubtitleFonts
+<com.castlabs.android.subtitles.SubtitleFonts>` class to configure the fonts.
+
+Subtitle Styles
+^^^^^^^^^^^^^^^
+
+The |SDK| contains an example Application `subtitle_styles` that
+demonstrates who you can build a settings view to configure subtitles,
+store that configuration in the shared preferences of the Application and
+then create a ``SubtitlesStyle`` object from these preferences and use it
+during playback.
+
+Subtitle Preview
+^^^^^^^^^^^^^^^^
+
+One of the FCC requirements is that you provide a preview when different 
+caption styles are applied. The |SDK| contains a View component,
+:javaref:`SubtitlesPreviewView
+<com.castlabs.android.subtitles.SubtitlesPreviewView>`, that can be used
+to render a preview of the subtitles with a given style.
+
+Subtitles View
+^^^^^^^^^^^^^^
+
+The |SDK| uses the :javaref:`SubtitlesView <com.castlabs.sdk.subtitles.SubtitlesView>`
+in order to display rendered subtitles.
+
+You can get a reference to this underlying View in two different ways.
+
+If you're using a ``PlayerView`` you can use the :javaref:`SubtitlesViewComponent <com.castlabs.android.views.SubtitlesViewComponent>`.
+
+If you are not using a ``PlayerView``- and creating your own instance of the ``PlayerController`` -
+you can use the :javaref:`SubtitlesPluginComponent <com.castlabs.sdk.subtitles.SubtitlesPlugin.SubtitlesPluginComponent>` component
+to register a listener and get the underlying ``SubtitlesView``.
+
+You can also use the :javaref:`SubtitleViewWrapper <com.castlabs.sdk.subtitles.SubtitleViewWrapper>` class.
+This class inherits from an Android ``FrameLayout``, registers the required listener with the
+:javaref:`SubtitlesViewComponent <com.castlabs.android.views.SubtitlesViewComponent>` and adds
+the ``SubtitlesView`` as a child as soon as it is available.
+
+.. _connectivity_checks:
+   
+Recovering From Loss Of Connectivity
+------------------------------------
+
+By default, the |SDK| will not check specifically for loss of connectivity
+and if a device looses its internet connection during playback, fatal
+player errors will be raises.
+With version 3.1.2, we introduced a new mechanism to enable the player to 
+recover automatically from connectivity loss without fatal errors being
+raised. You will need to enable that feature explicitly before you
+initialize the SDK:
+
+.. code-block:: java
+
+    PlayerSDK.ENABLE_CONNECTIVITY_CHECKS = true;
+
+If the feature is enabled, the player will catch download errors
+internally and check for network connectivity. If no internet connection
+is available, a :javaref:`CastlabsPlayerException
+<com.castlabs.android.player.exceptions.CastlabsPlayerException>` will be
+passed to any registered `PlayerListener` instances. The type of the error
+will be :javaref:`TYPE_CONNECTIVITY_LOST_ERROR
+<com.castlabs.android.player.exceptions.CastlabsPlayerException#TYPE_CONNECTIVITY_LOST_ERROR>`,
+which indicates that a download error occurred due to lack of
+connectivity. The |SDK| will then register a broadcast listener and wait
+for connectivity changes. During that period, the player might run out of
+buffered data and will go into `Buffering` state. Once device connectivity
+changes, the playback will be resumed automatically and
+a :javaref:`TYPE_CONNECTIVITY_GAINED_INFO
+<com.castlabs.android.player.exceptions.CastlabsPlayerException#TYPE_CONNECTIVITY_GAINED_INFO>`
+error will be raised through all registered listeners. This error is not
+severe and serves only informational purpose. For more
+information about error handling and how to add a listener see 
+:ref:`controller_error_handling`.
+
+If you are implementing a user interface component to inform the user of
+the loss of connectivity, you might want to consider waiting until the
+player goes into buffering state after you observed the 
+:javaref:`TYPE_CONNECTIVITY_LOST_ERROR
+<com.castlabs.android.player.exceptions.CastlabsPlayerException#TYPE_CONNECTIVITY_LOST_ERROR>`
+error. If the connectivity loss is short enough and the buffers contain enough 
+data, the player might actually recover silently from such interruptions.
+
+Handling Connectivity Loss for Live Playback
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In case connectivity loss detection is enabled and you are playing live
+content, you might need to manually re-start playback if the connection
+loss was too long and the playback head moved behind the current live
+Window. In that case the player will raise a :javaref:`TYPE_BEHIND_LIVE_WINDOW
+<com.castlabs.android.player.exceptions.CastlabsPlayerException#TYPE_BEHIND_LIVE_WINDOW>`
+error, which can be used as a marker for these situations. A possible re-start
+might look like this:
+
+.. code-block:: java
+
+    @Override
+    public void onError(@NonNull CastlabsPlayerException error) {
+        // restart playback for live streams that fell behind the live
+        // window.
+        if (error.getType() == CastlabsPlayerException.TYPE_BEHIND_LIVE_WINDOW) {
+            // Save the current playback state to a bundle
+            Bundle store = new Bundle();
+            controller.saveState(store);
+
+            // release the player and re-open it with the bundle
+            controller.release();
+            try {
+                controller.open(store);
+            } catch (Exception e) {
+                Log.e(TAG, "Error re-opening stream: " + e, e);
+            }
+        }
+    }
+
+Customize Connectivity Check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The |SDK| uses its default :javaref:`DefaultConnectivityCheck
+<com.castlabs.android.network.DefaultConnectivityCheck>` to check if the
+device is currently connected to the internet. The default implementation
+does used the Android ``ConnectivityManager`` to check basic connectivity
+and then ensures that an internet connection is available by doing a DNS
+host name lookup to `google.com`. You can customize the checker
+implementation using the global :javaref:`PlayerSDK#CONNECTIVITY_CHECKER
+<com.castlabs.android.PlayerSDK#CONNECTIVITY_CHECKER>` setting. You can
+either set this to a custom implementation of the
+:javaref:`ConnectivityCheck
+<com.castlabs.android.network.ConnectivityCheck>` interface, or use
+a custom instance of the :javaref:`DefaultConnectivityCheck
+<com.castlabs.android.network.DefaultConnectivityCheck>` with a customized
+host lookup name.
+
+Please note that the default implementation does not actually open
+a connection to `google.com` (or any other lookup host) but does connect
+to the DNS service of the device to perform a host lookup for the given
+name.
+
+.. _offline_keys:
+
+Offline Keys
+------------
+
+The |SDK| allows you to store offline keys for some DRM systems. If you
+want to leverage this feature, you will need to enable it by setting
+a unique identifier as the offline ID in the ``DrmConfiguration`` (see
+:ref:`drm_offline_setting`). 
+
+Once the license is loaded, the offline ID will be used to store
+a reference to the key, the so called "keySetId", on the device. Note that
+this is not the actual decryption key, but an identifier used by the DRM
+system to find and load the key later. This "keySetId" needs to be stored
+and the SDK does this using an implementation of the :javaref:`KeyStore
+<com.castlabs.android.drm.KeyStore>` interface. The default implementation
+is using your application's shared preferences in private mode to store
+a mapping from your offline ID to the "keySetId". 
+
+You can, however use a custom implementation of the ``KeyStore``. The store
+can be configured globally using the
+:javaref:`com.castlabs.android.PlayerSDK#DEFAULT_KEY_STORE` field. You can 
+also set it explicitly for a given ``PlayerController``.
+
+Key info
+^^^^^^^^
+
+You can get Key related info through the :javaref:`KeyStore <com.castlabs.android.drm.KeyStore>`
+interface. You can get the currently used ``KeyStore`` instance with the static
+:javaref:`PlayerSDK#DEFAULT_KEY_STORE <com.castlabs.android.PlayerSDK#DEFAULT_KEY_STORE>` field.
+
+Providing the offlineId of your content, you can get an instance of :javaref:`DrmKeyStorage <com.castlabs.android.player.DrmKeyStorage>`
+with ``KeyStore`` 's :javaref:`get <com.castlabs.android.drm.KeyStore#get(String)>` method.
+
+The ``DrmKeyStorage`` object provides DRM-related for a particular key. You can use this for instance
+to get the :javaref:`expiration date <com.castlabs.android.player.DrmKeyStorage#keyValidUntilMs>`.
+
+Interactive Media Ads (IMA)
+---------------------------
+The |SDK| provides with IMA service integrated in the form of plugin. Any VAST-compliant ad server
+is supported. 
+
+Ads service is integrated into the visual playback component :javaref:`PlayerView <com.castlabs.android.player.PlayerView>`.
+Internally it creates two additional views: one surface view of type ``TextureSurface`` for ads video and 
+``ViewGroup`` container to display ads related UI elements like 'Skip' and 'Learn more' buttons,
+ads elapsed time etc. Note that These UI elements are part of IMA SDK and cannot be customized.
+ 
+Thus, the :javaref:`PlayerView <com.castlabs.android.player.PlayerView>` is responsible for both 
+content and ads video playbacks. 
+
+After the :javaref:`PlayerView <com.castlabs.android.player.PlayerView>` is added to the app layout 
+the IMA plugin needs to be registered and enabled by the app. Optionally the plugin 
+can be initialized with the custom ``ImaSdkSettings`` e.g. in order to change the default ads UI language: 
+
+.. code-block:: java
+
+    ImaPlugin imaPlugin = new ImaPlugin();
+    imaPlugin.setEnabled(true);
+    
+    // (Optional) Set the IMA SDK settings
+    ImaSdkSettings imaSdkSettings = ImaSdkFactory.getInstance().createImaSdkSettings();
+    imaSdkSettings.setLanguage("en");
+    imaPlugin.setImaSdkSettings(imaSdkSettings);
+    
+    PlayerSDK.register(imaPlugin);
+
+    ..
+    // (Optional) Update the IMA settings run-time e.g. on a stream basis
+    ImaPlugin imaPlugin = PlayerSDK.getPlugin(ImaPlugin.class);
+    if (imaPlugin != null) {
+        ImaSdkSettings imaSdkSettings = imaPlugin.getImaSdkSettings();
+        if (imaSdkSettings != null) {
+            imaSdkSettings.setLanguage("fr");
+            imaPlugin.setImaSdkSettings(imaSdkSettings);
+        }
+    }
+
+The :javaref:`PlayerView <com.castlabs.android.player.PlayerView>` expects the ads tag url 
+when opening content video from an ``Intent``. See :ref:`start_from_intent` for an example 
+on how to use a ``Bundle`` to configure the player. The ads tag url which is the link to VAST 
+document should be  added into the bundle in the following way:
+
+.. code-block:: java
+
+    String tagURL = "https://ima.mydomain/request1";
+    intent.putExtra(SdkConsts.INTENT_ADVERTS_DATA, new ImaAdRequest(tagURL).getBundle());
+
+As a result, the |SDK| requests the ads, starts the ads playback according to the ads schedule and pauses 
+the content video playback. After the ad is completed the content video playback is resumed automatically.
+
+Additionally the application may need to be notified when the ad starts and completes. For instance, it may disable 
+the user content video playback controls or hide them during the ads playback. In this case the application installs the 
+listener as follows:
+
+.. code-block:: java
+
+    PlayerView playerView;
+    AdController adController = playerView.getPlayerController().getAdController();
+    
+    if (adController != null) {
+        adController.addListener(new AdInterface.Listener() {
+            public void onAdStarted() {
+                // hide controls and disable touch event triggers
+            }
+
+            public void onAdCompleted() {
+                // show the controls again if we keep them on screen
+            }
+        }
+    }
+
+Downloader
+----------
+The downloader plugin of the |SDK| allows the content to be downloaded and played back offline later on. Currently,
+the DASH, Smooth Streaming and MP4 content types are supported for the download.
+
+In order to use the Downloader plugin you must show a persistent notification, as it is a foreground
+service. This is achieved through the :javaref:`DownloadNotificationProvider <com.castlabs.sdk.downloader.DownloadNotificationProvider>`
+abstract class.
+
+First, the application needs to register the downloader plugin prior to |SDK| initialization:
+
+.. code-block:: java
+
+    PlayerSDK.register(new DownloaderPlugin(notificationProvider));
+    PlayerSDK.init(getApplicationContext());
+
+Please note that by default the downloader will permit 10 parallel segment downloads. You can
+configure this number in the `DownloaderPlugin` constructor, for example:
+
+.. code-block:: java
+
+    PlayerSDK.register(new DownloaderPlugin(notificationProvider, 5));
+    PlayerSDK.init(getApplicationContext());
+
+The downloader is a foreground service and the applications need to use
+:javaref:`DownloadServiceBinder <com.castlabs.sdk.downloader.DownloadServiceBinder>` in order to gain access to the downloader:
+
+.. code-block:: java
+
+    DownloadServiceBinder downloadServiceBinder;
+    ServiceConnection downloadServiceConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            downloadServiceBinder = (DownloadServiceBinder) iBinder;
+        }
+        public void onServiceDisconnected(ComponentName componentName) {
+            downloadServiceBinder = null;
+        }
+    }
+
+.. note::
+    Do not start the service on your own, always interact with it through the :javaref:`DownloadServiceBinder <com.castlabs.sdk.downloader.DownloadServiceBinder>`.
+    The service will automatically start itself when there's at least one download ongoing and will
+    stop when there are no pending downloads.
+
+The downloader plugin needs a :javaref:`DownloadNotificationProvider <com.castlabs.sdk.downloader.DownloadNotificationProvider>` implementation.
+
+This is a sample implementation that will show a progress bar in such notification.
+
+.. code-block:: java
+
+    public class NotificationProvider extends DownloadNotificationProvider {
+
+        public NP(int notificationId) {
+            super(notificationId);
+        }
+
+        @NonNull
+        @Override
+        public Notification getNotification(@NonNull DownloadServiceBinder downloadServiceBinder, @NonNull Context context) {
+            Notification.Builder builder;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                String id = "content_download_channel";
+                createNotificationChannel(context, id);
+                builder = new Notification.Builder(context, id);
+            } else {
+                builder = new Notification.Builder(context);
+            }
+
+            builder.setContentTitle(context.getString(R.string.app_name))
+                    .setAutoCancel(false)
+                    .setSmallIcon(R.drawable.ic_cloud_download_black_24dp);
+
+            List<Download> downloads;
+            try {
+                downloads = downloadServiceBinder.getDownloads();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return builder.build();
+            }
+
+            long totalSize = 0;
+            long downloadedSize = 0;
+            boolean allCompleted = true;
+
+            // Compute sum for all downloads
+            for (Download download : downloads) {
+                totalSize += download.getEstimatedSize();
+                downloadedSize += download.getDownloadedSize();
+                allCompleted = allCompleted && download.getState() == Download.STATE_DONE;
+            }
+
+            if (allCompleted) {
+                builder.setContentText("Downloads finished")
+                        .setProgress(0, 0, false)
+                        .setOngoing(false);
+            } else {
+                double progress = (double) downloadedSize / totalSize;
+                builder.setContentText("Downloading content")
+                        .setProgress(100, (int) (100.0 * progress), false)
+                        .setOngoing(true);
+            }
+            return builder.build();
+        }
+    }
+
+The :javaref:`getNotification <com.castlabs.sdk.downloader.DownloadNotificationProvider#getNotification(DownloadServiceBinder, Context)>` method will be called after each downloader event (explained below).
+
+If you want to change this behaviour you can override the :javaref:`onDownloadEvent <com.castlabs.sdk.downloader.DownloadNotificationProvider#onDownloadEvent(DownloadServiceBinder, Intent)>` method.
+
+To start with the new download the application provides :javaref:`com.castlabs.sdk.downloader.DownloadService` with the ``Bundle``
+so that the downloader can fetch and parse the manifest and prepare the 
+:javaref:`Download <com.castlabs.sdk.downloader.Download>` model. The ``Bundle`` should hold the following keys:
+
+- :javaref:`INTENT_URL <com.castlabs.android.SdkConsts#INTENT_URL>` expects a ``String`` (mandatory),
+- :javaref:`INTENT_DOWNLOAD_ID <com.castlabs.android.SdkConsts#INTENT_DOWNLOAD_ID>` expects a ``String`` (mandatory),
+- :javaref:`INTENT_DOWNLOAD_FOLDER <com.castlabs.android.SdkConsts#INTENT_DOWNLOAD_FOLDER>` expects a ``String`` (mandatory),
+- :javaref:`INTENT_DRM_CONFIGURATION <com.castlabs.android.SdkConsts#INTENT_DRM_CONFIGURATION>` expects a :javaref:`DrmConfiguration <com.castlabs.android.drm.DrmConfiguration>` (optional),
+- :javaref:`INTENT_CONTENT_TYPE <com.castlabs.android.SdkConsts#INTENT_CONTENT_TYPE>` expects one of :javaref:`CONTENT_TYPE_UNKNOWN <com.castlabs.android.SdkConsts#CONTENT_TYPE_UNKNOWN>` for auto-detection, :javaref:`CONTENT_TYPE_DASH <com.castlabs.android.SdkConsts#CONTENT_TYPE_DASH>`, :javaref:`CONTENT_TYPE_SMOOTHSTREAMING <com.castlabs.android.SdkConsts#CONTENT_TYPE_SMOOTHSTREAMING>`, or :javaref:`CONTENT_TYPE_MP4 <com.castlabs.android.SdkConsts#CONTENT_TYPE_MP4>`
+- :javaref:`INTENT_HD_CONTENT_FILTER <com.castlabs.android.SdkConsts#INTENT_HD_CONTENT_FILTER>` expects an integer bit field
+- :javaref:`INTENT_VIDEO_SIZE_FILTER <com.castlabs.android.SdkConsts#INTENT_VIDEO_SIZE_FILTER>` expects ``Point`` defining the video size filter or one of :javaref:`VIDEO_SIZE_FILTER_NONE <com.castlabs.android.SdkConsts#VIDEO_SIZE_FILTER_NONE>`, :javaref:`VIDEO_SIZE_FILTER_AUTO <com.castlabs.android.SdkConsts#VIDEO_SIZE_FILTER_AUTO>`
+- :javaref:`INTENT_VIDEO_CODEC_FILTER <com.castlabs.android.SdkConsts#INTENT_VIDEO_CODEC_FILTER>` expects one of :javaref:`VIDEO_CODEC_FILTER_NONE <com.castlabs.android.SdkConsts#VIDEO_CODEC_FILTER_NONE>`, :javaref:`VIDEO_CODEC_FILTER_CAPS <com.castlabs.android.SdkConsts#VIDEO_CODEC_FILTER_CAPS>`
+
+.. code-block:: java
+
+    String downloadId = "ID";
+    File moviesFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES);
+    File target = new File(moviesFolder, "Downloads/" + downloadId);
+
+    Bundle bundle = new Bundle();
+    bundle.putString(SdkConsts.INTENT_URL, "MANIFEST_URL");
+    bundle.putString(SdkConsts.INTENT_DOWNLOAD_ID, downloadId);
+    bundle.putString(SdkConsts.INTENT_DOWNLOAD_FOLDER, target.getAbsolutePath());
+
+    downloadServiceBinder.prepareDownload(context, bundle, new Downloader.ModelReadyCallback() {
+        public void onError(@NonNull Exception e) {
+            Log.e(TAG, "Error while preparing download: " + e.getMessage(), e);
+        }
+        public void onModelAvailable(@NonNull Download download) {
+            // initiate selection here of video quality, audio and subtitle tracks
+            // either automatically or manually
+        }
+    });
+
+The client callback :javaref:`ModelReadyCallback <com.castlabs.sdk.downloader.Downloader.ModelReadyCallback>` is invoked
+when the :javaref:`Download <com.castlabs.sdk.downloader.Download>` model is ready. Now the desired video quality, 
+audio and subtitle tracks have to be selected by the application either automatically or manually:
+
+.. code-block:: java
+
+    download.setSelectedVideoTrackQuality(0);
+    download.setSelectedAudioTracks(new int[]{0});
+
+And finally the download needs to be registered in the downloader and optionally started:
+
+.. code-block:: java
+
+    downloadServiceBinder.createDownload(download, true);
+
+The downloader keeps the list of downloads with states and each download can be paused, resumed and deleted independently:
+
+.. code-block:: java
+
+    List<Download> downloads = downloadServiceBinder.getDownloads(); 
+    
+    downloadServiceBinder.pauseDownload(downloads.get(0).getId());
+    downloadServiceBinder.resumeDownload(downloads.get(0).getId());
+    downloadServiceBinder.deleteDownload(downloads.get(0).getId());
+
+Note that :javaref:`createDownload <com.castlabs.sdk.downloader.DownloadServiceBinder#createDownload>`, 
+:javaref:`deleteDownload <com.castlabs.sdk.downloader.DownloadServiceBinder#deleteDownload>`,
+:javaref:`resumeDownload <com.castlabs.sdk.downloader.DownloadServiceBinder#resumeDownload>` and
+:javaref:`pauseDownload <com.castlabs.sdk.downloader.DownloadServiceBinder#pauseDownload>` are asynchronous and the results are broadcasted using ``LocalBroadcastManager``. 
+The following messages reflecting the downloader state change are defined:
+
+- :javaref:`ACTION_DOWNLOAD_STOPPED <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_STOPPED>`,
+- :javaref:`ACTION_DOWNLOAD_CREATED <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_CREATED>`,
+- :javaref:`ACTION_DOWNLOAD_STARTED <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_STARTED>`,
+- :javaref:`ACTION_DOWNLOAD_DELETED <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_DELETED>`,
+- :javaref:`ACTION_DOWNLOAD_COMPLETED <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_COMPLETED>`,
+- :javaref:`ACTION_DOWNLOAD_NO_PENDING <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_NO_PENDING>`,
+- :javaref:`ACTION_DOWNLOAD_ERROR <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_NO_ERROR>`,
+- :javaref:`ACTION_DOWNLOAD_STORAGE_LOW <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_STORAGE_LOW>`,
+- :javaref:`ACTION_DOWNLOAD_STORAGE_OK <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_STORAGE_OK>`
+- :javaref:`ACTION_DOWNLOAD_PROGRESS <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_PROGRESS>`
+
+.. code-block:: java
+
+    IntentFilter filter = new IntentFilter();
+    filter.addCategory(MessageHandler.INTENT_DOWNLOAD_CATEGORY);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_ERROR);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_STOPPED);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_CREATED);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_STARTED);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_DELETED);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_COMPLETED);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_NO_PENDING);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_STORAGE_OK);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_STORAGE_LOW);
+    filter.addAction(MessageHandler.ACTION_DOWNLOAD_PROGRESS);
+
+    LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver{
+        public void onReceive(Context context, Intent intent) {
+            String downloadId = intent.getStringExtra(MessageHandler.INTENT_DOWNLOAD_ID);
+            Log.d(TAG, "Message: " + intent.getAction() + ", download Id: " + downloadId);
+            switch (intent.getAction()) {
+                case MessageHandler.ACTION_DOWNLOAD_STOPPED:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_CREATED:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_STARTED:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_DELETED:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_COMPLETED:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_NO_PENDING:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_ERROR:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_STORAGE_LOW:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_STORAGE_OK:
+                    break;
+                case MessageHandler.ACTION_DOWNLOAD_PROGRESS:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }, filter);
+
+Note that when the system storage becomes low all the downloads will be paused automatically and message 
+:javaref:`ACTION_DOWNLOAD_STORAGE_LOW <com.castlabs.sdk.downloader.MessageHandler#ACTION_DOWNLOAD_STORAGE_LOW>` will be sent. 
+The device storage should then be cleaned up by the application either manually or automatically and the downloads should
+be resumed.
+
+The downloader is a sticky service and will continue downloads after the system re-creates it (e.g. when the service process is killed). 
+
+To start the playback of the downloaded content the application should follow :ref:`start_from_intent` with some additional keys:
+
+.. code-block:: java
+
+    Intent intent = new Intent(this, PlayerActivity.class);
+    intent.putExtra(SdkConsts.INTENT_URL, download.getLocalManifestUrl());
+    intent.putExtra(SdkConsts.INTENT_DRM_CONFIGURATION, download.getDrmConfiguration());
+    intent.putExtra(SdkConsts.INTENT_DOWNLOAD_FOLDER, target.getAbsolutePath());
+
+The downloader will always download one asset (movie) at a time. The reasoning for this behaviour is
+that, assuming constant bandwidth for all the assets, the amount of time for all the downloads to
+complete would be equal regardless they're downloaded either sequentially or in parallel. In addition,
+with sequential downloading, the first asset will be ready for playback sooner and should the
+connection be lost, only one download would be affected.
+
+Analytics
+---------
+
+The |SDK| offers plugins to integrate the following third party analytics services:
+
+ * `Youbora <http://youbora.com/>`_
+ * `Nielsen <http://www.nielsen.com/>`_
+ * `Conviva <http://www.conviva.com/>`_ and
+ * `Broadpeak <http://www.broadpeak.tv/>`_
+
+The integrations use a common interface :javaref:`AnalyticsSession
+<com.castlabs.analytics.AnalyticsSession>` to expose a running session.
+Please note though that for the most common use-cases, you will not need
+to interact with the analytics session directly. The plugins are
+integrated with the player and trigger the calls against the analytics
+session automatically.
+
+By default the analytics session is created and started whenever a stream is opened with 
+:javaref:`open(Bundle) <com.castlabs.android.player.PlayerController#open(Bundle)>`. 
+However, it is also possible to create and start the analytics later, upon :javaref:`play() <com.castlabs.android.player.PlayerController#play>`.
+This option is useful when the playback does not start automatically and the user has to actively trigger playback start:
+
+.. code-block:: java
+    
+    // Add the analytics session option
+    bundle.putInt(SdkConsts.INTENT_ANALYTICS_SESSION_TYPE, SdkConsts.ANALYTICS_SESSION_TYPE_PLAY);
+    // Add the option not to start playback automatically
+    bundle.putBoolean(SdkConsts.INTENT_START_PLAYING, false);
+
+All the analytics plugins use :javaref:`AnalyticsMetaData <com.castlabs.analytics.AnalyticsMetaData>`
+provided to the :javaref:`PlayerController <com.castlabs.android.player.PlayerController>` by the client application either 
+explicitly through :javaref:`setAnalyticsMetaData <com.castlabs.android.player.PlayerController#setAnalyticsMetaData>`,
+or through the ``Intent`` (see :ref:`start_from_intent` for an example
+on how to use a ``Intent`` to configure the player). The analytics metadata has to be created and passed before starting the playback.
+
+Passing the metadata through the intent:
+
+.. code-block:: java
+
+    // Create analytics meta-data
+    AnalyticsMetaData analyticsMetaData = new AnalyticsMetaData(isLive, assetId);
+
+    // Set analytics common values
+    analyticsMetaData.viewerId = prefs.getUserName();
+    // ...
+
+    // Set analytics custom values
+    Bundle customValues = new Bundle();
+    customValues.putString("title", ".....");
+    customValues.putString("cdn", ".....");
+    analyticsMetaData.extra.putBundle("media", customValues);
+
+    // Set the analytics meta-data
+    intent.putExtra(SdkConsts.INTENT_ANALYTICS_DATA, analyticsMetaData);
+
+By default, `AnalyticSession` are started and stopped automatically by the `PlayerController`. Sessions start
+whenever playback starts, and stop whenever content ends or the `PlayerController` is disposed.
+
+If you want to avoid this, and persist a session beyond the `PlayerController` lifecycle, you can
+do the following.
+
+In your teardown code, get the reference to the currently used `AnalyticsSession` and detach it
+from the `PlayerController` before releasing it.
+
+.. code-block:: java
+
+    // Keep analytics session, analyticsSession is a class variable
+    analyticsSession = playerView.getPlayerController().getAnalyticsSession();
+    if (analyticsSession != null) {
+        // Unbind this AnalyticsSession from the PlayerController
+        analyticsSession.detachFromController();
+    }
+    // Release player
+    playerView.getPlayerController().release();
+
+While in this state. The `AnalyticsSession` will be still alive and likely, depending on the analytics provider,
+sending keep-alive traces.
+
+When you want to re-attach the `AnalyticsSession` to the `PlayerController` instance, which can be
+the same or a completely new instance, you just need to set it **before** its ``open()`` method.
+
+.. code-block:: java
+
+    // Restore ongoing AnalyticsSession
+    playerView.getPlayerController().setAnalyticsSession(analyticsSession);
+    try {
+        playerView.getPlayerController().open(intent);
+    } catch (Exception e) {
+        Log.e(TAG, "Error while opening player: " + e.getMessage(), e);
+    }
+
+If a non-null `AnalyticsSession` is set, it will be used instead of creating a new session.
+
+The :javaref:`detachFromController <com.castlabs.analytics.AnalyticsSession#detachFromController>`
+method returns a boolean indicating if the AnalyticsSession could successfully unbind itself from
+the `PlayerController`. This *may not* be supported by all the analytics providers.
+
+You should **never use the same AnalyticsSession concurrently in more than one instance of PlayerController**.
+Make sure to always call ``detachFromController()`` before setting the `AnalyticsSession` to a new
+`PlayerController`.
+
+Youbora
+^^^^^^^
+
+.. External reference to Options class
+.. |options_link| raw:: html
+
+   <a class="reference external" href="http://developer.nicepeopleatwork.com/apidocs/android6/com/npaw/youbora/lib6/plugin/Options.html" target="_blank">Options</a>
+
+.. External reference to Options guide
+.. |setting_options_link| raw:: html
+
+   <a class="reference external" href="http://developer.nicepeopleatwork.com/plugins/general/setting-youbora-options/" target="_blank">Setting Youbora Options</a>
+
+The |SDK| bundles an integration for `Youbora <http://youbora.com/>`_, the 
+Analytics Service from *Nice People At Work*.
+
+If you are coming from a |SDK| version 4.1.9 or earlier and want to update your integration refer to the
+:ref:`update_youbora_4110` section.
+
+The plugin and all its dependencies are part of the bundle repository and can be added as
+a dependency to your application build::
+
+    dependencies { 
+        ... 
+        compile 'com.castlabs.player:youbora-plugin:1.0.0'
+        ...
+    }
+
+You should also add NPAW's public Maven repository to your gradle file in order to get their binaries::
+
+    repositories {
+        ...
+        maven { url 'http://dl.bintray.com/npaw/youbora' }
+        ...
+    }
+
+This will add the :javaref:`YouboraPlugin
+<com.castlabs.sdk.youbora.YouboraPlugin>` to your project.
+
+You can register the plugin with the SDK::
+
+    PlayerSDK.register(new YouboraPlugin(YOUBORA_CUSTOMER_KEY));
+
+Note that you have to pass a valid *Youbora* *accountCode* to the
+constructor in order to initialize the plugin and get access to the
+backend service.
+
+In addition, you can use the Youbora |options_link| object to customize
+the plugin configuration.
+
+You should create the Options object and fill it with the desired config. This object
+will be later passed to the :javaref:`createMetadata <com.castlabs.sdk.youbora.YouboraPlugin#createMetadata>`
+method.
+
+Please refer to more details about possible options to the `Youbora` documentation.
+
+
+By default, the plugin overrides the following global options upon initialization:
+
+ * ``accountCode`` is always set to the systemId you pass in the plugin constructor
+ 
+ * ``username`` is set to ``analyticsMetadata.viewerId``
+
+ * ``contentIsLive`` is set to ``analyticsMetadata.live``
+
+
+Also, the following fields may be filled by the plugin, if they are not informed:
+
+ * ``content_id`` inside ``contentMetadata`` will be filled with ``analyticsMetadata.assetId``
+
+ * ``contentDuration`` will be filled with ``analyticsMetadata.durationSeconds``
+
+ * ``contentResource`` will be filled with PlayerController's :javaref:`getPath <com.castlabs.android.player.PlayerController#getPath>` return value
+
+The `Youbora` documentations lists more options you can pass in the global
+configuration. 
+
+Passing `Youbora` configuration to the player:
+
+.. code-block:: java
+
+    // Create Youbora Options object
+    Options youboraOptions = new Options();
+
+    // Set any desired fields
+    youboraOptions.setContentTitle("Movie");
+
+    // Extra properties
+    Bundle properties = new Bundle();
+    properties.putString("language", "English");
+    properties.putString("year", "2018");
+    properties.putString("price", "Free");
+
+    youboraOptions.setContentMetadata(properties);
+
+    // Create AnalyticsMetadata
+    AnalyticsMetaData analyticsMetaData = YouboraPlugin.createMetadata(
+            false,              // Live or not, will set analyticsMetadata.live
+            prefs.getAssetId(), // Unique asset identifier, will set analyticsMetadata.assetId
+            youboraOptions);    // Youbora Options object
+
+    // Set a user ID
+    analyticsMetaData.viewerId = prefs.getUserName();
+
+    // Set the analytics meta-data
+    intent.putExtra(SdkConsts.INTENT_ANALYTICS_DATA, analyticsMetaData);
+
+In this example, we create the meta-data and then pass it to the Intent
+Bundle that is used to start playback.
+
+With this meta-data configuration in place and passed to the
+:javaref:`PlayerController <com.castlabs.android.player.PlayerController>` either through the
+Intent Bundle or explicitly trough :javaref:`setAnalyticsMetaData <com.castlabs.android.player.PlayerController#setAnalyticsMetaData>`, 
+the session will be automatically started and stopped.
+
+.. _update_youbora_4110:
+
+Update from |SDK| version 4.1.9 or earlier
+++++++++++++++++++++++++++++++++++++++++++
+
+The |SDK| version 4.1.10 updates the Youbora integration to version 6. This introduces some breaking
+changes that are detailed here.
+
+The Youbora binaries are now distributed in a Maven public repository. So you will need to add NPAW's
+repository to your gradle file::
+
+    repositories {
+        ...
+        maven { url 'http://dl.bintray.com/npaw/youbora' }
+        ...
+    }
+
+The Youbora plugin is now configured through a custom configuration object; ``Options``,
+instead of a ``Map``.
+
+Refer to the Youbora developers portal for a complete explanation about these Options and how to
+migrate them to V6; |setting_options_link|.
+
+You should create the ``Options`` object and fill it with the desired config. This object
+will be later passed to the :javaref:`createMetadata <com.castlabs.sdk.youbora.YouboraPlugin#createMetadata>`
+method.
+
+Nielsen
+^^^^^^^
+
+The |SDK| is integrated with `Nielsen <http://www.nielsen.com/>`_ service in the form of a plugin. This plugin needs 
+to be registered and enabled by the client application:
+
+.. code-block:: java
+
+    PlayerSDK.register(new NielsenPlugin(NIELSEN_APP_ID, NIELSEN_APP_NAME, NielsenPlugin.SF_CODE_DCR));
+    ...
+    NielsenPlugin nielsen = PlayerSDK.getPlugin(NielsenPlugin.class);
+    if (nielsen != null) {
+        nielsen.setEnabled(true);
+    }
+
+The `Nielsen` plugin benefits from the |SDK| integrated with `IMA` service and provides two use cases out of 
+the box: content with and without `IMA` advertisements. See an example above on how to use the |SDK| plugin integrated with `IMA`.
+
+The plugin sends content and ads metadata to the `Nielsen` backend. The content metadata is taken by the plugin from the 
+:javaref:`AnalyticsMetaData <com.castlabs.analytics.AnalyticsMetaData>`. The advertisements metadata is taken from `IMA` ``Ad`` object. 
+However, when needed, the advertisement metadata can be enriched by the client application by implementing and 
+registering ``AdClientInterface.Listener``:
+
+.. code-block:: java
+    
+    PlayerView playerView;
+    ...
+
+    AdController adController = playerView.getPlayerController().getAdController();
+    if (adController != null) {
+        adController.setClientListener(new AdClientInterface.Listener() {
+            @Nullable
+            public Bundle onGetMetadata(@NonNull Ad ad) {
+                Bundle bundle = new Bundle();
+                bundle.putString("cdn", ".....");
+                return bundle;
+            }
+        });
+    }
+
+It is also possible that instead of the integrated `IMA` service the client uses its own implementation of an ads provider.
+In this case, the client needs to take care of content and ads playback switches and the plugin only forwards the 
+ads metadata to the `Nielsen` backend:
+
+.. code-block:: java
+
+    PlayerView playerView;
+    ...
+
+    AdController adController = playerView.getPlayerController().getAdController();
+    if (adController != null) {
+        adController.adStarted(new Ad());
+        ...
+        adController.adSetPlaybackPosition(1);
+        adController.adSetPlaybackPosition(2);
+        ...
+        adController.adCompleted();
+    }
+
+Note, that in the latter case the ads metadata enrichment is also possible.
+
+Conviva
+^^^^^^^
+
+The |SDK| is integrated with `Conviva <http://www.conviva.com/>`_ analytics service in the form of `Conviva` plugin. 
+The `Conviva` plugin is part of the bundle repository and can be added as a dependency in the application gradle::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:conviva-plugin:1.0.0'
+        ...
+    }
+
+This will add `Conviva` plugin to the project and the plugin can be registered with the |SDK|:
+
+.. code-block:: java
+
+    ConvivaPlugin conviva = new ConvivaPlugin(CONVIVA_CUSTOMER_KEY);
+    try {
+        conviva.getClientSettings().gatewayUrl = CONVIVA_TOUCHSTONE_GATEWAY;
+	PlayerSDK.register(conviva);
+    } catch (Exception e) {
+        Log.e(TAG, "Invalid Conviva customer key!");
+    }
+
+The `Conviva` plugin benefits from the |SDK| integrated with `IMA` service and provides with two use cases 
+out of the box: content with and without `IMA` advertisements. The content metadata is taken by the plugin from the
+:javaref:`AnalyticsMetaData <com.castlabs.analytics.AnalyticsMetaData>`. The advertisements metadata is taken from 
+`IMA` ``Ad`` object.
+
+Passing `Conviva` metadata to the player:
+
+.. code-block:: java
+
+    // Create analytics meta-data
+    AnalyticsMetaData analyticsMetaData = new AnalyticsMetaData(isLive, assetId);
+    analyticsMetaData.viewerId = ".....";
+    analyticsMetaData.extra.putString(ConvivaAnalyticsSession.META_KEY_APPLICATION_NAME, ".....");
+
+    // Set the analytics meta-data
+    intent.putExtra(SdkConsts.INTENT_ANALYTICS_DATA, analyticsMetaData);
+
+This `Conviva` plugin also exposes the underlying Client instance. This may be useful for advanced use cases, such as
+sending custom events.
+
+To send a Conviva custom event:
+
+.. code-block:: java
+
+    // Get the Analytics session
+    ConvivaAnalyticsSession convivaAnalyticsSession = playerView.getPlayerController().getComponent(ConvivaAnalyticsSession.class);
+
+    if (convivaAnalyticsSession != null) {
+
+        // Fill custom map
+        Map<String, Object> customData = new HashMap<>();
+        customData.put("now", Long.toString(System.currentTimeMillis()));
+        customData.put("fizz", "buzz");
+
+        int sessionKey = convivaAnalyticsSession.getSessionKey();
+        String eventName = "customEvent";
+
+        // Send event
+        try {
+            convivaAnalyticsSession.getClient().sendCustomEvent(sessionKey, eventName, customData);
+        } catch (ConvivaException e) {
+            Log.e("TAG", "Error while sending custom event");
+            e.printStackTrace();
+        }
+    }
+
+Broadpeak
+^^^^^^^^^
+
+The |SDK| is integrated with `Broadpeak <https://www.broadpeak.tv/>`_ analytics service in the form of `Broadpeak` plugin.
+The `Broadpeak` plugin is part of the bundle repository and can be added as a dependency in the application gradle::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:broadpeak_plugin:1.0.0'
+        ...
+    }
+
+This will add `Broadpeak` plugin to the project and the plugin can be registered with the |SDK|:
+
+.. code-block:: java
+
+    BroadpeakPlugin broadpeak = new BroadpeakPlugin(ANALYTICS_URL, allowMultipath);
+
+    PlayerSDK.register(broadpeak);
+
+    // ...
+
+    PlayerSDK.init(getApplicationContext());
+
+The `Broadpeak` plugin uses takes care of sending player metrics and managing view lifecycle calls
+as required by the underlying `OTTClient` class.
+
+If you want to perform any advanced operations and interact directly with the `Broadpeak` SDK,
+you can use the `OTTClient` class.
+
+Crash Logging
+-------------
+
+The :javaref:`Crashlog` class can be used to hook up third party crash
+reporting frameworks (such as Crashlytics). It is used throughout the SDK to
+report additional data in case a crash occurs. These data are delegated to
+registered :javaref:`CrashReporter` instances. 
+
+In order to integrate a third party service, you will need to implement
+the :javaref:`CrashReporter` interface and register it using the
+:javaref:`addReporter <Crashlog#addReporter(CrashReporter)>` method.
+
+The SDK logs the following meta data through the crash logger class:
+
+.. list-table::
+   :widths: 20 30
+   :header-rows: 1
+
+   * - Key
+     - Description
+   * - CL-Playback-URL
+     - The current playback URL
+   * - CL-DRM-URL
+     - The license server URL
+   * - CL-DRM-Offline-Id
+     - The identifier used to store the offline key
+   * - CL-DRM-RequestID
+     - The log request ID generated for calls to DRMToday
+   * - CL-DRM-AssetID
+     - The last used asset ID
+   * - CL-DRM-VariantID
+     - The last used variant ID
+   * - CL-DRM-Type
+     - The last used DRM type (Widevine, Playready, or OMA)
+   * - CL-DRM-Audio-Type
+     - The last used DRM type for Audio tracks(Widevine, Playready, or OMA)
+   * - CL-DRM-Type
+     - The last used DRM type (Widevine, Playready, or OMA)
+   * - CL-DRM-Device-Level
+     - The security level available for the selected DRM type
+   * - CL-Playback-State
+     - The current playback state 
+   * - CL-SDK-Version 
+     - The version of the |SDK|
+   * - CL-Playback-Video 
+     - The dimensions of the currently played video representation 
+   * - CL-Playback-Video-Bitrate 
+     - The bitrate of the currently played video representation 
+   * - CL-Playback-Audio-Bitrate
+     - The bitrate of the currently played audio representation
+   * - CL-Playback-PositionMS 
+     - The current playback position in milliseconds. 
+       Please note that this is updated at most with a resolution
+       of one second.
+
+In addition to the meta-data, the |SDK| will log all Exceptions that
+raised during playback as non-fatal errors to the :javaref:`Crashlog`. You
+can configure this behavior globally using the global
+:javaref:`com.castlabs.android.PlayerSDK#CRASHLOG_AUTO_REPORT`
+configuration option.
+
+Crashlytics Integration
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The SDK package bundles a plugin that can be used to setup and integrate
+Crashlytics with the SDK's :javaref:`Crashlog` mechanism. To enable the plugin,
+you will need to add it as a dependency in your project setup::
+ 
+    dependencies { 
+        ... 
+        compile 'com.castlabs.player:crashlytics-connector:1.0.0'
+        ...
+    }
+
+With the connector added to your project dependencies, you can load and
+register the plugin before you initialize the SDK::
+    
+    Fabric.with(getApplicationContext(), new Crashlytics());
+    PlayerSDK.register(new CrashlyticsPlugin());
+    PlayerSDK.init(getApplicationContext());
+
+Please note that the plugin does not initialize Fabric and Crashlytics for you.
+Before you register an instance of this plugin with the SDK, please make sure
+that you initialize the Fabric SDK and add at least the Crashlytics Kit.
+
+
+User Agent
+----------
+
+The |SDK| uses a custom user agent string for all network communications
+with our DRMtoday service and to the content provider.
+
+You can use this information to monitor which SDK version, device model, or API
+are in use. As well, castLabs compiles this information to help customers solve
+issues quickly and to help improve the overall quality of the service.
+
+The parameters found on the customer User Agent are:
+
+ * SDK Version: The three digit number representing the used |SDK| version.
+ * Model: The device model.
+ * API Version: The Android API version of the device.
+ * ExoPlayer Library Version: The ExoPlayer library version used by the SDK.
+ * Customer Id: An identification string for the service provider.
+ * Device Id: The device Id as provided by the operating system.
+
+In addition to these predefined values, you can register additional key value
+pairs using the :javaref:`UserAgent.register()
+<com.castlabs.android.network.UserAgent#register(String, String)>` method.
+These values will be stored globally and sent with each request.
+
+Streamroot Plugin
+-------------
+
+The SDK package bundles a plugin that can be used to setup and integrate  `Streamroot DNA <https://streamroot.io/>`_ multi-source content delivery solutions. To enable the plugin, you will need to add it as a dependency in your project setup::
+ 
+    dependencies { 
+        ... 
+        compile 'com.castlabs.player:streamroot-plugin:1.0.0'
+        ...
+    }
+
+The example above integrates the plugin as a dependency. You can now
+register it with the SDK:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new StreamrootPlugin(
+                "backend_url",
+                this
+            ));
+
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+The streamrootKey is now set as a meta-data in the application manifest.
+
+.. code-block:: xml
+
+  <?xml version="1.0" encoding="utf-8"?>
+  <manifest package="com.castlabs.sdk.streamroot_demo" xmlns:android="http://schemas.android.com/apk/res/android">
+     ...
+     <application ... />
+         <meta-data android:name="io.streamroot.dna.StreamrootKey" android:value="your_streamroot_key"/>
+     ...
+
+After the plugin is registered, the player will use Streamroot DNA to create manifest and segments proxy.
+
+OkHttp Plugin
+-------------
+
+If you want to use the popular `OkHttp Library <http://square.github.io/okhttp/>`_,
+the SDK bundle contains a plugin that you can use to integrate OkHttp into 
+the player.
+
+To use the plugin, you need to integrate it as a dependency into you
+Application build and register the plugin with the SDK::
+
+   dependencies{
+        ...
+        compile 'com.castlabs.player:okhttp-plugin:1.0.0'
+        ...
+   }
+
+The example above integrates the plugin as a dependency. You can now
+register it with the SDK:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new OkHttpPlugin());
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+After the plugin is registered, the player will use OkHttp to create HTTP
+requests to manifests and content. 
+
+Intercept Traffic
+^^^^^^^^^^^^^^^^^
+
+OkHttp can be also used for debugging purposes to intercept and show the
+network traffic. Please note that you should **not deploy this in
+production** when you publish your Application. This is a tool used for
+development and debugging purposes. You can find more information about
+Stetho, the library used for this, on their `Website
+<http://facebook.github.io/stetho/>`_.
+
+In order to use the network interceptor, you will need to add additional
+dependencies to the Stetho library and its OkHttp integration::
+
+   dependencies{
+        ...
+        compile 'com.castlabs.player:okhttp-plugin:1.0.0'
+        compile 'com.facebook.stetho:stetho:1.3.1'
+        compile 'com.facebook.stetho:stetho-okhttp3:1.3.1'
+        ...
+   }
+
+With these dependencies in place, you can setup the plugin using the
+network interceptor:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new OkHttpPlugin(
+                 new OkHttpClient.Builder().addNetworkInterceptor(
+                     new StethoInterceptor())));
+            PlayerSDK.register(new OkHttpPlugin());
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+The OkHttp plugin allows you to pass a pre-configured builder in its'
+constructor. We use that to pass in a builder configured to interecept
+network traffic using Stetho.
+
+Using this extended setup allows you to use your local chrome development
+tools to intercept and show network traffic. For that, run the Application
+on a device connected via USB, start chrome and open a tab on
+`chrome://inspect/#devices <chrome://inspect/#devices>`_. Enable USB discovery and you will see you
+Application listed. You can now inspect the network traffic of your
+application.
+
+.. figure:: _static/img/okhttp_network_intercept.jpg
+   
+   Network traffic inspection with Chrome Dev Tools and Stetho
+
+
+Thumbnails
+----------
+
+Since version 4 of the |SDK|, the bundle contains the Thumbnail plugin.
+This plugins adds support to load and display scrubbing thumbnails in
+various formats.
+
+The plugin is distributed with the SDK and you can add it as a dependency:
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:thumbs-plugin:4.0.0'
+        ...
+    }
+    
+Once added you can register it with the SDK:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new ThumbsPlugin(true));
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+Note that we pass ``true`` as the constructor argument here. This will add
+the default view that can be used for basic rendering on top of
+a ``PlayerView``. You can find more about the parameter in the API
+documentation for :javaref:`ThumbsPlugin <com.castlabs.sdk.thumbs.ThumbsPlugin>`.
+
+The plugin supports the following formats:
+
+ * BIF Containers
+ * WebVTT index
+ * Single or gridded JPG files with a template URL
+ 
+Basic Usage
+^^^^^^^^^^^
+
+You can start loading thumbnail data directly if you registered the plugin and you are loading 
+your streams through an `Intent Bundle` (see :ref:`start_from_intent`).
+You need to create an instance of :javaref:`ThumbnailData
+<com.castlabs.sdk.thumbs.ThumbnailData>` and add it to your intent bundle
+using the :javaref:`ThumbsPlugin.INTENT_THUMBNAILS_DATA
+<com.castlabs.sdk.ThumbsPlugin#INTENT_THUMBNAILS_DATA>` key. For example:
+
+.. code-block:: java
+   
+    ThumbnailTrackData data = new ThumbnailTrackData();
+    data.setUrl("thumbs/thumbs.vtt");
+    data.setType(ThumbnailTrackData.TYPE_WEBVTT_INDEX);
+    ...
+    intent.putExtra(ThumbsPlugin.INTENT_THUMBNAILS_DATA, data);
+
+This will create a data object and add it to the intent. Note that we are
+specifying the type explicitly here. This is not strictly necessary and
+the plugin will try to infer the type from the URL extension, i.e. `.vtt`
+vs. `.bif` vs. `.jpg`.
+
+With the data object added to the intent, an implementation of
+:javaref:`ThumbnailProvider <com.castlabs.sdk.thumbs.ThumbnailProvider>`
+will be created automatically and is exposed as a component of the
+``PlayerController``. You can access the provider instance using 
+:javaref:`PlayerController.getComponent() <PlayerController#getComponent(Class)>`. 
+For example:
+
+.. code-block:: java
+   
+    ThumbnailProvider provider = playerController.getComponent(ThumbnailProvider.class);
+    
+The :javaref:`ThumbnailProvider
+<com.castlabs.sdk.thumbs.ThumbnailProvider>` interface is the main
+interaction point to get access to thumbnails. It provides
+a ``getThumbnail`` method that asynchronously loads a thumbnail for the
+requested position and provides it back the callback implementation that
+is passed to the method.
+
+At this point a view implementation can use the provider and a callback to
+get a handle on the Bitmap and show it on screen. The |SDK| already
+bundles a simple view implementation with a relatively flexible way to 
+render and position a thumbnail.
+
+Using the build in thumbnails view
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you registered the thumbnails plugin and enabled the usage of the
+internal view component, you do not need to create a view or interact with
+the provider explicitly. Instead, you add your ``ThumbnailData`` to the
+`Intent Bundle` and once a `PlayerView` is initialized, you can access the 
+thumbnail view component and show or hide thumbnails on to of your player
+view. 
+
+.. code-block:: java
+   
+    public void onSeekbarScrubbed(long positionUs) {
+        ThumbsPlugin.ThumbnailViewComponent thumbsView = playerView.getComponent(
+                ThumbsPlugin.ThumbnailViewComponent.class);
+        if(thumbsView != null){
+            thumbsView.show(positionUs, new DefaultThumbnailView.Callback() {
+                @Override
+                public void getThumbnailRect(Rect output, int thumbWidth, int thumbHeight, boolean isSmallScreen) {
+                    ViewGroup videoView = playerView.getVideoView();
+                    output.set(
+                            videoView.getLeft(),
+                            videoView.getTop(),
+                            videoView.getRight(),
+                            videoView.getBottom());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSeekbarReleased() {
+        final ThumbsPlugin.ThumbnailViewComponent thumbsView = playerView.getComponent(
+                ThumbsPlugin.ThumbnailViewComponent.class);
+        if(thumbsView != null){
+            thumbsView.hide();
+        }
+    }
+
+The example above demonstrates the basic interactions with the
+``ThumbnailViewComponent``. Here we assume we have to methods, one that is
+called when a Seekbar is scrubbed and thumbnails should be shown, and the
+counterpart that is triggered when scrubbing stops and the thumbnails
+should be hidden. Hiding is relatively simple and a matter of calling the
+``hide()`` method. Showing the thumbnails is slightly more complex. We
+call the ``show()`` method and pass two parameters: the time in
+microseconds for which we would like to receive a thumbnail and
+a ``Callback`` implementation. The callback is triggered once the Bitmap
+data are loaded. It its called with size information about the thumbnail
+as well as an ``output`` rectangle. The ``output`` rectangle needs to be
+filled with the coordinates and size of the desired thumbnail. The
+coordinates are relative to the thumbnail view container, but the default
+view container has the same dimensions as the player view. The example
+above uses the exposed video view to place the thumbnail image full-screen
+above the video, but treat this as a simple example. You can use the
+``output`` rectangle to customize the size and the position of the
+resulting thumbnail.
+
+Downloader integration
+^^^^^^^^^^^^^^^^^^^^^^
+
+The thumbnails plugin is integrated with the Downloader Plugin, hence
+there is offline support for thumbnails as well. This is currently limited
+to `BIF` and `WebVTT` thumbnails. Just add the ``ThumbnailData`` to the
+Intent that is used to initiate the download and the thumbnails will be
+fetched and downloaded as well. When you start the local playback, pass
+*the same* ``ThumbnailData`` to the local playback intent. The player will
+translate any remote URLs automatically to the correct local files and
+relative URLs will still resolve correctly, now relative to the local
+manifest.
+
+
+360-Degree Playback Plugin
+--------------------------
+
+The |SDK| can be used with the optional 360 Degree player plugin to enable
+360 playback using the |SDK|.
+
+The plugin is distributed with the |SDK|. You can reference and load the
+360 plugin as a separate dependency::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:360-plugin:3.2.1'
+        ...
+    }
+
+Before you can use this plugin, you have to register it before you initialize the SDK:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new ThreesixtyPlugin());
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+Google Cardboard
+^^^^^^^^^^^^^^^^
+
+The :javaref:`PlayerView360<com.castlabs.sdk.threesixty.PlayerView360>` is an extension of the
+default `PlayerView`. You can add it as a view component to your own activity. The view exposes the
+underlying `GvrView` which needs to be passed to the Google VR SDK in your activity.
+
+You can use the `PlayerView360` in your own Activity (that usually extends `GvrActivity`). The `PlayerView360`
+will handle all the transformations required to render the view.
+
+An example of this is the `CardboardActivity` class in the 'threesixty_demo' sample app.
+
+Google cast Manager
+-------------------
+
+The |SDK| contains the :javaref:`GoogleCastManager<com.castlabs.sdk.googlecast.GoogleCastManager>`
+class that will ease the process of starting and managing remote cast session.
+
+This class allows to start a cast session, get the current remote player state and select
+audio, video and subtitle tracks.
+
+Drm Device Time Checker
+-----------------------
+
+The |SDK| contains the :javaref:`DrmDeviceTimeCheckerPlugin<com.castlabs.sdk.drm.DrmDeviceTimeCheckerPlugin>`
+Plugin which is able to perform periodic checks related to DRM licensing in order to minimize some
+Widevine limitations.
+
+The plugin is distributed with the |SDK|. You can reference and load the
+Device Time Checker plugin as a separate dependency::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:drm-device-time-checker-plugin:1.0.0'
+        ...
+    }
+
+Before you can use this plugin, you have to register it before you initialize the SDK:
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new DrmDeviceTimeCheckerPlugin());
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+Optionally, you can specify the time period at which he license checks should be performed.
+Default value is every 5 minutes.
+
+.. code-block:: java
+
+    // ...
+    PlayerSDK.register(new DrmDeviceTimeCheckerPlugin(60)); // Check every minute
+    // ...
+
+This plugin needs two extra Android permissions. These permissions allow to internally keep
+track of license times.
+
+    * :javaref:`ACTION_BOOT_COMPLETED<android.content.Intent.ACTION_BOOT_COMPLETED>`
+    * :javaref:`ACTION_TIME_CHANGED<android.content.Intent.ACTION_TIME_CHANGED>`
+
+These permissions are automatically added to your AndroidManifest file once you include this
+plugin in your build file.

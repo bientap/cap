@@ -1,0 +1,73 @@
+Global Configuration
+====================
+
+The :javaref:`PlayerSDK <com.castlabs.android.PlayerSDK>` provides a few fields
+that can be used to configure defaults for certain behaviors.
+
+
+:javaref:`com.castlabs.android.PlayerSDK#SECONDARY_DISPLAY`
+    This field configures the default setting for secondary displays. See
+    :ref:`secondary_displays` for more information.
+
+:javaref:`com.castlabs.android.PlayerSDK#PLAYBACK_HD_CONTENT`
+    Configures the default HD playback filters. See :ref:`hd_playback` for 
+    more information.
+
+:javaref:`com.castlabs.android.PlayerSDK#DEFAULT_KEY_STORE`
+    Set the default implementation that will be used to store offline
+    keys. See :ref:`offline_keys` for more information.
+
+:javaref:`com.castlabs.android.PlayerSDK#SSL_KEY_STORE`
+    Set the custom SSL key store containing the desired certificates for successful SSL handshake. 
+    Setting the custom store might be necessary when the system does not have (yet) the needed
+    CA certificates. 
+    Note that the custom key store is NOT a replacement of the system default one and is only used 
+    when the system default store cannot verify the certificate during SSL handshake. The client application
+    shall be responsible of keeping the custom key store with up-to-date certificates.
+
+:javaref:`com.castlabs.android.PlayerSDK#FAST_BITRATE_SWITCHING`
+    The default behavior of the player is to query the selected video codec
+    for its capabilities to quickly adopt to a new video resolution. This 
+    means that the player can reconfigure the codec to a new resolution quickly.
+    There are however devices where the codec implementation reports that it
+    supports fast bitrate switching but it does not work correctly under 
+    all circumstances. You can use this flag to disable the automatic selection
+    and force the player to either enable or disable dynamic reconfigurations
+    of the codec. 
+
+:javaref:`com.castlabs.android.PlayerSDK#PRESCAN_DASH_MANIFESTS`
+    By default, the DASH Manifest parser assumes that the Manifest is spec conform and
+    BaseURL appear before any other entries. If this is not the case, other entries will
+    get parsed first and the wrong BaseURL will be assigned. This options enabled a pre-scanning
+    step in the Manifest parser, which will search for BaseURL entries first, to ensure
+    the the correct BaseURL is used for all entries. You need to enabled this option of you
+    have Manifests where the BaseURL in the Period is defined after other entries, for example
+    AdaptationSets'. Please note that enabling this option forces the parser to scan the
+    Manifest twice and should only be enabled if it is necessary.
+
+:javaref:`com.castlabs.android.PlayerSDK#ENABLE_CONNECTIVITY_CHECKS`
+    By default, the player will not automatically recover from loss of
+    connectivity. Setting this flag to `true` will enable automatic
+    recovery in case the device looses internet connectivity. See
+    :ref:`connectivity_checks` for more information about this feature.
+
+:javaref:`com.castlabs.android.PlayerSDK#CONNECTIVITY_CHECKER`
+    Customize the default implementation that will be used to check for
+    internet connectivity.
+
+:javaref:`com.castlabs.android.PlayerSDK#CRASHLOG_AUTO_REPORT`
+    Configure which exceptions should be reported through the
+    :javaref:`Crashlog <com.castlabs.analytics.Crashlog>` interface automatically.
+
+:javaref:`com.castlabs.android.PlayerSDK#FORCE_SINGLE_DRM_SESSION`
+    By default the player creates two DRM sessions, one for Audio, and one for Video. If you
+    are certain that the DRM backend returns all required license keys with one request, you
+    can use this flag to enforce only one DRM session. Note that this is not required if you
+    are using DRMtoday and specify the asset ID. In that case the only a single session will
+    be used automatically.
+
+:javaref:`com.castlabs.android.PlayerSDK#FORCE_WIDEVINE_L3`
+    Setting this flag to `true` will force the player to use Widevine L3 even if the device
+    supports higher security levels. This flag can be used to avoid issues on devices with
+    broken secure decoders.
+

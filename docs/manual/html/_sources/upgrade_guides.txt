@@ -1,0 +1,137 @@
+Upgrade Guides
+==============
+
+.. javaimport::
+    com.castlabs.android.player.*
+    com.castlabs.android.drm.*
+    com.castlabs.android.adverts.*
+    com.castlabs.android.views.*
+    com.castlabs.android.utils.*
+    com.castlabs.android.*
+    com.castlabs.sdk.downloader.*
+
+Changes in 4.2
+--------------
+
+The transition from version 4.1 to version 4.2 of the |SDK| involves some breaking API changes.
+We will highlight the changes here and describe the required changes that you might need to apply
+in your Application to upgrade to version 4.2.
+
+StreamingEventListener
+^^^^^^^^^^^^^^^^^^^^^^
+
+The :javaref:`StreamingEventListener` was used in version 4.1 to receive events about downloads
+triggered by the player library. In order to provide more information on these callbacks, we
+decided to change the method signatures slightly. Please check the API documentation for the
+:javaref:`StreamingEventListener` interface and update your implementations accordingly. All
+information is still present, but we are exposing the underlying `DataSpec` as well, which allows
+you, for instance, to access the target URI of a given request.
+
+Besides the changed order and the new parameter, the only parameter that was removed from the
+signature was the `length`. Please use the `dataSpec.length` property instead.
+
+AbstractStreamEventListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :javaref:`AbstractStreamEventListener` is removed and :javaref:`AbstractStreamingEventListener` shall be used instead.
+
+Downloader
+^^^^^^^^^^
+
+Header and query parameters
++++++++++++++++++++++++++++
+
+The :javaref:`DownloadServiceBinder#getDataSourceFactory` is deprecated and  when providing the downloader
+with the additional header and query parameters, the :javaref:`SdkConsts#INTENT_HEADER_PARAMS_BUNDLE` and
+:javaref:`SdkConsts#INTENT_QUERY_PARAMS_BUNDLE` shall be used as keys in the ``Bundle`` passed to
+:javaref:`DownloadServiceBinder#prepareDownload`.
+
+Download size
++++++++++++++
+
+The :javaref:`Download#getTotalSize` is replaced with :javaref:`Download#getEstimatedSize`
+
+DRM
+^^^
+
+The :javaref:`DrmTodayConfiguration.Builder#Builder` should now be created with explicitly set ``assetId``.
+
+KeyStore
+^^^^^^^^
+
+The :javaref:`KeyStore` interface got promoted to an abstract class in 4.2. This is because some
+functionality was required to be implemented at this level, and shared across all KeyStore implementations.
+
+The main motivation for this change was to perform serialization of the stored data before and after
+storing and reading the data.
+
+In order to make transition easier we renamed the old interface methods, and expect the same behaviour
+from them. These correspond to the `*internal` named methods.
+
+In addition new methods have been added; `getAll`, `delete`, `deleteAll` and `getCount`.
+
+KeyStore in PlayerController
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The `setKeyStore` method in the :javaref:`PlayerController` has been removed. The static `DEFAULT_KEY_STORE` field
+in the :javaref:`PlayerSDK` class should be used from now on.
+
+Ads & IMA plugin
+^^^^^^^^^^^^^^^^
+
+The IMA plugin is now based on the Exo Player's ads interfaces and IMA extension. The change brings mainly
+performance benefits as all the ads are now played using the same :javaref:`PlayerView` and Exo Player's instance.
+The following client-facing ads interfaces have being updated as well:
+ * :javaref:`AdSessionProvider` is renamed to :javaref:`AdProvider` and defines interface to create :javaref:`AdLoader`. The implementation of this interface can be used for custom-based ads provider implementations.
+ * :javaref:`AdController` is removed and its APIs became part of :javaref:`AdInterface` and :javaref:`AdClientInterface` accessible via :javaref:`PlayerController`
+ * :javaref:`SdkConsts.INTENT_WAIT_FOR_ADS_TO_LOAD` is deprecated and removed
+
+SubtitlesViewComponent
+^^^^^^^^^^^^^^^^^^^^^^
+
+The :javaref:`SubtitlesViewComponent` ``getView()`` is deprecated and ``componentView()`` should be used instead.
+
+StreamingEventListener
+^^^^^^^^^^^^^^^^^^^^^^
+
+Format
+++++++
+
+The :javaref:`onVideoFormatChange() <FormatChangeListener#onVideoFormatChange(Format,int,long,VideoTrackQuality)>` and
+:javaref:`onAudioFormatChange() <FormatChangeListener#onAudioFormatChange(Format,int,long)>` methods have been moved out
+of the :javaref:`StreamingEventListener <StreamingEventListener>` interface to the new  :javaref:`FormatChangeListener <FormatChangeListener>`
+interface.
+
+If you were using any of those methods, you should implement ``FormatChangeListener``. Then you can add and remove
+the listener to the :javaref:`PlayerController <PlayerController>` with the :javaref:`addFormatChangeListener() <PlayerController#addFormatChangeListener(FormatChangeListener)>` and
+:javaref:`removeFormatChangeListener() <PlayerController#removeFormatChangeListener(FormatChangeListener)>` methods respectively.
+
+
+onLoadError
++++++++++++
+
+This new method will receive load error events. Note that retries will also be notified through this callback. Fatal load
+errors will still by reported by the ``PlayerListener``, but now it won't receive Warning retry calls anymore.
+
+Retries
++++++++
+
+Now all the methods in the ``StreamingEventListener`` contain two extra params: `currentAttempt` and `maxAttempts`. You
+can use these params for instance in the error callback to check for a fatal error, or to know how many retries were
+required for successful loading.
+
+Image loader
+^^^^^^^^^^^^
+
+The following methods are deprecated:
+ * Use :javaref:`LazyImageLoader#loadImage` instead of :javaref:`LazyImageLoader#displayImage`
+ * Use :javaref:`LazyImageLoader#shutdown` instead of :javaref:`LazyImageLoader#stopThread`
+
+Playback configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
+The following playback configuration options are deprecated:
+ * Initial video quality and keep flag: use :javaref:`SdkConsts#INTENT_ABR_CONFIGURATION` instead of :javaref:`SdkConsts#INTENT_INITIAL_VIDEO_QUALITY` and :javaref:`SdkConsts#INTENT_INITIAL_VIDEO_QUALITY_KEEP
+ * :javaref:`SdkConsts#INTENT_PROGRESSIVE_DOWNLOAD_ID` is not used anymore
+ * Language preferences: use :javaref:`SdkConsts#INTENT_PREFERRED_AUDIO_LANGUAGE` and :javaref:`SdkConsts#INTENT_PREFERRED_TEXT_LANGUAGE` instead of :javaref:`SdkConsts#INTENT_PREFERRED_LANGUAGE`
+ * Live edge latency: use :javaref:`SdkConsts#INTENT_LIVE_CONFIGURATION` instead of :javaref:`SdkConsts#INTENT_LIVE_EDGE_LATENCY_MS` and :javaref:`PlayerController#setLiveConfiguration` instead of :javaref:`PlayerController#setLiveEdgeLatency`

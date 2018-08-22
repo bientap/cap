@@ -1,0 +1,861 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The Player Controller &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="The Player View" href="player_view.html" />
+    <link rel="prev" title="Player Basics" href="player_basics.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-player-controller">
+<h1>The Player Controller<a class="headerlink" href="#the-player-controller" title="Permalink to this headline">¶</a></h1>
+<p>This chapter covers the details about the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> class.
+The controller class is the primary way to interact with the video player
+backend. It is used to trigger interactions such as starting and pausing
+playback, or seeking to a given position. In addition, the controller provides
+ways to register callback listeners for various events issued by the player.</p>
+<p>The controller is also used to configure certain parts of the player backend
+such as the handling of secondary screens and additional parameters that need
+to be sent when content is requested.</p>
+<div class="section" id="basic-controls">
+<span id="basic-controlls"></span><h2>Basic Controls<a class="headerlink" href="#basic-controls" title="Permalink to this headline">¶</a></h2>
+<p>The player controller offers the following methods for basic playback controls:</p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">PlayerController.open()</span></code></dt>
+<dd>The controller provides two methods to load content. The
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#open-com.castlabs.android.player.PlaybackState-"><code class="docutils literal"><span class="pre">open(PlaybackState)</span></code></a> takes
+a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlaybackState.html"><code class="docutils literal"><span class="pre">PlaybackState</span></code></a> that contains all the mandatory information
+required to load content. <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#open-android.os.Bundle-"><code class="docutils literal"><span class="pre">open(Bundle)</span></code></a> can be used to provide the
+mandatory playback information as well as addition configuration options.
+See <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a> for an example on how to use a <code class="docutils literal"><span class="pre">Bundle</span></code> to
+configure the player.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#play--"><code class="docutils literal"><span class="pre">PlayerController.play()</span></code></a></dt>
+<dd>Call this method to start playback. Once enough data is provided,
+playback will start.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#pause--"><code class="docutils literal"><span class="pre">PlayerController.pause()</span></code></a></dt>
+<dd>Call this method to pause playback.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setPosition-long-"><code class="docutils literal"><span class="pre">PlayerController.setPosition(long)</span></code></a></dt>
+<dd>Call this method to seek to a give position.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#release--"><code class="docutils literal"><span class="pre">PlayerController.release()</span></code></a></dt>
+<dd>Call this method to release the player if you want to use the same instance
+to play different content. You need to call this method before you can
+call <code class="docutils literal"><span class="pre">open()</span></code> again. Please note that you
+do <strong>not need to call this</strong> explicitly if you are using the <code class="docutils literal"><span class="pre">PlayerView</span></code>
+life cycle delegate (see <a class="reference internal" href="player_basics.html#lifecycle-delegate"><span>Mandatory Callbacks</span></a>) and you are leaving
+an activity. This method needs to be called usually only when you want to
+reuse a given controller instance and load different content.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#destroy--"><code class="docutils literal"><span class="pre">PlayerController.destroy()</span></code></a></dt>
+<dd>Call this method to release the player and all it resources. This needs to be called
+when the player activity is stopped or destroyed. Please note that you
+do <strong>not need to call this</strong> explicitly if you are using the <code class="docutils literal"><span class="pre">PlayerView</span></code>
+life cycle delegate (see <a class="reference internal" href="player_basics.html#lifecycle-delegate"><span>Mandatory Callbacks</span></a>).</dd>
+</dl>
+</div>
+<div class="section" id="player-callbacks">
+<span id="player-listener"></span><h2>Player Callbacks<a class="headerlink" href="#player-callbacks" title="Permalink to this headline">¶</a></h2>
+<p>The primary way to get information about the current playback state and events
+that occur during a playback session is to use the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addPlayerListener-com.castlabs.android.player.PlayerListener-"><code class="docutils literal"><span class="pre">addPlayerListener(PlayerListener)</span></code></a> method on the controller
+to register a new <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html"><code class="docutils literal"><span class="pre">PlayerListener</span></code></a>.</p>
+<p>Please note that the SDK offers the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbstractPlayerListener.html"><code class="docutils literal"><span class="pre">AbstractPlayerListener</span></code></a> class and
+we encourage you to use that instead of the interface implementation. It will
+allow you to overwrite only a subset of the callback methods and it will make
+updates to the listener API easier. In case we need to change the
+<code class="docutils literal"><span class="pre">PlayerListener</span></code> API (and for instance add another callback method), your
+application implementation will not be effected by this if you are relying on
+the abstract implementation rather than the interface.</p>
+<p>Once a listener is added to the controller, the following callbacks will be
+triggered:</p>
+<dl class="docutils">
+<dt>onError</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onError-com.castlabs.android.player.exceptions.CastlabsPlayerException-"><code class="docutils literal"><span class="pre">onError()</span></code></a>
+will be called by the player if an error occur during preparation or playback.
+See <a class="reference internal" href="#controller-error-handling"><span>Error Handling</span></a> for more information about the different
+error scenarios.</dd>
+<dt>onStateChanged</dt>
+<dd>The <code class="docutils literal"><span class="pre">onStateChanged()</span></code> is called when the player switches state. See
+<a class="reference internal" href="#controller-player-states"><span>Player States</span></a> for more information about the states and
+state transitions.</dd>
+<dt>onSeekTo</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onSeekTo-long-"><code class="docutils literal"><span class="pre">onSeekTo(long)</span></code></a> will be
+called when the controller&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setPosition-long-"><code class="docutils literal"><span class="pre">setPosition(long)</span></code></a>
+is called.</dd>
+<dt>onVideoSizeChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onVideoSizeChanged-int-int-float-"><code class="docutils literal"><span class="pre">onVideoSizeChanged()</span></code></a> will be
+called whenever the size of the video changes. Please consider using a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/StreamingEventListener.html"><code class="docutils literal"><span class="pre">StreamingEventListener</span></code></a>
+if you are interested in resolution and bitrate changes for analytical purposes.
+See <a class="reference internal" href="#streaming-events"><span>Streaming and Playback Events</span></a> for more information.</dd>
+<dt>onSeekRangeChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onSeekRangeChanged-long-long-"><code class="docutils literal"><span class="pre">onSeekRangeChanged()</span></code></a> is triggered
+when the available seek range changes. This is the event you should use if you are implementing
+DVR playback of live events. In these cases, the seek range is dynamic and the player will
+report a duration of a region of media currently available for playback. Use the seek range reported by this event.</dd>
+<dt>onPlaybackPositionChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onPlaybackPositionChanged-long-"><code class="docutils literal"><span class="pre">onPlaybackPositionChanged()</span></code></a>
+is triggered regularly but at most once per second. Use this callback if you need
+to update seekbars or the current playback position in your UI. This event will
+not be triggered when playback is paused.</dd>
+<dt>onDisplayChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onDisplayChanged-com.castlabs.android.player.DisplayInfo-boolean-"><code class="docutils literal"><span class="pre">onDisplayChanged()</span></code></a>
+is the callback triggered to handle secondary displays. See <a class="reference internal" href="#secondary-displays"><span>Secondary Displays</span></a>
+for more information about how to configure the SDK to handle multiple displays and screen
+mirroring.</dd>
+<dt>onDurationChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onDurationChanged-long-"><code class="docutils literal"><span class="pre">onDurationChanged()</span></code></a> is the callback triggered when the
+stream duration has been refreshed.</dd>
+<dt>onPlayerModelChanged</dt>
+<dd>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onPlayerModelChanged--"><code class="docutils literal"><span class="pre">onPlayerModelChanged()</span></code></a> is the callback triggered when the
+player model has been changed and the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> can now be queried for
+available video tracks and qualities, audio tracks and subtitle tracks and also selected tracks.
+The player model is changed every time upon the playback initial start-up or the media period change.</dd>
+</dl>
+</div>
+<div class="section" id="player-states">
+<span id="controller-player-states"></span><h2>Player States<a class="headerlink" href="#player-states" title="Permalink to this headline">¶</a></h2>
+<p>During preparation and playback, the player transitions through different
+states. The states are reported through an attached <code class="docutils literal"><span class="pre">PlayerListener</span></code> (see
+<a class="reference internal" href="#player-listener"><span>Player Callbacks</span></a>).</p>
+<div class="align-center figure" id="id3">
+<img alt="_images/player_states.png" src="_images/player_states.png" />
+<p class="caption"><span class="caption-text">The possible player states and their transitions.</span></p>
+</div>
+<p>The following states are reported by the player:</p>
+<dl class="docutils">
+<dt>Idle</dt>
+<dd>The <code class="docutils literal"><span class="pre">Idle</span></code> state is the initial state of the player when no data is
+loaded and no preparation is in progress. The player also goes back to the
+<code class="docutils literal"><span class="pre">Idle</span></code> state when it is released.</dd>
+<dt>Preparing</dt>
+<dd>The player goes into <code class="docutils literal"><span class="pre">Preparing</span></code> state after a content URL was passed
+through one of the <code class="docutils literal"><span class="pre">open()</span></code> methods in the controller.</dd>
+<dt>Buffering</dt>
+<dd>When the buffers do not contain enough data to start or continue playback,
+the player will be in the <code class="docutils literal"><span class="pre">Buffering</span></code> state.</dd>
+<dt>Pausing</dt>
+<dd>When enough data is available to play but playback is paused, the player is
+in the <code class="docutils literal"><span class="pre">Pausing</span></code> state.</dd>
+<dt>Playing</dt>
+<dd>The player switches to the <code class="docutils literal"><span class="pre">Playing</span></code> state when enough data is available and
+playback is enabled.</dd>
+<dt>Finished</dt>
+<dd>Once the end of a stream is reached, the player goes into the <code class="docutils literal"><span class="pre">Finished</span></code>
+state.</dd>
+</dl>
+</div>
+<div class="section" id="error-handling">
+<span id="controller-error-handling"></span><h2>Error Handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h2>
+<p>Because all player preparations and most of the playback operations occur
+asynchronously, errors are reported through the <code class="docutils literal"><span class="pre">PlayerListener</span></code> (see
+<a class="reference internal" href="#player-listener"><span>Player Callbacks</span></a>) and you are encouraged to attach at least one listener
+to the <code class="docutils literal"><span class="pre">PlayerController</span></code> once it is available and <strong>before</strong> opening any content.
+Opening content <em>might</em> already raise an issue, for example if the Manifest URL
+does not provide data, and these issues will only be reported through the
+<code class="docutils literal"><span class="pre">onError</span></code> callback in the listener.</p>
+<p>The <code class="docutils literal"><span class="pre">onError</span></code> callback provides a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html"><code class="docutils literal"><span class="pre">CastlabsPlayerException</span></code></a> that
+contains details about the error event and wraps the original exception that
+caused the issue. The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html"><code class="docutils literal"><span class="pre">API</span> <span class="pre">documentation</span></code></a> of
+the <code class="docutils literal"><span class="pre">CastlabsPlayerException</span></code> contains information about the different errors
+that are reported by the system.</p>
+</div>
+<div class="section" id="video-resolution-filters">
+<span id="hd-playback"></span><h2>Video Resolution Filters<a class="headerlink" href="#video-resolution-filters" title="Permalink to this headline">¶</a></h2>
+<p>The SDK default setting is to allow HD content playback only for unencrypted
+clear content or if a DRM is used that provides video decryption and rendering
+through a secure media path. The latter requirement is met on most Android
+devices with API level &gt; 18 and Widevine DRM. Also the PlayReady implementation
+on devices such as the Amazon FireTV is considered safe. The OMA DRM
+implementation on the other hand is a pure software-based DRM solution and does
+not offer a fully protected media path.</p>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmUtils.html"><code class="docutils literal"><span class="pre">DrmUtils</span></code></a> class provides static methods to query the available
+DRM systems and their security level on a given device.</p>
+<p>The PRESTOplay SDK for Android allows playback of HD content. The <code class="docutils literal"><span class="pre">PlayerController</span></code> can be
+configured through the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setHdPlaybackEnabled-int-"><code class="docutils literal"><span class="pre">PlayerController.setHdPlaybackEnabled(int)</span></code></a>
+method programmatically or through the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_HD_CONTENT_FILTER"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_HD_CONTENT_FILTER</span></code></a> <code class="docutils literal"><span class="pre">Intent</span></code> parameter. The setting
+is a bit field that can be constructed from the following constants:</p>
+<dl class="docutils">
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#ALLOW_HD_CLEAR_CONTENT"><code class="docutils literal"><span class="pre">SdkConsts.ALLOW_HD_CLEAR_CONTENT</span></code></a></dt>
+<dd>If this bit is set, the player allows playback of HD content for clear
+unprotected content.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#ALLOW_HD_DRM_SECURE_MEDIA_PATH"><code class="docutils literal"><span class="pre">SdkConsts.ALLOW_HD_DRM_SECURE_MEDIA_PATH</span></code></a></dt>
+<dd>If this bit is set, the player allows playback of DRM protected HD content
+only of the selected DRM system support a secure media path and its
+security level is reported as
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/SecurityLevel.html#SECURE_MEDIA_PATH"><code class="docutils literal"><span class="pre">SecurityLevel.SECURE_MEDIA_PATH</span></code></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">SdkConsts.ALLOW_HD_DRM_ROOT_OF_TRUST</span></code></dt>
+<dd>If this bit is set, the player allows playback of DRM protected HD content
+only if the selected DRM system supports a root of trust security and its
+security level is reported at least as
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/SecurityLevel.html#ROOT_OF_TRUST"><code class="docutils literal"><span class="pre">SecurityLevel.ROOT_OF_TRUST</span></code></a>.</dd>
+<dt><code class="docutils literal"><span class="pre">SdkConsts.ALLOW_HD_DRM_SOFTWARE</span></code></dt>
+<dd>If this bit is set, the player allows playback of DRM protected HD content.
+All DRM systems offer at least software protection.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#ALLOW_HD_NEVER"><code class="docutils literal"><span class="pre">SdkConsts.ALLOW_HD_NEVER</span></code></a></dt>
+<dd>If this bit is set, the player will never allow HD content playback.</dd>
+</dl>
+<p>See <a class="reference internal" href="drm.html#drm-security-levels"><span>DRM Systems and Security Levels</span></a> for more information on security levels.</p>
+<p>The flag is evaluated when the playback manifest is loaded and applied to
+all video representations after the manifest is parsed. Discarded
+representations will not be listed in the controller.</p>
+<p>You can apply these filter setting programmatically:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">setHdPlaybackEnabled</span><span class="o">(</span>
+       <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_CLEAR_CONTENT</span> <span class="o">|</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_DRM_SECURE_MEDIA_PATH</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>The HD filter setting can also be configured using an <code class="docutils literal"><span class="pre">Intent</span></code> parameter:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_HD_CONTENT_FILTER</span><span class="o">,</span>
+        <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_CLEAR_CONTENT</span> <span class="o">|</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_DRM_SECURE_MEDIA_PATH</span>
+        <span class="o">);</span>
+</pre></div>
+</div>
+<p>Beside the per-controller configuration, you can also configure the HD filter
+globally using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#PLAYBACK_HD_CONTENT"><code class="docutils literal"><span class="pre">PlayerSDK.PLAYBACK_HD_CONTENT</span></code></a> field.</p>
+<p>This is not the only filter that might discard video representations. The
+SDK includes a content-to-device resolution matching.</p>
+<p>When a user plays an adaptive bitrate format (such as MPEG-DASH, HLS, or Smooth
+Streaming) on their device, the <em>maximum</em> bitrate resolution the SDK will stream
+from the content’s available file-set will always be the best-quality match
+based on the device’s resolution limit.</p>
+<p>This is done to provide the best picture quality on a user’s device while
+avoiding unnecessary bandwidth usage.</p>
+<p>Examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li>A stream is available in four resolutions (480p, 720p, 1080p, and 4K), but
+the user&#8217;s device only supports up to 1080p. In this case, the 1080p bitrate
+would be the maximum resolution streamed, with the 4K bitrate ignored. This is
+because the 4K resolution would need to be down-sampled to 1080p in order to
+display on the device&#8217;s screen which would waste bandwidth and provide no
+benefit to picture quality.</li>
+<li>A stream is available in three resolutions (480p, 720p, and 1090p), but the
+user’s device only supports up to 1080p. In this case, the 1090p bitrate would
+be the maximum resolution streamed. Even though the user’s device can only
+render 1080p, down-sampling the video to 1080p would provide a superior picture
+quality compared to using the 720p bitrate option.</li>
+</ul>
+</div></blockquote>
+<p>Please note that this field is a bit-field. To disable all HD filtering,
+you have to enable it for all scenarios:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_HD_CONTENT_FILTER</span><span class="o">,</span>
+    <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_CLEAR_CONTENT</span>
+    <span class="o">|</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_DRM_SOFTWARE</span>
+    <span class="o">|</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_DRM_ROOT_OF_TRUST</span>
+    <span class="o">|</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ALLOW_HD_DRM_SECURE_MEDIA_PATH</span><span class="o">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="player-model-and-track-selection">
+<span id="track-selection"></span><h2>Player Model and Track Selection<a class="headerlink" href="#player-model-and-track-selection" title="Permalink to this headline">¶</a></h2>
+<p>Once the controller has loaded content, it&#8217;s internal player model is created and the
+event <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onPlayerModelChanged--"><code class="docutils literal"><span class="pre">onPlayerModelChanged()</span></code></a> is sent.
+At this point, you can get information about the loaded content from the controller such as
+duration, available and selected audio tracks, subtitles, video tracks and qualities.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getAudioTracks--"><code class="docutils literal"><span class="pre">PlayerController.getAudioTracks()</span></code></a></dt>
+<dd>This method exposes a list of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/models/AudioTrack.html"><code class="docutils literal"><span class="pre">AudioTrack</span></code></a> instances.
+You can get the currently selected audio track using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getAudioTrack--"><code class="docutils literal"><span class="pre">getAudioTrack()</span></code></a> and select a track using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setAudioTrack-com.castlabs.android.player.models.AudioTrack-"><code class="docutils literal"><span class="pre">setAudioTrack(AudioTrack)</span></code></a>.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getSubtitleTracks--"><code class="docutils literal"><span class="pre">PlayerController.getSubtitleTracks()</span></code></a></dt>
+<dd>This method exposes a list of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/models/SubtitleTrack.html"><code class="docutils literal"><span class="pre">SubtitleTrack</span></code></a> instances.
+You can get the currently selected subtitle track using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getSubtitleTrack--"><code class="docutils literal"><span class="pre">getSubtitleTrack()</span></code></a> and select a track using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setSubtitleTrack-com.castlabs.android.player.models.SubtitleTrack-"><code class="docutils literal"><span class="pre">setSubtitleTrack(SubtitleTrack)</span></code></a>.
+Note that the playback will not be blocked whilst the subtitles are loading.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getVideoQualities--"><code class="docutils literal"><span class="pre">PlayerController.getVideoQualities()</span></code></a></dt>
+<dd>This method exposes a list of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/models/VideoTrackQuality.html"><code class="docutils literal"><span class="pre">VideoTrackQuality</span></code></a> instances.
+You can get the currently selected quality using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getVideoQuality--"><code class="docutils literal"><span class="pre">getVideoQuality()</span></code></a> and manually select a quality
+using <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setVideoQuality-com.castlabs.android.player.models.VideoTrackQuality-"><code class="docutils literal"><span class="pre">setVideoQuality(VideoTrackQuality)</span></code></a>. Please note that
+manually selecting a video quality will disable adaptive bitrate switching.
+You can pass <code class="docutils literal"><span class="pre">null</span></code> to re-enable adaptive bitrate switching.</dd>
+</dl>
+<p>In addition to these setters, you can configure audio, subtitle, and video
+quality selection before you open content. For example, if the user has a
+known preference for a specific language or quality setting. You can control
+the initial selections programmatically using the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlaybackState.html"><code class="docutils literal"><span class="pre">PlaybackState</span></code></a> for
+audio and subtitle selections and the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbrConfiguration.html"><code class="docutils literal"><span class="pre">AbrConfiguration</span></code></a>
+for the video quality. Alternatively, you can use <code class="docutils literal"><span class="pre">Intent</span></code> parameters with
+following keys:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_AUDIO_TRACK_IDX"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_AUDIO_TRACK_IDX</span></code></a> to pre-select an audio track</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_SUBTITLE_TRACK_IDX"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_SUBTITLE_TRACK_IDX</span></code></a> to pre-select a subtitle track</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_ABR_CONFIGURATION"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_ABR_CONFIGURATION</span></code></a> to specify a custom ABR configuration. See <a class="reference internal" href="#abr"><span>Adaptive Bitrate Switching</span></a> for more information.</li>
+</ul>
+</div></blockquote>
+<p>When selecting an initial video quality, you can also leverage the constants
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_QUALITY_LOWEST"><code class="docutils literal"><span class="pre">SdkConsts.VIDEO_QUALITY_LOWEST</span></code></a> and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_QUALITY_HIGHEST"><code class="docutils literal"><span class="pre">SdkConsts.VIDEO_QUALITY_HIGHEST</span></code></a> to select the lowest or highest
+available bitrate respectively.</p>
+<p>Because the initial track selection happens before the content is loaded and
+the track model is generated, the initial selection is index based. For
+example, you can get the current index for the audio tracks using:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerController</span> <span class="n">controller</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">();</span>
+<span class="n">AudioTrack</span> <span class="n">currentAudioTrack</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="na">getAudioTrack</span><span class="o">();</span>
+<span class="k">if</span><span class="o">(</span><span class="n">currentAudioTrack</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">currentTrackIndex</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="na">getAudioTracks</span><span class="o">().</span><span class="na">indexOf</span><span class="o">(</span>
+        <span class="n">currentAudioTrack</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>If you want to save the current playback state including the selections for
+audio and subtitle tracks into a <code class="docutils literal"><span class="pre">Bundle</span></code>, please consider using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#saveState-android.os.Bundle-"><code class="docutils literal"><span class="pre">saveState(Bundle)</span></code></a>
+method. This method will save the current player state with all supported
+<code class="docutils literal"><span class="pre">Intent</span></code> parameters into the given bundle. The bundle can then be used to
+resume playback with the exact same settings using the controller&#8217;s
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#open-android.os.Bundle-"><code class="docutils literal"><span class="pre">open(Bundle)</span></code></a> method. All
+states will be recovered, except for the video quality settings.</p>
+<p>The video quality will be stored as the initial quality in the bundle if
+adaptive bitrate switching is turned off and the quality was selected manually.
+In that case, adaptive bitrate switching will be turned off when the bundle is
+used to re-open content.</p>
+<p>In case all tracks of the particular type e.g. video, audio or text are filtered out,
+the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/FilterException.html"><code class="docutils literal"><span class="pre">FilterException</span></code></a> is raised with the
+reason being set. This exception is not critical and will not stop the playback thus
+enabling the application to handle the exception on its own way.</p>
+</div>
+<div class="section" id="video-track-selection">
+<h2>Video track selection<a class="headerlink" href="#video-track-selection" title="Permalink to this headline">¶</a></h2>
+<p>When multiple video tracks (e.g. DASH Adaptation sets) are present in the manifest, the PRESTOplay SDK for Android will
+select the default one to play based on the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The track with maximum number of pixels to display and</li>
+<li>The track with preferred codec type.</li>
+</ul>
+</div></blockquote>
+<p>Preferred codec types are defined as codec weights and can be customized by changing
+the parameters
+<code class="docutils literal"><span class="pre">com.castlabs.android.PlayerSDK#CODEC_WEIGHT_H265</span></code>,
+<code class="docutils literal"><span class="pre">com.castlabs.android.PlayerSDK#CODEC_WEIGHT_H264</span></code> and
+<code class="docutils literal"><span class="pre">com.castlabs.android.PlayerSDK#CODEC_WEIGHT_OTHER</span></code>. By default, the preferred
+codec type is H265 having the weight 1.0f.</p>
+</div>
+<div class="section" id="video-tracks-merging-option">
+<h2>Video tracks merging option<a class="headerlink" href="#video-tracks-merging-option" title="Permalink to this headline">¶</a></h2>
+<p>This option is currently available only for DASH streams and is enabled by default.
+When needed, it can be switched off or on either globally with the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#MERGE_VIDEO_TRACKS"><code class="docutils literal"><span class="pre">PlayerSDK.MERGE_VIDEO_TRACKS</span></code></a> or per play session with
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_MERGE_VIDEO_TRACKS"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_MERGE_VIDEO_TRACKS</span></code></a>.</p>
+<p>When multiple video Adaptation sets are present in the manifest the PRESTOplay SDK for Android will try
+to merge them according to their Representation types thus allowing the ABR algorithm
+to walk over the video Adaptation sets. The default types are SD, HD and UHD.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Example: there are two SD (SD1, SD2) and two HD (HD1, HD2) Adaptation sets, the merge will result in
+four video tracks with each of them having  SD+HD combinations: SD1+HD1, SD1+HD2, SD2+HD1, SD2+HD2.</li>
+</ul>
+</div></blockquote>
+<p>The default Representation types can be overwritten by implementing custom
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/TrackTypeProvider.html"><code class="docutils literal"><span class="pre">TrackTypeProvider</span></code></a>.</p>
+</div>
+<div class="section" id="adaptive-bitrate-switching">
+<span id="abr"></span><h2>Adaptive Bitrate Switching<a class="headerlink" href="#adaptive-bitrate-switching" title="Permalink to this headline">¶</a></h2>
+<p>When multiple Representations or Renditions are available, the player will try
+to automatically use the Representation best suited for the current network
+environment. This is called Adaptive Bitrate Switching (ABR).</p>
+<p>The Intent Parameter <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_ABR_CONFIGURATION"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_ABR_CONFIGURATION</span></code></a> can be used
+to specify a custom ABR configuration. The ABR configuration is provided as an
+instance of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbrConfiguration.html"><code class="docutils literal"><span class="pre">AbrConfiguration</span></code></a>, which controls the details of
+the algorithm used to decide which Representation to play at a given time.</p>
+<div class="section" id="abr-log-statements-and-parameters">
+<h3>ABR Log Statements And Parameters<a class="headerlink" href="#abr-log-statements-and-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The ABR algorithm will log information for each decision. This log statements contain
+the most crucial information considered by the Algorithm and the resulting selection.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>VideoTrackSelection: Track selection [T: Initial (ABR)] [BT: C:00:26|Min:00:15|Max:01:00] [BM: 30.47% C:4.88 MB|T:16 MB] [BE: 6.8 Mbps (Effective: 5.1 Mbps Fraction: 0.75)] [SB: 00:10/00:25] [I: 0/4] [F: 960x540 @ 1.6 Mbps avc1.4D401F 25.00 fps]
+</pre></div>
+</div>
+<p>The following fields are logged:</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>T</cite> - ABR type and mode. This idicates a reason for a specific selection, i.e <cite>ABR</cite> or <cite>Manual</cite></li>
+<li><cite>BT</cite> - Buffer Times. Information about the current Buffer (C) and the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/BufferConfiguration.html#lowMediaTimeMs"><code class="docutils literal"><span class="pre">minimum</span></code></a> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/BufferConfiguration.html#highMediaTimeMs"><code class="docutils literal"><span class="pre">maximum</span></code></a> parameters of the current <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/BufferConfiguration.html"><code class="docutils literal"><span class="pre">BufferConfiguration</span></code></a>. These parameters are used to control the fill and drain behaviour of the buffer (see API docs for <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/BufferConfiguration.html"><code class="docutils literal"><span class="pre">BufferConfiguration</span></code></a> for more information).</li>
+<li><cite>BM</cite> - Buffer Memory. The current buffer memory in percentage as well as in bytes (C) and the target buffer size in bytes (T). Note that the target size is not a hard bound. If the player needs more memory to fullfill the current buffer configuration with respect to minimum times, the memory bound might be exceeded.</li>
+<li><cite>BE</cite> - Bandwidth Estimation. The reported bandwidth estimation for the current ABR decision. The Effective value is what is used by the algorithm. The Fraction controls how the effective value is calcualted and can be controlled through the configurations <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbrConfiguration.html#bandwidthFraction"><code class="docutils literal"><span class="pre">bandwidthFraction</span></code></a> parameter.</li>
+<li><cite>SB</cite> - Switch Boudaries. The configurations <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbrConfiguration.html#minDurationForQualityIncreaseUs"><code class="docutils literal"><span class="pre">minDurationForQualityIncreaseUs</span></code></a> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbrConfiguration.html#maxDurationForQualityDecreaseUs"><code class="docutils literal"><span class="pre">maxDurationForQualityDecreaseUs</span></code></a>. These parameters configure how much data need to be available in the buffer before the ABR algorithm is allowed to switch up (min) and until how much data in the buffer down switches by the ABR algorithm are prevented (max).</li>
+<li><cite>I</cite> - The selected Index and number of available formats. The formats are ordered in decreasing orders, which means that a selection of <cite>0</cite> represents the selection of the highest available bitrate.</li>
+<li><cite>F</cite> - The selected video rendition Format</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="additional-query-parameter">
+<span id="query-params"></span><h2>Additional Query Parameter<a class="headerlink" href="#additional-query-parameter" title="Permalink to this headline">¶</a></h2>
+<p>If you need to send additional parameters when downloading content, i.e. MP4
+segments or Manifest data, you can use the <code class="docutils literal"><span class="pre">PlayerController</span></code> to set those
+parameters. This is required for example when you are using a CDN where you
+need to pass a token to access the data.</p>
+<p>The player supports two kinds of parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Header Parameters are added to the HTTP header of the request</li>
+<li>Query Parameters are appended to the request URL directly</li>
+</ul>
+</div></blockquote>
+<p>You have two possibilities to set additional parameters. Programmatically
+using the <code class="docutils literal"><span class="pre">PlayerController</span></code> or using <code class="docutils literal"><span class="pre">Bundle</span></code> parameters (see
+<a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a>).</p>
+<p>If you prefer to set the parameters programmatically, use the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getDataSourceFactory--"><code class="docutils literal"><span class="pre">PlayerController.getDataSourceFactory()</span></code></a> to access the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/DataSourceFactory.html"><code class="docutils literal"><span class="pre">DataSourceFactory</span></code></a> of the controller. If no factory was set
+explicitly, the default implementation will be returned.</p>
+<p>The <code class="docutils literal"><span class="pre">DataSourceFactory</span></code> is used by the controller to create requests and it
+provides the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/DataSourceFactory.html#addHeaderParameter-java.lang.String-java.lang.String-"><code class="docutils literal"><span class="pre">DataSourceFactory.addHeaderParameter(java.lang.String,</span> <span class="pre">java.lang.String)</span></code></a>
+method to add header parameters and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/DataSourceFactory.html#addQueryParameter-java.lang.String-java.lang.String-"><code class="docutils literal"><span class="pre">DataSourceFactory.addQueryParameter(java.lang.String,</span> <span class="pre">java.lang.String)</span></code></a> to add query
+parameters. For example:</p>
+<p>If you are using a <code class="docutils literal"><span class="pre">Bundle</span></code> to configure the player controller, an alternative
+approach is to add the additional parameters directly to the <code class="docutils literal"><span class="pre">Bundle</span></code>. The <code class="docutils literal"><span class="pre">PlayerController</span></code> will
+set them automatically. For example:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Bundle</span> <span class="n">headerParams</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">headerParams</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;t&quot;</span><span class="o">,</span> <span class="s">&quot;15128381afe8e8f7a6e&quot;</span><span class="o">);</span>
+
+<span class="n">Bundle</span> <span class="n">queryParams</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">queryParams</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;e&quot;</span><span class="o">,</span> <span class="s">&quot;12345&quot;</span><span class="o">);</span>
+
+<span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_QUERY_PARAMS_BUNDLE</span><span class="o">,</span> <span class="n">queryParams</span><span class="o">);</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_HEADER_PARAMS_BUNDLE</span><span class="o">,</span> <span class="n">headerParams</span><span class="o">);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>To store the additional parameters in the Intents’ bundle, you need to put
+the keys and values into a separate <code class="docutils literal"><span class="pre">Bundle</span></code> that works as a key/value map
+and store that <code class="docutils literal"><span class="pre">Bundle</span></code> in the <code class="docutils literal"><span class="pre">Intent</span></code> using either
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_QUERY_PARAMS_BUNDLE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_QUERY_PARAMS_BUNDLE</span></code></a> or
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_HEADER_PARAMS_BUNDLE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_HEADER_PARAMS_BUNDLE</span></code></a> as key.</p>
+<div class="section" id="request-modifiers">
+<h3>Request Modifiers<a class="headerlink" href="#request-modifiers" title="Permalink to this headline">¶</a></h3>
+<p>Since version 4.1.2 you can also use the new <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/RequestModifier.html"><code class="docutils literal"><span class="pre">RequestModifier</span></code></a>.
+Request modifiers can be added on the <code class="docutils literal"><span class="pre">PlayerController</span></code> (see
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addRequestModifier-com.castlabs.android.network.RequestModifier-"><code class="docutils literal"><span class="pre">addRequestModifier()</span></code></a>) and you should
+do that before you load content. The modifier will then receive a callback with
+a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/Request.html"><code class="docutils literal"><span class="pre">Request</span></code></a> instance that you can modify to change the URI or add
+header parameters.</p>
+<p>Note that you can also add query parameters by changing the URI directly.
+<cite>request.getUri().buildUpon()</cite> will give you a builder that can be used to
+change the URI. Once changed you can set the new URI in the request.</p>
+<p>Here is an example of a request modifier that adds a header parameter and a
+query parameter for all manifest requests:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// We need the player controller to attach a modifier</span>
+<span class="n">PlayerController</span> <span class="n">pc</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// Add a custom modifier that add a header and query parameter</span>
+<span class="n">pc</span><span class="o">.</span><span class="na">addRequestModifier</span><span class="o">(</span><span class="k">new</span> <span class="n">RequestModifier</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@NonNull</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Request</span> <span class="nf">onRequest</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Request</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Add a header parameter</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">Request</span><span class="o">.</span><span class="na">DATA_TYPE_MANIFEST</span><span class="o">){</span>
+            <span class="n">request</span><span class="o">.</span><span class="na">headers</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;Header-Key&quot;</span><span class="o">,</span> <span class="s">&quot;Header Value&quot;</span><span class="o">);</span>
+
+            <span class="c1">// add a query parameter to the URI by building upon the current URI</span>
+            <span class="c1">// and then set the new URL</span>
+            <span class="n">request</span><span class="o">.</span><span class="na">setUri</span><span class="o">(</span><span class="n">request</span>
+                    <span class="o">.</span><span class="na">getUri</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">buildUpon</span><span class="o">()</span>
+                    <span class="o">.</span><span class="na">appendQueryParameter</span><span class="o">(</span><span class="s">&quot;Query-Param&quot;</span><span class="o">,</span> <span class="s">&quot;Query Value&quot;</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">build</span><span class="o">()</span>
+            <span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Please note that request modifiers are evaluated _after_ header and query
+parameter modifications of the underlying data source factory are applied. That
+means that request modifiers will not interfere with any existing setups but
+can be used as a new extension. All header and query modifications that you
+apply using the <cite>DataSourceFactory</cite> exposed by the controller will also apply
+to all request modifier. Modifiers however will grant you more fine grained
+control over the request type and you can differentiate for example between
+manifest and segment requests.</p>
+</div>
+<div class="section" id="network-configuration">
+<h3>Network Configuration<a class="headerlink" href="#network-configuration" title="Permalink to this headline">¶</a></h3>
+<p>The underlying network configuartion can controlled through the
+<code class="docutils literal"><span class="pre">NetworkConfiguration</span></code>.  The configuration can be passed as an intent
+parameter when configuring the player and allows you to specify network timeouts
+globally as well as for Manifest and Segment downloads separately. In addition,
+the network configuration can be used to configure the retry behaviour of the player
+through the <code class="docutils literal"><span class="pre">RetryConfiguration</span></code>. The retry configuration specifies how
+often and with which delays the player will try to download a segment or manifest
+after a loading error such as a 404 response from the server.</p>
+<p>The following example shows how the configuration can be used:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">bundle</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_NETWORK_CONFIGURATION</span><span class="o">,</span> <span class="k">new</span> <span class="n">NetworkConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+    <span class="c1">// You can configure the global connection and read timeouts.</span>
+    <span class="c1">// The connection timeout is used when a connection is opened</span>
+    <span class="c1">// while the read timeout is used when we read data from an</span>
+    <span class="c1">// open connection. Using the general method will use the values</span>
+    <span class="c1">// for both manifests and segment downloads</span>
+    <span class="o">.</span><span class="na">connectionTimeoutMs</span><span class="o">(</span><span class="mi">5000</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">readTimeoutMs</span><span class="o">(</span><span class="mi">8000</span><span class="o">)</span>
+
+    <span class="c1">// You can also specify the timeouts separately for</span>
+    <span class="c1">// manifest and segments downloads</span>
+    <span class="o">.</span><span class="na">manifestConnectionTimeoutMs</span><span class="o">(</span><span class="mi">3000</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">manifestReadTimeoutMs</span><span class="o">(</span><span class="mi">5000</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">segmentsConnectionTimeoutMs</span><span class="o">(</span><span class="mi">8000</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">segmentsConnectionTimeoutMs</span><span class="o">(</span><span class="mi">10000</span><span class="o">)</span>
+
+    <span class="c1">// Configure the global retry behaviour. This will be applied</span>
+    <span class="c1">// for both segment and manifest. Please take a look at the</span>
+    <span class="c1">// API documentation of the RetryConfiguration for more</span>
+    <span class="c1">// information about the effect of the parameters and how</span>
+    <span class="c1">// the backoff algorithm works</span>
+    <span class="o">.</span><span class="na">retryConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">RetryConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+            <span class="c1">// We allow for 5 attempts at most. That means the</span>
+            <span class="c1">// first load and then at most 4 retries in case</span>
+            <span class="c1">// of any download errors</span>
+            <span class="o">.</span><span class="na">maxAttempts</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+            <span class="c1">// We configure the base delay for the first retry</span>
+            <span class="o">.</span><span class="na">baseDelayMs</span><span class="o">(</span><span class="mi">500</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">get</span><span class="o">())</span>
+
+    <span class="c1">// Similar to the timeouts you can also set separate</span>
+    <span class="c1">// retry configurations for manifest and segment downloads</span>
+    <span class="o">.</span><span class="na">manifestRetryConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">RetryConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">maxAttempts</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">baseDelayMs</span><span class="o">(</span><span class="mi">1000</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">get</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">segmentsRetryConfiguration</span><span class="o">(</span><span class="k">new</span> <span class="n">RetryConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+            <span class="o">.</span><span class="na">maxAttempts</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">baseDelayMs</span><span class="o">(</span><span class="mi">800</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">get</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">get</span><span class="o">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="sideloaded-subtitle-tracks">
+<span id="sideload-subtitles"></span><h2>Sideloaded Subtitle Tracks<a class="headerlink" href="#sideloaded-subtitle-tracks" title="Permalink to this headline">¶</a></h2>
+<p>You can use the <code class="docutils literal"><span class="pre">PlayerController</span></code> to side-load additional subtitles tracks
+that are not part of your Manifest or HLS playlists. Please note that you will
+need to do the side-loading <strong>before</strong> you use <code class="docutils literal"><span class="pre">open()</span></code> on the
+<code class="docutils literal"><span class="pre">PlayerController</span></code> to load the Manifest or playlist.</p>
+<p>Loading additional subtitles can be done either programmatically through the
+controllers <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addSubtitleTrack-java.lang.String-java.lang.String-java.lang.String-java.lang.String-"><code class="docutils literal"><span class="pre">addSubtitleTrack()</span></code></a> or using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_SUBTITLE_BUNDLE_ARRAYLIST"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_SUBTITLE_BUNDLE_ARRAYLIST</span></code></a> as
+the key and storing the additional tracks as <code class="docutils literal"><span class="pre">Intent</span></code> parameters.</p>
+<p>Adding a subtitle track through the controller looks like:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">addSubtitleTrack</span><span class="o">(</span>
+        <span class="s">&quot;http://myserver.com/extra_subtitles.vtt&quot;</span><span class="o">,</span> <span class="c1">// the URL</span>
+        <span class="n">SdkConsts</span><span class="o">.</span><span class="na">MIME_TYPE_VTT</span><span class="o">,</span> <span class="c1">// The mime type</span>
+        <span class="s">&quot;en&quot;</span><span class="o">,</span> <span class="c1">// Two letter language code (optional)</span>
+        <span class="s">&quot;English Subtitles&quot;</span> <span class="c1">// Name (optional)</span>
+<span class="o">);</span>
+</pre></div>
+</div>
+<p>The method expects a URL and a MIME type as mandatory parameters. The last two
+parameters are a two letter language code and a name and. Both can be <code class="docutils literal"><span class="pre">null</span></code>.</p>
+<p>Adding the same track through the <code class="docutils literal"><span class="pre">Intent</span></code> would look like:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Bundle</span><span class="o">&gt;</span> <span class="n">tracks</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
+<span class="n">Bundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_SUBTITLE_URL</span><span class="o">,</span> <span class="s">&quot;http://myserver.com/extra_subtitles.vtt&quot;</span><span class="o">);</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_SUBTITLE_MIME_TYPE</span><span class="o">,</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">MIME_TYPE_VTT</span><span class="o">);</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_SUBTITLE_LANGUAGE</span><span class="o">,</span> <span class="s">&quot;en&quot;</span><span class="o">);</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_SUBTITLE_NAME</span><span class="o">,</span> <span class="s">&quot;English Subtitles&quot;</span><span class="o">);</span>
+<span class="n">tracks</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">bundle</span><span class="o">);</span>
+
+<span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">(...);</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_SUBTITLE_BUNDLE_ARRAYLIST</span><span class="o">,</span> <span class="n">tracks</span><span class="o">);</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>The subtitle track information is added to a <code class="docutils literal"><span class="pre">Bundle</span></code> and a list of these
+bundles is added to the <code class="docutils literal"><span class="pre">Intent</span></code>. The <code class="docutils literal"><span class="pre">PlayerController</span></code> will then take
+care of adding the side-loaded track when the Intents&#8217; bundle is passed to
+the controller&#8217;s <code class="docutils literal"><span class="pre">open()</span></code> method.</p>
+</div>
+<div class="section" id="streaming-and-playback-events">
+<span id="streaming-events"></span><h2>Streaming and Playback Events<a class="headerlink" href="#streaming-and-playback-events" title="Permalink to this headline">¶</a></h2>
+<p>If you are interested in download and bitrate statistics,
+the SDK offers the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/StreamingEventListener.html"><code class="docutils literal"><span class="pre">StreamingEventListener</span></code></a> interface. Instances of
+this listener can be registered using the controller&#8217;s
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addStreamingEventListener-com.castlabs.android.player.StreamingEventListener-"><code class="docutils literal"><span class="pre">addStreamingEventListener()</span></code></a>
+method. The following callbacks will be triggered during playback:</p>
+<dl class="docutils">
+<dt>onVideoFormatChange</dt>
+<dd>This callback will be triggered when the video format changes. The passed
+<code class="docutils literal"><span class="pre">Format</span></code> instance and the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/models/VideoTrackQuality.html"><code class="docutils literal"><span class="pre">VideoTrackQuality</span></code></a> contain information
+about the new format and its bitrate.</dd>
+<dt>onAudioFormatChange</dt>
+<dd>The same as the <code class="docutils literal"><span class="pre">onVideoFormatChange</span></code> callback, but this time for the audio
+track.</dd>
+<dt>onLoadCompleted</dt>
+<dd>Triggered when a download completed.</dd>
+<dt>onLoadStarted</dt>
+<dd>Triggered when a download was started.</dd>
+<dt>onLoadCanceled</dt>
+<dd>Triggered when a download was canceled.</dd>
+<dt>onUpstreamDiscarded</dt>
+<dd>Invoked when data is removed from the back of the buffer, typically so that
+it can be re-buffered using a different representation.</dd>
+</dl>
+<p>Both the video and audio format change callbacks provide information about the
+trigger that caused the format change (the second parameter of the callback method).
+The following triggers are currently reported:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Trigger</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">TRIGGER_UNSPECIFIED</span></code></td>
+<td>The reason for the trigger is unknown</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">TRIGGER_INITIAL</span></code></td>
+<td>The initial format selection triggered the event</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">TRIGGER_MANUAL</span></code></td>
+<td>The manual format selection triggered the event</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">TRIGGER_ADAPTIVE</span></code></td>
+<td>The adaptation algorithm triggered this event and selected a format</td>
+</tr>
+</tbody>
+</table>
+<p>All the download-related callbacks provide information about the track that
+caused the event as a first parameter. The following tracks are currently
+supported and report download events:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Track Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#VIDEO_RENDERER"><code class="docutils literal"><span class="pre">PlayerController.VIDEO_RENDERER</span></code></a></td>
+<td>Events triggered by the video track</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#AUDIO_RENDERER"><code class="docutils literal"><span class="pre">PlayerController.AUDIO_RENDERER</span></code></a></td>
+<td>Events triggered by the audio track</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#TEXT_RENDERER"><code class="docutils literal"><span class="pre">PlayerController.TEXT_RENDERER</span></code></a></td>
+<td>Events triggered by the subtitle track</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="live-playback">
+<span id="id1"></span><h2>Live Playback<a class="headerlink" href="#live-playback" title="Permalink to this headline">¶</a></h2>
+<p>Live playback is supported for MPEG-DASH, SmoothStreaming, and HLS. The setup and
+configuration is the same as for video-on-demand (VoD) content. In order to check
+whether the stream is live or not <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#isLive--"><code class="docutils literal"><span class="pre">isLive()</span></code></a> can be used.
+If you want to provide the ability to seek back in the live stream, you
+can use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onSeekRangeChanged-long-long-"><code class="docutils literal"><span class="pre">onSeekRangeChanged()</span></code></a> callback of the
+<code class="docutils literal"><span class="pre">PlayerListener</span></code>. This callback will provide information about the available
+window in which you can seek in the stream. If you want to seek back to the
+live edge of the stream, specify a position <strong>beyond</strong> the current seek range,
+and the player will seek to the current live edge. Additionally the current position
+of the playback since epoch can be calculated as <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getLiveStartTime--"><code class="docutils literal"><span class="pre">getLiveStartTime()</span></code></a> + <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getPosition--"><code class="docutils literal"><span class="pre">getPosition()</span></code></a></p>
+<p>By default, live streams will start playback at the live edge. If you do
+not want to start at the edge but somewhere within the seek window, or at
+the beginning of the stream, you can use the intent parameter
+<code class="docutils literal"><span class="pre">com.castlabs.android.SdkConsts#INTENT_LIVE_EDGE_LATENCY_MS</span></code>.
+This key specifies an <code class="docutils literal"><span class="pre">int</span></code> that defines the number of milliseconds that
+the playback start should lag behind the &#8220;live edge&#8221;. Choosing a small
+value will minimize latency introduced by the player, it might however
+increase the probability of rebuffering and playback failures since this
+will reduce the amount of data the player can buffer.</p>
+<p>A large value for this parameter can be used to start the live stream at
+a different position. For example, if you have an event stream with
+a large seek window and you do not want to start at the live edge but
+further behind, use this parameter to specify how much behind the live
+edge you want to start. Note that the value must be specified as an
+<cite>Integer</cite>.</p>
+</div>
+<div class="section" id="secondary-displays">
+<span id="id2"></span><h2>Secondary Displays<a class="headerlink" href="#secondary-displays" title="Permalink to this headline">¶</a></h2>
+<p>Secondary screens in this context are supplementary displays connected through an HDMI
+connection or Wifi screen mirroring. The default behavior of the player is to
+prevent playback on secondary screens for protected content if the secondary
+screen does not provide a secure media path. Unprotected content can always be
+displayed on a secondary screen.</p>
+<p>You can configure the behavior using the controller&#8217;s
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setSecondaryDisplay-int-"><code class="docutils literal"><span class="pre">PlayerController.setSecondaryDisplay(int)</span></code></a> method explicitly, or send
+the configuration through the <cite>Intent</cite> bundle using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_SECONDARY_DISPLAY"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_SECONDARY_DISPLAY</span></code></a> key.</p>
+<p>When a secondary display is connected, two things happen:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The <code class="docutils literal"><span class="pre">PlayerListener</span></code> <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerListener.html#onDisplayChanged-com.castlabs.android.player.DisplayInfo-boolean-"><code class="docutils literal"><span class="pre">onDisplayChanged()</span></code></a>
+callback will be triggered, containing information about the display. This
+callback is also triggered when the display is disconnected and the last
+parameter of the method indicates if playback will continue.</li>
+<li>If the secondary display settings prevent playback while the display is
+connected, a <code class="docutils literal"><span class="pre">CastlabsPlayerException</span></code> is thrown to the <code class="docutils literal"><span class="pre">onError</span></code> callback
+of any connected <code class="docutils literal"><span class="pre">PlayerListener</span></code>. The type of the exception will be
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html#TYPE_SECONDARY_DISPLAY"><code class="docutils literal"><span class="pre">CastlabsPlayerException.TYPE_SECONDARY_DISPLAY</span></code></a>.</li>
+</ul>
+</div></blockquote>
+<p>Beside the per-controller configuration, you can also configure this behavior
+globally using the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#SECONDARY_DISPLAY"><code class="docutils literal"><span class="pre">PlayerSDK.SECONDARY_DISPLAY</span></code></a>
+field.</p>
+</div>
+<div class="section" id="tunneling-support">
+<h2>Tunneling Support<a class="headerlink" href="#tunneling-support" title="Permalink to this headline">¶</a></h2>
+<p>Since API 21 some Android devices, especially Android TV, support &#8220;tunneling&#8221; or
+&#8220;tunneled video playback&#8221;. Since version 4.0.0 the PRESTOplay SDK for Android supports tunneling and you can enable
+it either in the <cite>PlaybackState</cite> or by setting the Intent Bundle Parameter
+<cite>SdkConsts.INTENT_TUNNELING_ENABLED</cite> to <cite>true</cite> when you open content. This will only have an
+effect on devices that support tunneling.</p>
+<p>Please note that although tunneled playback provides some advantages on supported platforms
+such as better AV sync, support for HDR, and better performance for 4k and high frame rate
+content, it also has some limitations:</p>
+<blockquote>
+<div><ul class="simple">
+<li>You can only use a <cite>SurfaceView</cite> to render the video, which mean 360 video playback will
+not be possible.</li>
+<li>Tunneling is only supported if the content has both an active video and audio track.</li>
+<li>Not all codec implementations on a device might be supported.</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> The Player Controller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-controls">Basic Controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#player-callbacks">Player Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#player-states">Player States</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#video-resolution-filters">Video Resolution Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#player-model-and-track-selection">Player Model and Track Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#video-track-selection">Video track selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#video-tracks-merging-option">Video tracks merging option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adaptive-bitrate-switching">Adaptive Bitrate Switching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-query-parameter">Additional Query Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sideloaded-subtitle-tracks">Sideloaded Subtitle Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#streaming-and-playback-events">Streaming and Playback Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#live-playback">Live Playback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#secondary-displays">Secondary Displays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tunneling-support">Tunneling Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="player_basics.html" title="previous chapter">Player Basics</a></li>
+      <li>Next: <a href="player_view.html" title="next chapter">The Player View</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Android SDK documentation &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="#" />
+    <link rel="next" title="Project Setup" href="setup.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="android-sdk-documentation">
+<h1>Android SDK documentation<a class="headerlink" href="#android-sdk-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Version: 4.2.0</p>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>This is the Documentation for the PRESTOplay SDK for Android version 4.2.0.</p>
+<p>The PRESTOplay SDK for Android provides the necessary components for partners and companies to
+implement their own player application for Android. This document
+specifically describes the capabilities of the PRESTOplay SDK for Android on the Android mobile
+platform.</p>
+<p>CastLabs has developed and maintains a Java Android library called the
+PRESTOplay SDK for Android, which is distributed in the form of a AAR (Android Archive
+file). The SDK is based internally in Google&#8217;s open source
+ExoPlayer and provides extra functionality in form of plugins.</p>
+<p>The main features of the SDK and the plugins bundled with the SDK are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Playback of MPEG-DASH, SmoothStreaming, HLS, and MP4 content.</li>
+<li>Playback of streaming and local content.</li>
+<li>Playback of DRM protected content using Widevine, PlayReady, or OMA.</li>
+<li>Live, event, and video-on-demand support.</li>
+<li>Extended subtitles support.</li>
+<li>Background playback using a Service.</li>
+<li>Secondary screen handling.</li>
+<li>Offline license key storage.</li>
+</ul>
+</div></blockquote>
+<div class="figure" id="id1">
+<img alt="_images/sdk_circle.png" src="_images/sdk_circle.png" />
+<p class="caption"><span class="caption-text">The PRESTOplay SDK for Android core and it main components, plugins, and extension
+points.</span></p>
+</div>
+</div>
+<div class="section" id="table-of-content">
+<h2>Table of Content<a class="headerlink" href="#table-of-content" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#project-configuration">Project Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#license-loading">License Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#oma-integration">OMA Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#variant-builds">Variant Builds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#split-apk-builds">Split APK Builds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#proguard-configuration">Proguard Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="player_basics.html#activity-and-layout">Activity and Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_basics.html#starting-playback">Starting Playback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_basics.html#starting-playback-from-an-intent">Starting Playback from an <code class="docutils literal"><span class="pre">Intent</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_basics.html#mandatory-callbacks">Mandatory Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_basics.html#background-playback">Background Playback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#basic-controls">Basic Controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#player-callbacks">Player Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#player-states">Player States</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#error-handling">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#video-resolution-filters">Video Resolution Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#player-model-and-track-selection">Player Model and Track Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#video-track-selection">Video track selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#video-tracks-merging-option">Video tracks merging option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#adaptive-bitrate-switching">Adaptive Bitrate Switching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#additional-query-parameter">Additional Query Parameter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#sideloaded-subtitle-tracks">Sideloaded Subtitle Tracks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#streaming-and-playback-events">Streaming and Playback Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#live-playback">Live Playback</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#secondary-displays">Secondary Displays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_controller.html#tunneling-support">Tunneling Support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="player_view.html#basic-integration">Basic Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_view.html#hiding-the-surface">Hiding the Surface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_view.html#scaling-mode">Scaling Mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#drm-systems-and-security-levels">DRM Systems and Security Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#drmtoday-integration">DRMtoday Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#using-drmtoday">Using DRMtoday</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#offline-key-storage">Offline Key Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#multi-drm-environments">Multi-DRM Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#clear-lead">Clear Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#drmtoday-onboard">DRMtoday OnBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="drm.html#drm-integration-with-other-service-providers">DRM Integration with Other Service Providers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#subtitles-and-closed-captions">Subtitles and Closed Captions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#recovering-from-loss-of-connectivity">Recovering From Loss Of Connectivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#offline-keys">Offline Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#interactive-media-ads-ima">Interactive Media Ads (IMA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#downloader">Downloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#analytics">Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#crash-logging">Crash Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#user-agent">User Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#streamroot-plugin">Streamroot Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#okhttp-plugin">OkHttp Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#thumbnails">Thumbnails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#degree-playback-plugin">360-Degree Playback Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#google-cast-manager">Google cast Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extensions.html#drm-device-time-checker">Drm Device Time Checker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="player_debugging.html#adding-to-the-project">Adding to the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_debugging.html#graphics">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="player_debugging.html#third-party-acknowledgement">Third party acknowledgement</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#streams-demo">Streams Demo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#demos">Demos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="upgrade_guides.html#changes-in-4-2">Changes in 4.2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="setup.html" title="next chapter">Project Setup</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

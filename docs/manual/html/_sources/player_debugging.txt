@@ -1,0 +1,148 @@
+Player Debugging
+================
+
+.. javaimport::
+    com.castlabs.*
+
+This chapter covers some details related to the :javaref:`DebugPlugin <com.castlabs.sdk.debug.DebugPlugin>`,
+a module that attaches to the ``PlayerController`` and logs relevant information that helps troubleshoot stream issues.
+
+Adding to the project
+---------------------
+
+The plugin is distributed with the SDK and you can add it as a dependency in your gradle file::
+
+    dependencies {
+        ...
+        compile 'com.castlabs.player:debug_plugin:4.2.0'
+        ...
+    }
+
+Once added you can register it with the SDK. The ``DebugPlugin`` must be created with its builder.
+
+.. code-block:: java
+
+    public class MyApp extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+
+            PlayerSDK.register(new DebugPlugin.Builder().logAll(true).get());
+            PlayerSDK.init(getApplicationContext());
+        }
+    }
+
+Note that here we are enabling all the debugging options. You can also pick whatever debug options
+you desire with the same :javaref:`Builder <com.castlabs.sdk.debug.DebugPlugin.Builder>`.
+Please refer to the Javadocs for more info.
+
+Graphics
+--------
+
+This plugin also provides debugging views that will graph player metrics. There's a default debugging
+overlay which can be enabled in the ``DebugPlugin`` with the :javaref:`debugOverlay <com.castlabs.sdk.debug.DebugPlugin.Builder#debugOverlay(boolean)>`
+method.
+
+You can also optionally build your own layout and choose what information to display. This is explained
+in the following section.
+
+Charts
+++++++
+
+The ``DebugPlugin`` provides two charts:
+
+ * :javaref:`PlayerStateChart <com.castlabs.sdk.debug.view.PlayerStateChart>`. Shows a horizontal player state graph.
+ * :javaref:`PlayerMetricChart <com.castlabs.sdk.debug.view.PlayerMetricChart>`. Shows a line graph displaying one or more Metrics.
+
+These two Graphs can be used as common Android ``Views`` in an xml file.
+
+.. code-block:: xml
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+        <com.castlabs.sdk.debug.view.PlayerStateChart
+            android:id="@+id/stateChart"
+            android:layout_alignParentTop="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+        <com.castlabs.sdk.debug.view.PlayerMetricChart
+            android:layout_below="@id/stateChart"
+            android:id="@+id/metricChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"/>
+    </RelativeLayout>
+
+Then, the charts must be configured and provided with a ``PlayerController``.
+
+.. code-block:: java
+
+    // State plot
+    stateChart = chartsView.findViewById(R.id.stateChart);
+
+    // Metric plot, will show bandwidth estimation and player buffer
+    metricChart = chartsView.findViewById(R.id.metricChart);
+    metricChart.enableMetrics(PlayerMetricChart.METRIC_ABR_BANDWIDTH_ESTIMATION
+            | PlayerMetricChart.METRIC_BUFFER_AHEAD);
+
+    // Bind to PlayerController
+    stateChart.setPlayerController(playerController);
+    metricChart.setPlayerController(playerController);
+
+When the host view is not visible anymore, you should unbind the Charts from the ``PlayerController``
+
+.. code-block:: java
+
+    stateChart.unsetPlayerController();
+    metricChart.unsetPlayerController();
+
+PlayerMetricChart and Metrics
++++++++++++++++++++++++++++++
+
+``PlayerMetricChart`` is a powerful class that can plot the outputs of any :javaref:`Metric <com.castlabs.sdk.debug.metric.Metric>`.
+
+A ``Metric`` provides the required underlying infrastructure to interact with the ``PlayerMetricChart``
+and the necessary data to it. You can create additional Metrics by extending this class.
+
+In order to enable a set of desired metrics in the ``PlayerMetricChart`` you can use the
+:javaref:`enableMetrics <com.castlabs.sdk.debug.view.PlayerMetricChart#enableMetrics(boolean)>` passing
+one or more of the ``PlayerMetricChart.METRIC_*`` constants.
+
+.. code-block:: java
+
+    // Metric plot, will show bandwidth estimation and player buffer
+    metricChart.enableMetrics(PlayerMetricChart.METRIC_ABR_BANDWIDTH_ESTIMATION
+            | PlayerMetricChart.METRIC_BUFFER_AHEAD);
+
+If you want more control over how such ``Metric``s are displayed, you can create them yourself and
+add them to the ``PlayerMetricChart``.
+
+.. code-block:: java
+
+    metricChart.addMetric(new BandwidthMetric(Color.BLUE, YAxis.AxisDependency.LEFT));
+    metricChart.addMetric(new PlayingQualityMetric(Color.BLUE, YAxis.AxisDependency.LEFT));
+    metricChart.addMetric(new ChunkDownloadTimeMetric(Color.BLUE, YAxis.AxisDependency.RIGHT, ChunkDownloadTimeMetric.MODE_VIDEO));
+
+You can add any number of ``Metric`` to the chart.
+
+Metric creation
++++++++++++++++
+
+You can also create your own ``Metric`` for a ``PlayerMetricChart`` to display.
+
+To do this, you should extend the :javaref:`Metric <com.castlabs.sdk.debug.metric.Metric>` class and
+override its abstract methods.
+
+In addition to the abstract methods, you have access to the following:
+
+ * ``addTimedDataPoint(float)``. Main data input. Use this method to add a data point to this metric.
+ * ``dataSet``. You can use this protected property to modify the underlying dataSet, right after calling the ``super`` constructor.
+ * Configuration overridable methods, ``replicateLastValue()``, ``keepLastDroppedValue()`` and ``extendToRightEdge()``.
+
+Please refer to the appropriate Javadocs to get more details about ``Metric`` creation.
+
+Third party acknowledgement
+---------------------------
+
+The ``DebugPlugin`` uses and distributes a copy of the `MPAndroidChart <https://github.com/PhilJay/MPAndroidChart>`_
+library which is under the `Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_.

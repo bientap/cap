@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.2'
+    }
+}
+
+android {
+    compileSdkVersion 27
+
+    defaultConfig {
+        applicationId "com.castlabs.sdk.demos"
+        versionName "1.0.0"
+        versionCode 1
+        minSdkVersion 16
+        manifestPlaceholders = [
+            castlabsLicense: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYWNrYWdlTmFtZSI6ImNvbS5jYXN0bGFicy5zZGsiLCJzaGExIjoiOEQ6Q0Q6MUM6Q0Y6NzM6NEM6N0Q6OTA6NEE6N0Y6MTg6NUE6OEQ6Njg6OEU6Mjk6RjY6Rjg6MTA6NDQiLCJraWQiOjQ0OH0.TnQNz69sAxdJ7bUw_-Nd2YOL5XfeodOA3w6vFSszPV_vjUGuHfR2JzFMVCjkpXLWnOzUAkUiff3ou5zBeK64pur_fdTJqtvTdpNXat5IiqvBzJpMvcnU0uZuN5x-NkEnHbTy7pOs1VkSol2rbxwh1O7NblYN9NqV95KFET9C9NoUboENU-WgLi9uoSHkMiM_6WgsKJheNGavMjrkemQyAf7arKOOiUtP8OwqI8Xjsu52ZaZmEhLn3-UhfZkeIqoSSInQHv-falWYkKKvlks6yULeWLgyFZqXlDv9u_V_dAU1hYTb-SCKpz3GwzJKxyMxa-7PdaVgXogr0M90E8KvZA"]
+
+        // Hardcoded this to 22 to avoid issues with text relocations with the
+        // OMA plugin on x86.
+        targetSdkVersion 22
+    }
+
+    dexOptions {
+        javaMaxHeapSize '2g'
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../../keys/castlabs_development.keystore")
+            storePassword "castlabs"
+            keyAlias "castlabs_development"
+            keyPassword "castlabs"
+        }
+        release {
+            storeFile file("../../keys/castlabs_development.keystore")
+            storePassword "castlabs"
+            keyAlias "castlabs_development"
+            keyPassword "castlabs"
+        }
+    }
+}
+
+repositories{
+    maven{
+        url '../../repository'
+    }
+    jcenter()
+    google()
+}
+
+dependencies {
+    // castlabs dependencies
+    implementation 'com.castlabs.player:castlabs-sdk:4.2.0'
+    implementation 'com.castlabs.player:player-ui-plugin:4.2.0'
+    implementation 'com.castlabs.player:oma-plugin:4.2.0'
+    implementation 'com.castlabs.player:subtitles-plugin:4.2.0'
+    implementation 'com.castlabs.player:ima-plugin:4.2.0'
+    implementation 'com.castlabs.player:debug-plugin:4.2.0'
+    implementation 'com.castlabs.player:drm-device-time-checker-plugin:4.2.0'
+
+    implementation 'com.android.support:appcompat-v7:27.0.0'
+    implementation 'com.android.support:design:27.0.0'
+    implementation 'com.android.support:support-v4:27.0.0'
+
+    implementation 'com.castlabs.player:okhttp-plugin:4.2.0'
+    implementation 'com.facebook.stetho:stetho:1.3.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.3.1'
+    implementation 'com.google.android.gms:play-services-auth:11.0.4'
+}

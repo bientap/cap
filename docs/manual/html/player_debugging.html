@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Player Debugging &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="Example Projects" href="examples.html" />
+    <link rel="prev" title="Extensions and Plugins" href="extensions.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="player-debugging">
+<h1>Player Debugging<a class="headerlink" href="#player-debugging" title="Permalink to this headline">¶</a></h1>
+<p>This chapter covers some details related to the <a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/DebugPlugin.html"><code class="docutils literal"><span class="pre">DebugPlugin</span></code></a>,
+a module that attaches to the <code class="docutils literal"><span class="pre">PlayerController</span></code> and logs relevant information that helps troubleshoot stream issues.</p>
+<div class="section" id="adding-to-the-project">
+<h2>Adding to the project<a class="headerlink" href="#adding-to-the-project" title="Permalink to this headline">¶</a></h2>
+<p>The plugin is distributed with the SDK and you can add it as a dependency in your gradle file:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:debug_plugin:4.2.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>Once added you can register it with the SDK. The <code class="docutils literal"><span class="pre">DebugPlugin</span></code> must be created with its builder.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">DebugPlugin</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">logAll</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="na">get</span><span class="o">());</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Note that here we are enabling all the debugging options. You can also pick whatever debug options
+you desire with the same <a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/DebugPlugin.Builder.html"><code class="docutils literal"><span class="pre">Builder</span></code></a>.
+Please refer to the Javadocs for more info.</p>
+</div>
+<div class="section" id="graphics">
+<h2>Graphics<a class="headerlink" href="#graphics" title="Permalink to this headline">¶</a></h2>
+<p>This plugin also provides debugging views that will graph player metrics. There&#8217;s a default debugging
+overlay which can be enabled in the <code class="docutils literal"><span class="pre">DebugPlugin</span></code> with the <a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/DebugPlugin.Builder.html#debugOverlay-boolean-"><code class="docutils literal"><span class="pre">debugOverlay</span></code></a>
+method.</p>
+<p>You can also optionally build your own layout and choose what information to display. This is explained
+in the following section.</p>
+<div class="section" id="charts">
+<h3>Charts<a class="headerlink" href="#charts" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">DebugPlugin</span></code> provides two charts:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/view/PlayerStateChart.html"><code class="docutils literal"><span class="pre">PlayerStateChart</span></code></a>. Shows a horizontal player state graph.</li>
+<li><a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/view/PlayerMetricChart.html"><code class="docutils literal"><span class="pre">PlayerMetricChart</span></code></a>. Shows a line graph displaying one or more Metrics.</li>
+</ul>
+</div></blockquote>
+<p>These two Graphs can be used as common Android <code class="docutils literal"><span class="pre">Views</span></code> in an xml file.</p>
+<div class="highlight-xml"><div class="highlight"><pre><span class="nt">&lt;RelativeLayout</span> <span class="na">xmlns:android=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+              <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+              <span class="na">android:layout_height=</span><span class="s">&quot;match_parent&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;com.castlabs.sdk.debug.view.PlayerStateChart</span>
+        <span class="na">android:id=</span><span class="s">&quot;@+id/stateChart&quot;</span>
+        <span class="na">android:layout_alignParentTop=</span><span class="s">&quot;true&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+        <span class="na">android:layout_height=</span><span class="s">&quot;50dp&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;com.castlabs.sdk.debug.view.PlayerMetricChart</span>
+        <span class="na">android:layout_below=</span><span class="s">&quot;@id/stateChart&quot;</span>
+        <span class="na">android:id=</span><span class="s">&quot;@+id/metricChart&quot;</span>
+        <span class="na">android:layout_width=</span><span class="s">&quot;match_parent&quot;</span>
+        <span class="na">android:layout_height=</span><span class="s">&quot;300dp&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/RelativeLayout&gt;</span>
+</pre></div>
+</div>
+<p>Then, the charts must be configured and provided with a <code class="docutils literal"><span class="pre">PlayerController</span></code>.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// State plot</span>
+<span class="n">stateChart</span> <span class="o">=</span> <span class="n">chartsView</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">stateChart</span><span class="o">);</span>
+
+<span class="c1">// Metric plot, will show bandwidth estimation and player buffer</span>
+<span class="n">metricChart</span> <span class="o">=</span> <span class="n">chartsView</span><span class="o">.</span><span class="na">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">metricChart</span><span class="o">);</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">enableMetrics</span><span class="o">(</span><span class="n">PlayerMetricChart</span><span class="o">.</span><span class="na">METRIC_ABR_BANDWIDTH_ESTIMATION</span>
+        <span class="o">|</span> <span class="n">PlayerMetricChart</span><span class="o">.</span><span class="na">METRIC_BUFFER_AHEAD</span><span class="o">);</span>
+
+<span class="c1">// Bind to PlayerController</span>
+<span class="n">stateChart</span><span class="o">.</span><span class="na">setPlayerController</span><span class="o">(</span><span class="n">playerController</span><span class="o">);</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">setPlayerController</span><span class="o">(</span><span class="n">playerController</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>When the host view is not visible anymore, you should unbind the Charts from the <code class="docutils literal"><span class="pre">PlayerController</span></code></p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">stateChart</span><span class="o">.</span><span class="na">unsetPlayerController</span><span class="o">();</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">unsetPlayerController</span><span class="o">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="playermetricchart-and-metrics">
+<h3>PlayerMetricChart and Metrics<a class="headerlink" href="#playermetricchart-and-metrics" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">PlayerMetricChart</span></code> is a powerful class that can plot the outputs of any <a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/metric/Metric.html"><code class="docutils literal"><span class="pre">Metric</span></code></a>.</p>
+<p>A <code class="docutils literal"><span class="pre">Metric</span></code> provides the required underlying infrastructure to interact with the <code class="docutils literal"><span class="pre">PlayerMetricChart</span></code>
+and the necessary data to it. You can create additional Metrics by extending this class.</p>
+<p>In order to enable a set of desired metrics in the <code class="docutils literal"><span class="pre">PlayerMetricChart</span></code> you can use the
+<code class="docutils literal"><span class="pre">enableMetrics</span></code> passing
+one or more of the <code class="docutils literal"><span class="pre">PlayerMetricChart.METRIC_*</span></code> constants.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Metric plot, will show bandwidth estimation and player buffer</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">enableMetrics</span><span class="o">(</span><span class="n">PlayerMetricChart</span><span class="o">.</span><span class="na">METRIC_ABR_BANDWIDTH_ESTIMATION</span>
+        <span class="o">|</span> <span class="n">PlayerMetricChart</span><span class="o">.</span><span class="na">METRIC_BUFFER_AHEAD</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>If you want more control over how such <code class="docutils literal"><span class="pre">Metric``s</span> <span class="pre">are</span> <span class="pre">displayed,</span> <span class="pre">you</span> <span class="pre">can</span> <span class="pre">create</span> <span class="pre">them</span> <span class="pre">yourself</span> <span class="pre">and</span>
+<span class="pre">add</span> <span class="pre">them</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">``PlayerMetricChart</span></code>.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">metricChart</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="k">new</span> <span class="n">BandwidthMetric</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLUE</span><span class="o">,</span> <span class="n">YAxis</span><span class="o">.</span><span class="na">AxisDependency</span><span class="o">.</span><span class="na">LEFT</span><span class="o">));</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="k">new</span> <span class="n">PlayingQualityMetric</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLUE</span><span class="o">,</span> <span class="n">YAxis</span><span class="o">.</span><span class="na">AxisDependency</span><span class="o">.</span><span class="na">LEFT</span><span class="o">));</span>
+<span class="n">metricChart</span><span class="o">.</span><span class="na">addMetric</span><span class="o">(</span><span class="k">new</span> <span class="n">ChunkDownloadTimeMetric</span><span class="o">(</span><span class="n">Color</span><span class="o">.</span><span class="na">BLUE</span><span class="o">,</span> <span class="n">YAxis</span><span class="o">.</span><span class="na">AxisDependency</span><span class="o">.</span><span class="na">RIGHT</span><span class="o">,</span> <span class="n">ChunkDownloadTimeMetric</span><span class="o">.</span><span class="na">MODE_VIDEO</span><span class="o">));</span>
+</pre></div>
+</div>
+<p>You can add any number of <code class="docutils literal"><span class="pre">Metric</span></code> to the chart.</p>
+</div>
+<div class="section" id="metric-creation">
+<h3>Metric creation<a class="headerlink" href="#metric-creation" title="Permalink to this headline">¶</a></h3>
+<p>You can also create your own <code class="docutils literal"><span class="pre">Metric</span></code> for a <code class="docutils literal"><span class="pre">PlayerMetricChart</span></code> to display.</p>
+<p>To do this, you should extend the <a class="reference external" href="../../javadoc/debug_plugin/com/castlabs/sdk/debug/metric/Metric.html"><code class="docutils literal"><span class="pre">Metric</span></code></a> class and
+override its abstract methods.</p>
+<p>In addition to the abstract methods, you have access to the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">addTimedDataPoint(float)</span></code>. Main data input. Use this method to add a data point to this metric.</li>
+<li><code class="docutils literal"><span class="pre">dataSet</span></code>. You can use this protected property to modify the underlying dataSet, right after calling the <code class="docutils literal"><span class="pre">super</span></code> constructor.</li>
+<li>Configuration overridable methods, <code class="docutils literal"><span class="pre">replicateLastValue()</span></code>, <code class="docutils literal"><span class="pre">keepLastDroppedValue()</span></code> and <code class="docutils literal"><span class="pre">extendToRightEdge()</span></code>.</li>
+</ul>
+</div></blockquote>
+<p>Please refer to the appropriate Javadocs to get more details about <code class="docutils literal"><span class="pre">Metric</span></code> creation.</p>
+</div>
+</div>
+<div class="section" id="third-party-acknowledgement">
+<h2>Third party acknowledgement<a class="headerlink" href="#third-party-acknowledgement" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal"><span class="pre">DebugPlugin</span></code> uses and distributes a copy of the <a class="reference external" href="https://github.com/PhilJay/MPAndroidChart">MPAndroidChart</a>
+library which is under the <a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> Player Debugging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-to-the-project">Adding to the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graphics">Graphics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-acknowledgement">Third party acknowledgement</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="extensions.html" title="previous chapter">Extensions and Plugins</a></li>
+      <li>Next: <a href="examples.html" title="next chapter">Example Projects</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DRM Protection &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="Global Configuration" href="global_config.html" />
+    <link rel="prev" title="The Player View" href="player_view.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="drm-protection">
+<h1>DRM Protection<a class="headerlink" href="#drm-protection" title="Permalink to this headline">¶</a></h1>
+<p>This chapter explains how to perform secure playback using different DRM
+options with the PRESTOplay SDK for Android.</p>
+<div class="section" id="drm-systems-and-security-levels">
+<span id="drm-security-levels"></span><h2>DRM Systems and Security Levels<a class="headerlink" href="#drm-systems-and-security-levels" title="Permalink to this headline">¶</a></h2>
+<p>DRM systems supported by the SDK are classified into three security levels.
+The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmUtils.html"><code class="docutils literal"><span class="pre">DrmUtils</span></code></a> class provides static methods to query the available
+DRM systems and their security level on a given device.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/SecurityLevel.html#SECURE_MEDIA_PATH"><code class="docutils literal"><span class="pre">SecurityLevel.SECURE_MEDIA_PATH</span></code></a></dt>
+<dd>Equals to <cite>L1</cite> in Widevine. The Hardware must provide a secure Bootloader, a
+secure trust zone, and the key shall never be exposed in clear. The samples
+are provided encrypted to the rendering core and never exposed in clear.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/SecurityLevel.html#ROOT_OF_TRUST"><code class="docutils literal"><span class="pre">SecurityLevel.ROOT_OF_TRUST</span></code></a></dt>
+<dd>Equals to <cite>L2</cite> in Widevine. The Hardware must provide a secure trust zone,
+and the key shall never be exposed in clear. A custom Android Bootloader
+could be provided by the Hardware manufacturer if the required security is
+met. The samples are provided encrypted to the rendering core and never
+exposed in clear.</dd>
+<dt><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/SecurityLevel.html#SOFTWARE"><code class="docutils literal"><span class="pre">SecurityLevel.SOFTWARE</span></code></a></dt>
+<dd>Equals to <cite>L3</cite> in Widevine. The key may be exposed in clear on the CPU, the
+Hardware does not need to protect the content. The Decryption happens in
+software, and the samples are passed to the rendering core in clear.</dd>
+</dl>
+</div>
+<div class="section" id="drmtoday-integration">
+<span id="drm-config"></span><h2>DRMtoday Integration<a class="headerlink" href="#drmtoday-integration" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android comes with a ready to use integration with castLabs&#8217; DRMtoday
+services.</p>
+<p>Our SDK supports both OMA-DRM on all platforms and versions as well as Widevine
+Modular from API 18 onwards. PlayReady is supported, but only on devices where the
+DRM system is implemented.</p>
+<p>The OMA-DRM module is fully implemented by castLabs in C++ code and
+distributed as a native shared library within an Android AAR library. The
+OMA-DRM agent is protected with Arxan&#8217;s EnsureIT and Arxan&#8217;s TransformIT. If
+you want to use OMA-DRM, you will need to load and register the OMA plugin with
+the SDK (see <a class="reference internal" href="setup.html#oma-integration"><span>OMA Integration</span></a>).</p>
+<p>The Widevine Modular implementation is provided by the Android operating
+system. It is only available on some devices from API 18, and all devices
+from API 19.</p>
+<p>We recommend that Widevine is used always if possible. Widevine offers
+hardware protection on the video samples and rendering, and can be used
+together with the output protection configuration from DRMtoday.</p>
+<p>OMA-DRM only offers software level protection and should not be used
+on HD content.</p>
+</div>
+<div class="section" id="using-drmtoday">
+<h2>Using DRMtoday<a class="headerlink" href="#using-drmtoday" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to integrate with DRMtoday is by using the provided
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.html"><code class="docutils literal"><span class="pre">DrmTodayConfiguration</span></code></a>
+class.</p>
+<p>Instances of the <code class="docutils literal"><span class="pre">DrmTodayConfiguration</span></code> can be passed to the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a>
+either as an <a class="reference internal" href="player_basics.html#start-from-intent"><span>Intent parameter</span></a> or as a member of
+the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlaybackState.html"><code class="docutils literal"><span class="pre">PlaybackState</span></code></a>, and
+all DRM related configuration happens through this object.</p>
+<p>New instances of the <code class="docutils literal"><span class="pre">DrmTodayConfiguration</span></code> class must be created through its
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html"><code class="docutils literal"><span class="pre">Builder</span></code></a>. The
+builders constructor takes all the mandatory parameters. Additional parameters
+can then be set using the methods provided by the builder.</p>
+<p>The following parameters are mandatory:</p>
+<dl class="docutils">
+<dt>Environment</dt>
+<dd>The URL to the DRMtoday environment. The possible values are
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.html#DRMTODAY_TEST"><code class="docutils literal"><span class="pre">DrmTodayConfiguration.DRMTODAY_TEST</span></code></a>,
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.html#DRMTODAY_STAGING"><code class="docutils literal"><span class="pre">DrmTodayConfiguration.DRMTODAY_STAGING</span></code></a>, or
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.html#DRMTODAY_PRODUCTION"><code class="docutils literal"><span class="pre">DrmTodayConfiguration.DRMTODAY_PRODUCTION</span></code></a>.</dd>
+<dt>UserID</dt>
+<dd>The DRMtoday user id. Please refer to the DRMtoday documentation
+for details about this value.</dd>
+<dt>SessionID</dt>
+<dd>The DRMtoday session id. Please refer to the DRMtoday documentation
+for details about this value.</dd>
+<dt>Merchant</dt>
+<dd>Your DRMtoday merchant name.</dd>
+<dt>AssetID</dt>
+<dd>The DRMtoday asset id of the content. You may wish to further
+classify the content by also specifying a variant ID using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#variantId-java.lang.String-"><code class="docutils literal"><span class="pre">variantId(String)</span></code></a>
+method on the builder instance.</dd>
+<dt>Drm</dt>
+<dd><p class="first">Use the values of the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/Drm.html"><code class="docutils literal"><span class="pre">Drm</span></code></a> enum to specify
+which DRM system should be used for playback. You can use
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/Drm.html#BestAvailable"><code class="docutils literal"><span class="pre">Drm.BestAvailable</span></code></a> to let the player pick
+the best DRM system available on the current device. This usually picks Widevine
+first, then PlayReady, and then OMA as a fall back solution. Please note that
+the auto selection also considers the security level of the DRM implementation. For
+example, on an Amazon FireTV, PlayReady offers hardware level protection while
+Widevine is only implemented as a software based solution. In such case,
+Playready will be selected since it offers the higher security level.</p>
+<p class="last">If you are explicitly selecting a DRM system here, please note that you will
+need to ensure that the system is supported on the current device and
+that it offers enough security for your content. The SDK provides utility methods
+in the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmUtils.html"><code class="docutils literal"><span class="pre">DrmUtils</span></code></a> class that you can
+use to get information about supported DRM systems and their security levels
+on the current device.</p>
+</dd>
+</dl>
+<p>Using the Builder, you can create an instance of the DRMtoday
+configuration object as follows:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">DrmTodayConfiguration</span> <span class="n">cfg</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrmTodayConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span>
+        <span class="n">DrmTodayConfiguration</span><span class="o">.</span><span class="na">DRMTODAY_STAGING</span><span class="o">,</span>
+        <span class="s">&quot;purchase&quot;</span><span class="o">,</span> <span class="c1">// The user ID</span>
+        <span class="s">&quot;sessionId&quot;</span><span class="o">,</span> <span class="c1">// The session ID</span>
+        <span class="s">&quot;six&quot;</span><span class="o">,</span> <span class="c1">// The merchant</span>
+        <span class="s">&quot;demo&quot;</span><span class="o">,</span> <span class="c1">// The asset ID</span>
+        <span class="n">Drm</span><span class="o">.</span><span class="na">BestAvailable</span><span class="o">)</span> <span class="c1">// Auto-select the DRM system</span>
+        <span class="o">.</span><span class="na">get</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>You can then pass this instance either to the constructor of your
+<code class="docutils literal"><span class="pre">PlaybackState</span></code> or, if you are using Intent parameters and Bundles to
+start playback (see <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a>), you can pass it to the
+bundle using:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_DRM_CONFIGURATION</span><span class="o">,</span> <span class="n">cfg</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="section" id="upfront-authentication">
+<h3>Upfront Authentication<a class="headerlink" href="#upfront-authentication" title="Permalink to this headline">¶</a></h3>
+<p>If you are using DRMtoday upfront authentication, please make sure that
+you are using the builders <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#authToken-java.lang.String-"><code class="docutils literal"><span class="pre">authToken(String)</span></code></a> method to set the
+token.</p>
+</div>
+</div>
+<div class="section" id="offline-key-storage">
+<span id="drm-offline-setting"></span><h2>Offline Key Storage<a class="headerlink" href="#offline-key-storage" title="Permalink to this headline">¶</a></h2>
+<p>Some DRM systems allow you to store the license key on the device to allow
+offline playback or to ensure faster startup times when no additional
+request needs to be performed to obtain the key. To enable basic
+support for offline key storage, you will need to specify a unique id to
+store and retrieve the key using the builder&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#offlineId-java.lang.String-"><code class="docutils literal"><span class="pre">offlineId(String)</span></code></a> method. See
+<a class="reference internal" href="extensions.html#offline-keys"><span>Offline Keys</span></a> for more information.</p>
+<p>When the offline ID is specified and no key is available yet, the first
+startup of the playback will fetch and store the key. In addition, you can
+use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/DrmLicenseLoader.html"><code class="docutils literal"><span class="pre">DrmLicenseLoader</span></code></a>
+to fetch licenses without explicitly starting playback.
+This enables fetching the licenses _headless_ without a player instance.
+Note however that access to the content might be required if not all DRM
+related initialization data are specified in the Manifest.</p>
+<p>The license loader works asynchronously and you need to specify a callback
+implementation to get informed about errors or successful license
+deliveries. The following example demonstrates the usage of the license
+loader:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Create and show a progress dialog to indicate license loading</span>
+<span class="kd">final</span> <span class="n">ProgressDialog</span> <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressDialog</span><span class="o">.</span><span class="na">show</span><span class="o">(</span>
+        <span class="n">context</span><span class="o">,</span> <span class="s">&quot;Offline License&quot;</span><span class="o">,</span>
+        <span class="s">&quot;Fetching offline License&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+
+<span class="c1">// Implement a basic callback that hides the progress and reports</span>
+<span class="c1">// messages.</span>
+<span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Callback</span> <span class="n">callback</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Callback</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onError</span><span class="o">(</span><span class="n">CastlabsPlayerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Error while fetching license: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+        <span class="n">progress</span><span class="o">.</span><span class="na">dismiss</span><span class="o">();</span>
+        <span class="n">showMessage</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLicenseLoaded</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">progress</span><span class="o">.</span><span class="na">dismiss</span><span class="o">();</span>
+        <span class="n">showMessage</span><span class="o">(</span><span class="s">&quot;License fetched&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+
+<span class="c1">// Setup the basic configuration parameters. Note that you need</span>
+<span class="c1">// to specify the offlineId in the DrmConfiguration</span>
+<span class="n">String</span> <span class="n">contentUrl</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">DrmTodayConfiguration</span> <span class="n">drmConfiguration</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// Create the license loader passing the basic configuration options</span>
+<span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Builder</span> <span class="n">licenseLoaderBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span>
+        <span class="n">context</span><span class="o">,</span> <span class="n">contentUrl</span><span class="o">,</span> <span class="n">drmConfiguration</span><span class="o">,</span> <span class="n">callback</span><span class="o">);</span>
+<span class="n">DrmLicenseLoader</span> <span class="n">licenseLoader</span> <span class="o">=</span> <span class="n">licenseLoaderBuilder</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+
+<span class="c1">// Trigger license loading</span>
+<span class="n">licenseLoader</span><span class="o">.</span><span class="na">load</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>The example above passes the mandatory parameters to the license loader.
+The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/DrmLicenseLoader.Builder.html"><code class="docutils literal"><span class="pre">DrmLicenseLoader.Builder</span></code></a>
+class provides additional methods
+to specify query and header parameters or configure the key store.</p>
+<p>You can remove already stored keys. The required steps to perform the deletion are similar to
+the ones required for the license loading.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Create and show a progress dialog to indicate license loading</span>
+<span class="kd">final</span> <span class="n">ProgressDialog</span> <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressDialog</span><span class="o">.</span><span class="na">show</span><span class="o">(</span>
+        <span class="n">context</span><span class="o">,</span> <span class="s">&quot;Offline License&quot;</span><span class="o">,</span>
+        <span class="s">&quot;Removing offline License&quot;</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+
+<span class="c1">// Implement a basic callback that hides the progress and reports</span>
+<span class="c1">// messages.</span>
+<span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Callback</span> <span class="n">callback</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Callback</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onError</span><span class="o">(</span><span class="n">CastlabsPlayerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Error while removing license: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+        <span class="n">progress</span><span class="o">.</span><span class="na">dismiss</span><span class="o">();</span>
+        <span class="n">showMessage</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLicenseLoaded</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onLicenseLoaded</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">i</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;License removed&quot;</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+
+<span class="c1">// Setup the basic configuration parameters. Note that you need</span>
+<span class="c1">// to specify the offlineId in the DrmConfiguration</span>
+<span class="n">String</span> <span class="n">contentUrl</span> <span class="o">=</span> <span class="o">...</span>
+<span class="n">DrmTodayConfiguration</span> <span class="n">drmConfiguration</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="c1">// Create the license loader passing the basic configuration options</span>
+<span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Builder</span> <span class="n">licenseLoaderBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DrmLicenseLoader</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span>
+        <span class="n">context</span><span class="o">,</span> <span class="n">contentUrl</span><span class="o">,</span> <span class="n">drmConfiguration</span><span class="o">,</span> <span class="n">callback</span><span class="o">);</span>
+<span class="n">DrmLicenseLoader</span> <span class="n">licenseLoader</span> <span class="o">=</span> <span class="n">licenseLoaderBuilder</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+
+<span class="c1">// Trigger license removal</span>
+<span class="n">licenseLoader</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>This operation will remove the local reference to the offline key, usually stored in SharedPreferences,
+indexed by offlineId, and also perform any DRM vendor-required action to remove the internal key.</p>
+<p>Depending on which DRM vendor are you using, this operation may perform a request to the licensing
+server in order to properly remove the local license. Meaning that license removal will fail if
+the licensing server is not reachable.</p>
+</div>
+<div class="section" id="multi-drm-environments">
+<h2>Multi-DRM Environments<a class="headerlink" href="#multi-drm-environments" title="Permalink to this headline">¶</a></h2>
+<p>You might run into situations where you need to use different DRM systems for
+video and audio tracks. You can do this by using the builder&#8217;s
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#audioDrm-com.castlabs.android.drm.Drm-"><code class="docutils literal"><span class="pre">audioDrm(Drm)</span></code></a> method
+and set a dedicated DRM used for decryption of audio tracks. This is useful on
+devices such as the Amazon FireTV, where the hardware protected PlayReady DRM
+can only be used for video decryption. In that case, you will need to specify a
+different DRM system for audio playback. <em>Note</em> that this is not strictly
+necessary for the Amazon FireTV. For that particular device, the SDK already
+implements the selection and will choose Widevine as the DRM for audio playback
+automatically.</p>
+</div>
+<div class="section" id="clear-lead">
+<h2>Clear Lead<a class="headerlink" href="#clear-lead" title="Permalink to this headline">¶</a></h2>
+<p>If you have encoded your encrypted content with a clear lead of a few seconds, the
+player will leverage that by default and start playback immediately while
+fetching the required license keys in the background. If you do not want this
+behavior and instead want the player to wait until license keys are fetched, use
+the builder&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#playClearSamplesWithoutKeys-boolean-"><code class="docutils literal"><span class="pre">playClearSamplesWithoutKeys(boolean)</span></code></a> method to
+disable the feature.</p>
+</div>
+<div class="section" id="drmtoday-onboard">
+<h2>DRMtoday OnBoard<a class="headerlink" href="#drmtoday-onboard" title="Permalink to this headline">¶</a></h2>
+<p>When the player is used together with DRMtoday OnBoard, you need to configure
+additional parameters in the <cite>DrmTodayConfiguration</cite>. Specifically, you need
+to enable <em>DRMtoday OnBoard</em> and you need to set the base URL to the
+<em>DRMtoday OnBoard</em> server. The following example shows how you can create
+a configuration that can be use with the <em>OnBoard</em> server:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">DrmTodayConfiguration</span><span class="o">.</span><span class="na">Builder</span> <span class="n">builder</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">DrmTodayConfiguration</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span>
+        <span class="n">DrmTodayConfiguration</span><span class="o">.</span><span class="na">DRMTODAY_STAGING</span><span class="o">,</span>
+        <span class="s">&quot;purchase&quot;</span><span class="o">,</span> <span class="c1">// The user ID</span>
+        <span class="s">&quot;sessionId&quot;</span><span class="o">,</span> <span class="c1">// The session ID</span>
+        <span class="s">&quot;six&quot;</span><span class="o">,</span> <span class="c1">// The merchant</span>
+        <span class="s">&quot;demo&quot;</span><span class="o">,</span> <span class="c1">// The asset ID</span>
+        <span class="n">Drm</span><span class="o">.</span><span class="na">BestAvailable</span><span class="o">);</span> <span class="c1">// Select a DRM</span>
+<span class="n">builder</span><span class="o">.</span><span class="na">drmTodayMobile</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span> <span class="c1">// Set the DRM Mobile flag</span>
+<span class="n">builder</span><span class="o">.</span><span class="na">drmTodayMobileUrl</span><span class="o">(</span><span class="s">&quot;...&quot;</span><span class="o">);</span> <span class="c1">// Set the DRMToday Mobile url</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="drm-integration-with-other-service-providers">
+<h2>DRM Integration with Other Service Providers<a class="headerlink" href="#drm-integration-with-other-service-providers" title="Permalink to this headline">¶</a></h2>
+<p>You can also use DRM systems other than DRMtoday with the SDK. To do this, create
+instances of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmConfiguration.html"><code class="docutils literal"><span class="pre">DrmConfiguration</span></code></a> instead of the DRMtoday specific one.</p>
+<p>This will not work for OMA-DRM, but you can use it for Widevine and PlayReady.</p>
+<p>You can use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmConfiguration.html"><code class="docutils literal"><span class="pre">DrmConfiguration</span></code></a> object to configure the DRM
+backend URL. If you need to pass additional parameters, you can use the
+<code class="docutils literal"><span class="pre">DrmConfiguration#requestParameters</span></code> Bundle. All key/value pairs
+in that bundle will be added as request (header) parameters to the license
+request.</p>
+<p>If you need to modify not only the headers but you would like to dynamically
+add query parameters, change the headers, or modify and transform the data that
+is send to or received from a custom DRM server, you can use your own implementations of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/RequestModifier.html"><code class="docutils literal"><span class="pre">RequestModifier</span></code></a> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/ResponseModifier.html"><code class="docutils literal"><span class="pre">ResponseModifier</span></code></a>.</p>
+<p>Modifiers can be added on the <code class="docutils literal"><span class="pre">PlayerController</span></code> (see
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addRequestModifier-com.castlabs.android.network.RequestModifier-"><code class="docutils literal"><span class="pre">addRequestModifier()</span></code></a> and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addResponseModifier-com.castlabs.android.network.ResponseModifier-"><code class="docutils literal"><span class="pre">addResponseModifier()</span></code></a>) and you should do
+that before you load content. The modifier will then receive a callback with a
+<code class="docutils literal"><span class="pre">Request</span></code> or <code class="docutils literal"><span class="pre">Response</span></code> instance that you can modify to
+change the URI or add header parameters or transform the payload or reponse
+data.</p>
+<p>Note that you can also add query parametersf or requests by changing the URI
+directly.  <cite>request.getUri().buildUpon()</cite> will give you a builder that can be
+used to change the URI. Once changed you can set the new URI in the request.
+The same is true for payload data.</p>
+<p>Here is an example of a request and response modifier that adds a header parameter and a query parameter for license requests and modifies the request and reponse payload:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// We need the player controller to attach a modifier</span>
+<span class="n">PlayerController</span> <span class="n">pc</span> <span class="o">=</span> <span class="o">...</span>
+
+<span class="n">pc</span><span class="o">.</span><span class="na">addRequestModifier</span><span class="o">(</span><span class="k">new</span> <span class="n">RequestModifier</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@NonNull</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Request</span> <span class="nf">onRequest</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Request</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">Request</span><span class="o">.</span><span class="na">DATA_TYPE_DRM_LICENSE</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// add a query parameter to the URI by building upon the current URI</span>
+                <span class="c1">// and then set the new URL</span>
+                <span class="n">request</span><span class="o">.</span><span class="na">setUri</span><span class="o">(</span><span class="n">request</span>
+                        <span class="o">.</span><span class="na">getUri</span><span class="o">()</span>
+                        <span class="o">.</span><span class="na">buildUpon</span><span class="o">()</span>
+                        <span class="o">.</span><span class="na">appendQueryParameter</span><span class="o">(</span><span class="s">&quot;Query-Param&quot;</span><span class="o">,</span> <span class="s">&quot;Query Value&quot;</span><span class="o">)</span>
+                        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+                <span class="c1">// Assume you need to send some custom JSON to the license backend</span>
+                <span class="c1">// instead of the original payload.</span>
+                <span class="n">request</span><span class="o">.</span><span class="na">headers</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">);</span>
+                <span class="n">JSONObject</span> <span class="n">jsonData</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JSONObject</span><span class="o">();</span>
+                <span class="n">jsonData</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;licenseData&quot;</span><span class="o">,</span> <span class="n">Base64</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getData</span><span class="o">(),</span> <span class="n">Base64</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">));</span>
+                <span class="c1">// Pass the transformed data back to the request</span>
+                <span class="n">request</span><span class="o">.</span><span class="na">setData</span><span class="o">(</span><span class="n">jsonData</span><span class="o">.</span><span class="na">toString</span><span class="o">().</span><span class="na">getBytes</span><span class="o">());</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">JSONException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// something went wrong while encoding the json object</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// Note that we always need to return the request!</span>
+        <span class="k">return</span> <span class="n">request</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="n">pc</span><span class="o">.</span><span class="na">addResponseModifier</span><span class="o">(</span><span class="k">new</span> <span class="n">ResponseModifier</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@NonNull</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Response</span> <span class="nf">onResponse</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Response</span> <span class="n">response</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">type</span> <span class="o">==</span> <span class="n">Request</span><span class="o">.</span><span class="na">DATA_TYPE_DRM_LICENSE</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// Lets assume that the license server responds with some</span>
+                <span class="c1">// JSON object. In that case we need to extract the license data</span>
+                <span class="c1">// here and transform it so that the underlying CDM accepts the</span>
+                <span class="c1">// data</span>
+                <span class="n">JSONObject</span> <span class="n">jsonResponse</span> <span class="o">=</span> <span class="k">new</span> <span class="n">JSONObject</span><span class="o">(</span><span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="n">response</span><span class="o">.</span><span class="na">getData</span><span class="o">()));</span>
+                <span class="c1">// Pass the transformed data back to the response</span>
+                <span class="n">response</span><span class="o">.</span><span class="na">setData</span><span class="o">(</span>
+                        <span class="n">Base64</span><span class="o">.</span><span class="na">decode</span><span class="o">(</span><span class="n">jsonResponse</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">&quot;licenseData&quot;</span><span class="o">),</span> <span class="n">Base64</span><span class="o">.</span><span class="na">DEFAULT</span><span class="o">)</span>
+                <span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">JSONException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// something went wrong while decoding the response</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="c1">// note that we always need to return the response</span>
+        <span class="k">return</span> <span class="n">response</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> DRM Protection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#drm-systems-and-security-levels">DRM Systems and Security Levels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drmtoday-integration">DRMtoday Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-drmtoday">Using DRMtoday</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#offline-key-storage">Offline Key Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-drm-environments">Multi-DRM Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#clear-lead">Clear Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drmtoday-onboard">DRMtoday OnBoard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drm-integration-with-other-service-providers">DRM Integration with Other Service Providers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="player_view.html" title="previous chapter">The Player View</a></li>
+      <li>Next: <a href="global_config.html" title="next chapter">Global Configuration</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

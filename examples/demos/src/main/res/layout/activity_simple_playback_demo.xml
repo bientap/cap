@@ -1,0 +1,34 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			 xmlns:tools="http://schemas.android.com/tools"
+			 android:layout_width="match_parent"
+			 android:layout_height="match_parent"
+			 xmlns:app="http://schemas.android.com/apk/res-auto"
+			 android:background="#000000"
+			 tools:context="com.castlabs.sdk.demos.SimplePlaybackDemo">
+
+	<com.castlabs.android.player.PlayerView
+		android:id="@+id/player_view"
+		android:layout_gravity="center"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+	</com.castlabs.android.player.PlayerView>
+
+	<com.castlabs.sdk.playerui.PlayerControllerProgressBar
+		android:id="@+id/progress_bar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		tools:visibility="visible"
+		android:visibility="gone"
+	/>
+
+	<com.castlabs.sdk.playerui.PlayerControllerView
+		android:id="@+id/player_controls"
+		app:controller_layout_id="@layout/cl_player_controller_view"
+		android:background="#55000000"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:animation_view_position="bottom"
+		android:layout_gravity="bottom"
+	/>
+</FrameLayout>

@@ -1,0 +1,1426 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Extensions and Plugins &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="next" title="Player Debugging" href="player_debugging.html" />
+    <link rel="prev" title="Global Configuration" href="global_config.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="extensions-and-plugins">
+<h1>Extensions and Plugins<a class="headerlink" href="#extensions-and-plugins" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subtitles-and-closed-captions">
+<h2>Subtitles and Closed Captions<a class="headerlink" href="#subtitles-and-closed-captions" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android comes with two plugins that support subtitles and closed
+captions. The default plugin leverages the ExoPlayer subtitles parser
+and renderer. In addition, the PRESTOplay SDK for Android bundles the castLabs subtitles
+plugins, that offers full support for FCC requirements and an extended
+TTML renderer that provides styling.</p>
+<p>In order to use the castLabs subtitles plugin, you need to add it as a
+dependency to your application, and register the plugin with the SDK:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:subtitles-plugin:3.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>The example above will add the dependency to you build file. You then need
+to register the plugin to enable it:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">SubtitlesPlugin</span><span class="o">());</span>
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>Both, the ExoPlayer as well as the castLabs subtitles plugin style can be
+configured through the <code class="docutils literal"><span class="pre">PlayerContorller</span></code>. For that, you will need to
+create a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/subtitles/SubtitlesStyle.html"><code class="docutils literal"><span class="pre">SubtitlesStyle</span></code></a> that can be passed to the
+controller. The style can also be loaded from the system settings and the
+<code class="docutils literal"><span class="pre">Builder</span></code> that creates the style provides the necessary methods to be
+initialized from the system settings. Please note that only since Android
+API version 21, all required FCC settings can be set on a system level.</p>
+<div class="section" id="subtitle-fcc-fonts">
+<h3>Subtitle FCC Fonts<a class="headerlink" href="#subtitle-fcc-fonts" title="Permalink to this headline">¶</a></h3>
+<p>To fulfill the FCC requirements for closed captions, you need to allow the user
+to select from different fonts, including &#8220;casual&#8221;, &#8220;cursive&#8221;, &#8220;small
+capitals&#8221;, and a &#8220;serif monospace&#8221; font. These fonts are not available on all
+Android devices. The PRESTOplay SDK for Android bundles a module that offers a set of fonts to
+fill the gap. You can add the module to your dependencies:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies{
+    ...
+    compile &#39;com.castlabs.player:subtitles-fonts:3.0.5&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>This will bundle the missing font types with your Application. You can also add
+different fonts yourself and use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/subtitles/SubtitleFonts.html"><code class="docutils literal"><span class="pre">SubtitleFonts</span></code></a> class to configure the fonts.</p>
+</div>
+<div class="section" id="subtitle-styles">
+<h3>Subtitle Styles<a class="headerlink" href="#subtitle-styles" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android contains an example Application <cite>subtitle_styles</cite> that
+demonstrates who you can build a settings view to configure subtitles,
+store that configuration in the shared preferences of the Application and
+then create a <code class="docutils literal"><span class="pre">SubtitlesStyle</span></code> object from these preferences and use it
+during playback.</p>
+</div>
+<div class="section" id="subtitle-preview">
+<h3>Subtitle Preview<a class="headerlink" href="#subtitle-preview" title="Permalink to this headline">¶</a></h3>
+<p>One of the FCC requirements is that you provide a preview when different
+caption styles are applied. The PRESTOplay SDK for Android contains a View component,
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/subtitles/SubtitlesPreviewView.html"><code class="docutils literal"><span class="pre">SubtitlesPreviewView</span></code></a>, that can be used
+to render a preview of the subtitles with a given style.</p>
+</div>
+<div class="section" id="subtitles-view">
+<h3>Subtitles View<a class="headerlink" href="#subtitles-view" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android uses the <a class="reference external" href="../../javadoc/subtitles_plugin/com/castlabs/sdk/subtitles/SubtitlesView.html"><code class="docutils literal"><span class="pre">SubtitlesView</span></code></a>
+in order to display rendered subtitles.</p>
+<p>You can get a reference to this underlying View in two different ways.</p>
+<p>If you&#8217;re using a <code class="docutils literal"><span class="pre">PlayerView</span></code> you can use the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/views/SubtitlesViewComponent.html"><code class="docutils literal"><span class="pre">SubtitlesViewComponent</span></code></a>.</p>
+<p>If you are not using a <code class="docutils literal"><span class="pre">PlayerView</span></code>- and creating your own instance of the <code class="docutils literal"><span class="pre">PlayerController</span></code> -
+you can use the <a class="reference external" href="../../javadoc/subtitles_plugin/com/castlabs/sdk/subtitles/SubtitlesPlugin.SubtitlesPluginComponent.html"><code class="docutils literal"><span class="pre">SubtitlesPluginComponent</span></code></a> component
+to register a listener and get the underlying <code class="docutils literal"><span class="pre">SubtitlesView</span></code>.</p>
+<p>You can also use the <a class="reference external" href="../../javadoc/subtitles_plugin/com/castlabs/sdk/subtitles/SubtitleViewWrapper.html"><code class="docutils literal"><span class="pre">SubtitleViewWrapper</span></code></a> class.
+This class inherits from an Android <code class="docutils literal"><span class="pre">FrameLayout</span></code>, registers the required listener with the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/views/SubtitlesViewComponent.html"><code class="docutils literal"><span class="pre">SubtitlesViewComponent</span></code></a> and adds
+the <code class="docutils literal"><span class="pre">SubtitlesView</span></code> as a child as soon as it is available.</p>
+</div>
+</div>
+<div class="section" id="recovering-from-loss-of-connectivity">
+<span id="connectivity-checks"></span><h2>Recovering From Loss Of Connectivity<a class="headerlink" href="#recovering-from-loss-of-connectivity" title="Permalink to this headline">¶</a></h2>
+<p>By default, the PRESTOplay SDK for Android will not check specifically for loss of connectivity
+and if a device looses its internet connection during playback, fatal
+player errors will be raises.
+With version 3.1.2, we introduced a new mechanism to enable the player to
+recover automatically from connectivity loss without fatal errors being
+raised. You will need to enable that feature explicitly before you
+initialize the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerSDK</span><span class="o">.</span><span class="na">ENABLE_CONNECTIVITY_CHECKS</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+</pre></div>
+</div>
+<p>If the feature is enabled, the player will catch download errors
+internally and check for network connectivity. If no internet connection
+is available, a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html"><code class="docutils literal"><span class="pre">CastlabsPlayerException</span></code></a> will be
+passed to any registered <cite>PlayerListener</cite> instances. The type of the error
+will be <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html#TYPE_CONNECTIVITY_LOST_ERROR"><code class="docutils literal"><span class="pre">TYPE_CONNECTIVITY_LOST_ERROR</span></code></a>,
+which indicates that a download error occurred due to lack of
+connectivity. The PRESTOplay SDK for Android will then register a broadcast listener and wait
+for connectivity changes. During that period, the player might run out of
+buffered data and will go into <cite>Buffering</cite> state. Once device connectivity
+changes, the playback will be resumed automatically and
+a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html#TYPE_CONNECTIVITY_GAINED_INFO"><code class="docutils literal"><span class="pre">TYPE_CONNECTIVITY_GAINED_INFO</span></code></a>
+error will be raised through all registered listeners. This error is not
+severe and serves only informational purpose. For more
+information about error handling and how to add a listener see
+<a class="reference internal" href="player_controller.html#controller-error-handling"><span>Error Handling</span></a>.</p>
+<p>If you are implementing a user interface component to inform the user of
+the loss of connectivity, you might want to consider waiting until the
+player goes into buffering state after you observed the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html#TYPE_CONNECTIVITY_LOST_ERROR"><code class="docutils literal"><span class="pre">TYPE_CONNECTIVITY_LOST_ERROR</span></code></a>
+error. If the connectivity loss is short enough and the buffers contain enough
+data, the player might actually recover silently from such interruptions.</p>
+<div class="section" id="handling-connectivity-loss-for-live-playback">
+<h3>Handling Connectivity Loss for Live Playback<a class="headerlink" href="#handling-connectivity-loss-for-live-playback" title="Permalink to this headline">¶</a></h3>
+<p>In case connectivity loss detection is enabled and you are playing live
+content, you might need to manually re-start playback if the connection
+loss was too long and the playback head moved behind the current live
+Window. In that case the player will raise a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/exceptions/CastlabsPlayerException.html#TYPE_BEHIND_LIVE_WINDOW"><code class="docutils literal"><span class="pre">TYPE_BEHIND_LIVE_WINDOW</span></code></a>
+error, which can be used as a marker for these situations. A possible re-start
+might look like this:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onError</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">CastlabsPlayerException</span> <span class="n">error</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// restart playback for live streams that fell behind the live</span>
+    <span class="c1">// window.</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">error</span><span class="o">.</span><span class="na">getType</span><span class="o">()</span> <span class="o">==</span> <span class="n">CastlabsPlayerException</span><span class="o">.</span><span class="na">TYPE_BEHIND_LIVE_WINDOW</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Save the current playback state to a bundle</span>
+        <span class="n">Bundle</span> <span class="n">store</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+        <span class="n">controller</span><span class="o">.</span><span class="na">saveState</span><span class="o">(</span><span class="n">store</span><span class="o">);</span>
+
+        <span class="c1">// release the player and re-open it with the bundle</span>
+        <span class="n">controller</span><span class="o">.</span><span class="na">release</span><span class="o">();</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">controller</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">store</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Error re-opening stream: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="customize-connectivity-check">
+<h3>Customize Connectivity Check<a class="headerlink" href="#customize-connectivity-check" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android uses its default <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/DefaultConnectivityCheck.html"><code class="docutils literal"><span class="pre">DefaultConnectivityCheck</span></code></a> to check if the
+device is currently connected to the internet. The default implementation
+does used the Android <code class="docutils literal"><span class="pre">ConnectivityManager</span></code> to check basic connectivity
+and then ensures that an internet connection is available by doing a DNS
+host name lookup to <cite>google.com</cite>. You can customize the checker
+implementation using the global <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#CONNECTIVITY_CHECKER"><code class="docutils literal"><span class="pre">PlayerSDK#CONNECTIVITY_CHECKER</span></code></a> setting. You can
+either set this to a custom implementation of the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/ConnectivityCheck.html"><code class="docutils literal"><span class="pre">ConnectivityCheck</span></code></a> interface, or use
+a custom instance of the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/DefaultConnectivityCheck.html"><code class="docutils literal"><span class="pre">DefaultConnectivityCheck</span></code></a> with a customized
+host lookup name.</p>
+<p>Please note that the default implementation does not actually open
+a connection to <cite>google.com</cite> (or any other lookup host) but does connect
+to the DNS service of the device to perform a host lookup for the given
+name.</p>
+</div>
+</div>
+<div class="section" id="offline-keys">
+<span id="id1"></span><h2>Offline Keys<a class="headerlink" href="#offline-keys" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android allows you to store offline keys for some DRM systems. If you
+want to leverage this feature, you will need to enable it by setting
+a unique identifier as the offline ID in the <code class="docutils literal"><span class="pre">DrmConfiguration</span></code> (see
+<a class="reference internal" href="drm.html#drm-offline-setting"><span>Offline Key Storage</span></a>).</p>
+<p>Once the license is loaded, the offline ID will be used to store
+a reference to the key, the so called &#8220;keySetId&#8221;, on the device. Note that
+this is not the actual decryption key, but an identifier used by the DRM
+system to find and load the key later. This &#8220;keySetId&#8221; needs to be stored
+and the SDK does this using an implementation of the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/KeyStore.html"><code class="docutils literal"><span class="pre">KeyStore</span></code></a> interface. The default implementation
+is using your application&#8217;s shared preferences in private mode to store
+a mapping from your offline ID to the &#8220;keySetId&#8221;.</p>
+<p>You can, however use a custom implementation of the <code class="docutils literal"><span class="pre">KeyStore</span></code>. The store
+can be configured globally using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#DEFAULT_KEY_STORE"><code class="docutils literal"><span class="pre">PlayerSDK.DEFAULT_KEY_STORE</span></code></a> field. You can
+also set it explicitly for a given <code class="docutils literal"><span class="pre">PlayerController</span></code>.</p>
+<div class="section" id="key-info">
+<h3>Key info<a class="headerlink" href="#key-info" title="Permalink to this headline">¶</a></h3>
+<p>You can get Key related info through the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/KeyStore.html"><code class="docutils literal"><span class="pre">KeyStore</span></code></a>
+interface. You can get the currently used <code class="docutils literal"><span class="pre">KeyStore</span></code> instance with the static
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#DEFAULT_KEY_STORE"><code class="docutils literal"><span class="pre">PlayerSDK#DEFAULT_KEY_STORE</span></code></a> field.</p>
+<p>Providing the offlineId of your content, you can get an instance of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/DrmKeyStorage.html"><code class="docutils literal"><span class="pre">DrmKeyStorage</span></code></a>
+with <code class="docutils literal"><span class="pre">KeyStore</span></code> &#8216;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/KeyStore.html#get-java.lang.String-"><code class="docutils literal"><span class="pre">get</span></code></a> method.</p>
+<p>The <code class="docutils literal"><span class="pre">DrmKeyStorage</span></code> object provides DRM-related for a particular key. You can use this for instance
+to get the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/DrmKeyStorage.html#keyValidUntilMs"><code class="docutils literal"><span class="pre">expiration</span> <span class="pre">date</span></code></a>.</p>
+</div>
+</div>
+<div class="section" id="interactive-media-ads-ima">
+<h2>Interactive Media Ads (IMA)<a class="headerlink" href="#interactive-media-ads-ima" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android provides with IMA service integrated in the form of plugin. Any VAST-compliant ad server
+is supported.</p>
+<p>Ads service is integrated into the visual playback component <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a>.
+Internally it creates two additional views: one surface view of type <code class="docutils literal"><span class="pre">TextureSurface</span></code> for ads video and
+<code class="docutils literal"><span class="pre">ViewGroup</span></code> container to display ads related UI elements like &#8216;Skip&#8217; and &#8216;Learn more&#8217; buttons,
+ads elapsed time etc. Note that These UI elements are part of IMA SDK and cannot be customized.</p>
+<p>Thus, the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a> is responsible for both
+content and ads video playbacks.</p>
+<p>After the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a> is added to the app layout
+the IMA plugin needs to be registered and enabled by the app. Optionally the plugin
+can be initialized with the custom <code class="docutils literal"><span class="pre">ImaSdkSettings</span></code> e.g. in order to change the default ads UI language:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ImaPlugin</span> <span class="n">imaPlugin</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImaPlugin</span><span class="o">();</span>
+<span class="n">imaPlugin</span><span class="o">.</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+<span class="c1">// (Optional) Set the IMA SDK settings</span>
+<span class="n">ImaSdkSettings</span> <span class="n">imaSdkSettings</span> <span class="o">=</span> <span class="n">ImaSdkFactory</span><span class="o">.</span><span class="na">getInstance</span><span class="o">().</span><span class="na">createImaSdkSettings</span><span class="o">();</span>
+<span class="n">imaSdkSettings</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="s">&quot;en&quot;</span><span class="o">);</span>
+<span class="n">imaPlugin</span><span class="o">.</span><span class="na">setImaSdkSettings</span><span class="o">(</span><span class="n">imaSdkSettings</span><span class="o">);</span>
+
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">imaPlugin</span><span class="o">);</span>
+
+<span class="o">..</span>
+<span class="c1">// (Optional) Update the IMA settings run-time e.g. on a stream basis</span>
+<span class="n">ImaPlugin</span> <span class="n">imaPlugin</span> <span class="o">=</span> <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">getPlugin</span><span class="o">(</span><span class="n">ImaPlugin</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">imaPlugin</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">ImaSdkSettings</span> <span class="n">imaSdkSettings</span> <span class="o">=</span> <span class="n">imaPlugin</span><span class="o">.</span><span class="na">getImaSdkSettings</span><span class="o">();</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">imaSdkSettings</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">imaSdkSettings</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="s">&quot;fr&quot;</span><span class="o">);</span>
+        <span class="n">imaPlugin</span><span class="o">.</span><span class="na">setImaSdkSettings</span><span class="o">(</span><span class="n">imaSdkSettings</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a> expects the ads tag url
+when opening content video from an <code class="docutils literal"><span class="pre">Intent</span></code>. See <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a> for an example
+on how to use a <code class="docutils literal"><span class="pre">Bundle</span></code> to configure the player. The ads tag url which is the link to VAST
+document should be  added into the bundle in the following way:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">String</span> <span class="n">tagURL</span> <span class="o">=</span> <span class="s">&quot;https://ima.mydomain/request1&quot;</span><span class="o">;</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_ADVERTS_DATA</span><span class="o">,</span> <span class="k">new</span> <span class="n">ImaAdRequest</span><span class="o">(</span><span class="n">tagURL</span><span class="o">).</span><span class="na">getBundle</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>As a result, the PRESTOplay SDK for Android requests the ads, starts the ads playback according to the ads schedule and pauses
+the content video playback. After the ad is completed the content video playback is resumed automatically.</p>
+<p>Additionally the application may need to be notified when the ad starts and completes. For instance, it may disable
+the user content video playback controls or hide them during the ads playback. In this case the application installs the
+listener as follows:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerView</span> <span class="n">playerView</span><span class="o">;</span>
+<span class="n">AdController</span> <span class="n">adController</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">getAdController</span><span class="o">();</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">adController</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">addListener</span><span class="o">(</span><span class="k">new</span> <span class="n">AdInterface</span><span class="o">.</span><span class="na">Listener</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAdStarted</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// hide controls and disable touch event triggers</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onAdCompleted</span><span class="o">()</span> <span class="o">{</span>
+            <span class="c1">// show the controls again if we keep them on screen</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="downloader">
+<h2>Downloader<a class="headerlink" href="#downloader" title="Permalink to this headline">¶</a></h2>
+<p>The downloader plugin of the PRESTOplay SDK for Android allows the content to be downloaded and played back offline later on. Currently,
+the DASH, Smooth Streaming and MP4 content types are supported for the download.</p>
+<p>In order to use the Downloader plugin you must show a persistent notification, as it is a foreground
+service. This is achieved through the <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadNotificationProvider.html"><code class="docutils literal"><span class="pre">DownloadNotificationProvider</span></code></a>
+abstract class.</p>
+<p>First, the application needs to register the downloader plugin prior to PRESTOplay SDK for Android initialization:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">DownloaderPlugin</span><span class="o">(</span><span class="n">notificationProvider</span><span class="o">));</span>
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>Please note that by default the downloader will permit 10 parallel segment downloads. You can
+configure this number in the <cite>DownloaderPlugin</cite> constructor, for example:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">DownloaderPlugin</span><span class="o">(</span><span class="n">notificationProvider</span><span class="o">,</span> <span class="mi">5</span><span class="o">));</span>
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>The downloader is a foreground service and the applications need to use
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html"><code class="docutils literal"><span class="pre">DownloadServiceBinder</span></code></a> in order to gain access to the downloader:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">DownloadServiceBinder</span> <span class="n">downloadServiceBinder</span><span class="o">;</span>
+<span class="n">ServiceConnection</span> <span class="n">downloadServiceConnection</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServiceConnection</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onServiceConnected</span><span class="o">(</span><span class="n">ComponentName</span> <span class="n">componentName</span><span class="o">,</span> <span class="n">IBinder</span> <span class="n">iBinder</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">downloadServiceBinder</span> <span class="o">=</span> <span class="o">(</span><span class="n">DownloadServiceBinder</span><span class="o">)</span> <span class="n">iBinder</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onServiceDisconnected</span><span class="o">(</span><span class="n">ComponentName</span> <span class="n">componentName</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">downloadServiceBinder</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not start the service on your own, always interact with it through the <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html"><code class="docutils literal"><span class="pre">DownloadServiceBinder</span></code></a>.
+The service will automatically start itself when there&#8217;s at least one download ongoing and will
+stop when there are no pending downloads.</p>
+</div>
+<p>The downloader plugin needs a <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadNotificationProvider.html"><code class="docutils literal"><span class="pre">DownloadNotificationProvider</span></code></a> implementation.</p>
+<p>This is a sample implementation that will show a progress bar in such notification.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NotificationProvider</span> <span class="kd">extends</span> <span class="n">DownloadNotificationProvider</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">NP</span><span class="o">(</span><span class="kt">int</span> <span class="n">notificationId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">(</span><span class="n">notificationId</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NonNull</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Notification</span> <span class="nf">getNotification</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">DownloadServiceBinder</span> <span class="n">downloadServiceBinder</span><span class="o">,</span> <span class="nd">@NonNull</span> <span class="n">Context</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Notification</span><span class="o">.</span><span class="na">Builder</span> <span class="n">builder</span><span class="o">;</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Build</span><span class="o">.</span><span class="na">VERSION</span><span class="o">.</span><span class="na">SDK_INT</span> <span class="o">&gt;=</span> <span class="n">android</span><span class="o">.</span><span class="na">os</span><span class="o">.</span><span class="na">Build</span><span class="o">.</span><span class="na">VERSION_CODES</span><span class="o">.</span><span class="na">O</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">id</span> <span class="o">=</span> <span class="s">&quot;content_download_channel&quot;</span><span class="o">;</span>
+            <span class="n">createNotificationChannel</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+            <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Notification</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Notification</span><span class="o">.</span><span class="na">Builder</span><span class="o">(</span><span class="n">context</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="n">builder</span><span class="o">.</span><span class="na">setContentTitle</span><span class="o">(</span><span class="n">context</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">string</span><span class="o">.</span><span class="na">app_name</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">setAutoCancel</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span>
+                <span class="o">.</span><span class="na">setSmallIcon</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">drawable</span><span class="o">.</span><span class="na">ic_cloud_download_black_24dp</span><span class="o">);</span>
+
+        <span class="n">List</span><span class="o">&lt;</span><span class="n">Download</span><span class="o">&gt;</span> <span class="n">downloads</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">downloads</span> <span class="o">=</span> <span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">getDownloads</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="kt">long</span> <span class="n">totalSize</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="kt">long</span> <span class="n">downloadedSize</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="kt">boolean</span> <span class="n">allCompleted</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+
+        <span class="c1">// Compute sum for all downloads</span>
+        <span class="k">for</span> <span class="o">(</span><span class="n">Download</span> <span class="n">download</span> <span class="o">:</span> <span class="n">downloads</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">totalSize</span> <span class="o">+=</span> <span class="n">download</span><span class="o">.</span><span class="na">getEstimatedSize</span><span class="o">();</span>
+            <span class="n">downloadedSize</span> <span class="o">+=</span> <span class="n">download</span><span class="o">.</span><span class="na">getDownloadedSize</span><span class="o">();</span>
+            <span class="n">allCompleted</span> <span class="o">=</span> <span class="n">allCompleted</span> <span class="o">&amp;&amp;</span> <span class="n">download</span><span class="o">.</span><span class="na">getState</span><span class="o">()</span> <span class="o">==</span> <span class="n">Download</span><span class="o">.</span><span class="na">STATE_DONE</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="k">if</span> <span class="o">(</span><span class="n">allCompleted</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">builder</span><span class="o">.</span><span class="na">setContentText</span><span class="o">(</span><span class="s">&quot;Downloads finished&quot;</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setProgress</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">false</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setOngoing</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="kt">double</span> <span class="n">progress</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="n">downloadedSize</span> <span class="o">/</span> <span class="n">totalSize</span><span class="o">;</span>
+            <span class="n">builder</span><span class="o">.</span><span class="na">setContentText</span><span class="o">(</span><span class="s">&quot;Downloading content&quot;</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setProgress</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="o">(</span><span class="mf">100.0</span> <span class="o">*</span> <span class="n">progress</span><span class="o">),</span> <span class="kc">false</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">setOngoing</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadNotificationProvider.html#getNotification-com.castlabs.sdk.downloader.DownloadServiceBinder-android.content.Context-"><code class="docutils literal"><span class="pre">getNotification</span></code></a> method will be called after each downloader event (explained below).</p>
+<p>If you want to change this behaviour you can override the <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadNotificationProvider.html#onDownloadEvent-com.castlabs.sdk.downloader.DownloadServiceBinder-android.content.Intent-"><code class="docutils literal"><span class="pre">onDownloadEvent</span></code></a> method.</p>
+<p>To start with the new download the application provides <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadService.html"><code class="docutils literal"><span class="pre">DownloadService</span></code></a> with the <code class="docutils literal"><span class="pre">Bundle</span></code>
+so that the downloader can fetch and parse the manifest and prepare the
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/Download.html"><code class="docutils literal"><span class="pre">Download</span></code></a> model. The <code class="docutils literal"><span class="pre">Bundle</span></code> should hold the following keys:</p>
+<ul class="simple">
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_URL"><code class="docutils literal"><span class="pre">INTENT_URL</span></code></a> expects a <code class="docutils literal"><span class="pre">String</span></code> (mandatory),</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_DOWNLOAD_ID"><code class="docutils literal"><span class="pre">INTENT_DOWNLOAD_ID</span></code></a> expects a <code class="docutils literal"><span class="pre">String</span></code> (mandatory),</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_DOWNLOAD_FOLDER"><code class="docutils literal"><span class="pre">INTENT_DOWNLOAD_FOLDER</span></code></a> expects a <code class="docutils literal"><span class="pre">String</span></code> (mandatory),</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_DRM_CONFIGURATION"><code class="docutils literal"><span class="pre">INTENT_DRM_CONFIGURATION</span></code></a> expects a <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmConfiguration.html"><code class="docutils literal"><span class="pre">DrmConfiguration</span></code></a> (optional),</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_CONTENT_TYPE"><code class="docutils literal"><span class="pre">INTENT_CONTENT_TYPE</span></code></a> expects one of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#CONTENT_TYPE_UNKNOWN"><code class="docutils literal"><span class="pre">CONTENT_TYPE_UNKNOWN</span></code></a> for auto-detection, <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#CONTENT_TYPE_DASH"><code class="docutils literal"><span class="pre">CONTENT_TYPE_DASH</span></code></a>, <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#CONTENT_TYPE_SMOOTHSTREAMING"><code class="docutils literal"><span class="pre">CONTENT_TYPE_SMOOTHSTREAMING</span></code></a>, or <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#CONTENT_TYPE_MP4"><code class="docutils literal"><span class="pre">CONTENT_TYPE_MP4</span></code></a></li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_HD_CONTENT_FILTER"><code class="docutils literal"><span class="pre">INTENT_HD_CONTENT_FILTER</span></code></a> expects an integer bit field</li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_VIDEO_SIZE_FILTER"><code class="docutils literal"><span class="pre">INTENT_VIDEO_SIZE_FILTER</span></code></a> expects <code class="docutils literal"><span class="pre">Point</span></code> defining the video size filter or one of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_SIZE_FILTER_NONE"><code class="docutils literal"><span class="pre">VIDEO_SIZE_FILTER_NONE</span></code></a>, <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_SIZE_FILTER_AUTO"><code class="docutils literal"><span class="pre">VIDEO_SIZE_FILTER_AUTO</span></code></a></li>
+<li><a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_VIDEO_CODEC_FILTER"><code class="docutils literal"><span class="pre">INTENT_VIDEO_CODEC_FILTER</span></code></a> expects one of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_CODEC_FILTER_NONE"><code class="docutils literal"><span class="pre">VIDEO_CODEC_FILTER_NONE</span></code></a>, <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#VIDEO_CODEC_FILTER_CAPS"><code class="docutils literal"><span class="pre">VIDEO_CODEC_FILTER_CAPS</span></code></a></li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">String</span> <span class="n">downloadId</span> <span class="o">=</span> <span class="s">&quot;ID&quot;</span><span class="o">;</span>
+<span class="n">File</span> <span class="n">moviesFolder</span> <span class="o">=</span> <span class="n">Environment</span><span class="o">.</span><span class="na">getExternalStoragePublicDirectory</span><span class="o">(</span><span class="n">Environment</span><span class="o">.</span><span class="na">DIRECTORY_MOVIES</span><span class="o">);</span>
+<span class="n">File</span> <span class="n">target</span> <span class="o">=</span> <span class="k">new</span> <span class="n">File</span><span class="o">(</span><span class="n">moviesFolder</span><span class="o">,</span> <span class="s">&quot;Downloads/&quot;</span> <span class="o">+</span> <span class="n">downloadId</span><span class="o">);</span>
+
+<span class="n">Bundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_URL</span><span class="o">,</span> <span class="s">&quot;MANIFEST_URL&quot;</span><span class="o">);</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_DOWNLOAD_ID</span><span class="o">,</span> <span class="n">downloadId</span><span class="o">);</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_DOWNLOAD_FOLDER</span><span class="o">,</span> <span class="n">target</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+
+<span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">prepareDownload</span><span class="o">(</span><span class="n">context</span><span class="o">,</span> <span class="n">bundle</span><span class="o">,</span> <span class="k">new</span> <span class="n">Downloader</span><span class="o">.</span><span class="na">ModelReadyCallback</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onError</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Error while preparing download: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onModelAvailable</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Download</span> <span class="n">download</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// initiate selection here of video quality, audio and subtitle tracks</span>
+        <span class="c1">// either automatically or manually</span>
+    <span class="o">}</span>
+<span class="o">});</span>
+</pre></div>
+</div>
+<p>The client callback <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/Downloader.ModelReadyCallback.html"><code class="docutils literal"><span class="pre">ModelReadyCallback</span></code></a> is invoked
+when the <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/Download.html"><code class="docutils literal"><span class="pre">Download</span></code></a> model is ready. Now the desired video quality,
+audio and subtitle tracks have to be selected by the application either automatically or manually:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">download</span><span class="o">.</span><span class="na">setSelectedVideoTrackQuality</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+<span class="n">download</span><span class="o">.</span><span class="na">setSelectedAudioTracks</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[]{</span><span class="mi">0</span><span class="o">});</span>
+</pre></div>
+</div>
+<p>And finally the download needs to be registered in the downloader and optionally started:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">createDownload</span><span class="o">(</span><span class="n">download</span><span class="o">,</span> <span class="kc">true</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>The downloader keeps the list of downloads with states and each download can be paused, resumed and deleted independently:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">List</span><span class="o">&lt;</span><span class="n">Download</span><span class="o">&gt;</span> <span class="n">downloads</span> <span class="o">=</span> <span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">getDownloads</span><span class="o">();</span>
+
+<span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">pauseDownload</span><span class="o">(</span><span class="n">downloads</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">getId</span><span class="o">());</span>
+<span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">resumeDownload</span><span class="o">(</span><span class="n">downloads</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">getId</span><span class="o">());</span>
+<span class="n">downloadServiceBinder</span><span class="o">.</span><span class="na">deleteDownload</span><span class="o">(</span><span class="n">downloads</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">getId</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>Note that <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html#createDownload-com.castlabs.sdk.downloader.Download-boolean-"><code class="docutils literal"><span class="pre">createDownload</span></code></a>,
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html#deleteDownload-java.lang.String-"><code class="docutils literal"><span class="pre">deleteDownload</span></code></a>,
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html#resumeDownload-java.lang.String-"><code class="docutils literal"><span class="pre">resumeDownload</span></code></a> and
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html#pauseDownload-java.lang.String-"><code class="docutils literal"><span class="pre">pauseDownload</span></code></a> are asynchronous and the results are broadcasted using <code class="docutils literal"><span class="pre">LocalBroadcastManager</span></code>.
+The following messages reflecting the downloader state change are defined:</p>
+<ul class="simple">
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_STOPPED"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_STOPPED</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_CREATED"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_CREATED</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_STARTED"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_STARTED</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_DELETED"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_DELETED</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_COMPLETED"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_COMPLETED</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_NO_PENDING"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_NO_PENDING</span></code></a>,</li>
+<li><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_ERROR</span></code>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_STORAGE_LOW"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_STORAGE_LOW</span></code></a>,</li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_STORAGE_OK"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_STORAGE_OK</span></code></a></li>
+<li><a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_PROGRESS"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_PROGRESS</span></code></a></li>
+</ul>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">IntentFilter</span> <span class="n">filter</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntentFilter</span><span class="o">();</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addCategory</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">INTENT_DOWNLOAD_CATEGORY</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_ERROR</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STOPPED</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_CREATED</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STARTED</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_DELETED</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_COMPLETED</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_NO_PENDING</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STORAGE_OK</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STORAGE_LOW</span><span class="o">);</span>
+<span class="n">filter</span><span class="o">.</span><span class="na">addAction</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_PROGRESS</span><span class="o">);</span>
+
+<span class="n">LocalBroadcastManager</span><span class="o">.</span><span class="na">getInstance</span><span class="o">(</span><span class="n">context</span><span class="o">).</span><span class="na">registerReceiver</span><span class="o">(</span><span class="k">new</span> <span class="n">BroadcastReceiver</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onReceive</span><span class="o">(</span><span class="n">Context</span> <span class="n">context</span><span class="o">,</span> <span class="n">Intent</span> <span class="n">intent</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">String</span> <span class="n">downloadId</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="na">getStringExtra</span><span class="o">(</span><span class="n">MessageHandler</span><span class="o">.</span><span class="na">INTENT_DOWNLOAD_ID</span><span class="o">);</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">d</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Message: &quot;</span> <span class="o">+</span> <span class="n">intent</span><span class="o">.</span><span class="na">getAction</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;, download Id: &quot;</span> <span class="o">+</span> <span class="n">downloadId</span><span class="o">);</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">intent</span><span class="o">.</span><span class="na">getAction</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STOPPED</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_CREATED</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STARTED</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_DELETED</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_COMPLETED</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_NO_PENDING</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_ERROR</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STORAGE_LOW</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_STORAGE_OK</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">case</span> <span class="n">MessageHandler</span><span class="o">.</span><span class="na">ACTION_DOWNLOAD_PROGRESS</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">break</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">},</span> <span class="n">filter</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>Note that when the system storage becomes low all the downloads will be paused automatically and message
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/MessageHandler.html#ACTION_DOWNLOAD_STORAGE_LOW"><code class="docutils literal"><span class="pre">ACTION_DOWNLOAD_STORAGE_LOW</span></code></a> will be sent.
+The device storage should then be cleaned up by the application either manually or automatically and the downloads should
+be resumed.</p>
+<p>The downloader is a sticky service and will continue downloads after the system re-creates it (e.g. when the service process is killed).</p>
+<p>To start the playback of the downloaded content the application should follow <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a> with some additional keys:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">Intent</span> <span class="n">intent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Intent</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">PlayerActivity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_URL</span><span class="o">,</span> <span class="n">download</span><span class="o">.</span><span class="na">getLocalManifestUrl</span><span class="o">());</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_DRM_CONFIGURATION</span><span class="o">,</span> <span class="n">download</span><span class="o">.</span><span class="na">getDrmConfiguration</span><span class="o">());</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_DOWNLOAD_FOLDER</span><span class="o">,</span> <span class="n">target</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>The downloader will always download one asset (movie) at a time. The reasoning for this behaviour is
+that, assuming constant bandwidth for all the assets, the amount of time for all the downloads to
+complete would be equal regardless they&#8217;re downloaded either sequentially or in parallel. In addition,
+with sequential downloading, the first asset will be ready for playback sooner and should the
+connection be lost, only one download would be affected.</p>
+</div>
+<div class="section" id="analytics">
+<h2>Analytics<a class="headerlink" href="#analytics" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android offers plugins to integrate the following third party analytics services:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://youbora.com/">Youbora</a></li>
+<li><a class="reference external" href="http://www.nielsen.com/">Nielsen</a></li>
+<li><a class="reference external" href="http://www.conviva.com/">Conviva</a> and</li>
+<li><a class="reference external" href="http://www.broadpeak.tv/">Broadpeak</a></li>
+</ul>
+</div></blockquote>
+<p>The integrations use a common interface <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/AnalyticsSession.html"><code class="docutils literal"><span class="pre">AnalyticsSession</span></code></a> to expose a running session.
+Please note though that for the most common use-cases, you will not need
+to interact with the analytics session directly. The plugins are
+integrated with the player and trigger the calls against the analytics
+session automatically.</p>
+<p>By default the analytics session is created and started whenever a stream is opened with
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#open-android.os.Bundle-"><code class="docutils literal"><span class="pre">open(Bundle)</span></code></a>.
+However, it is also possible to create and start the analytics later, upon <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#play--"><code class="docutils literal"><span class="pre">play()</span></code></a>.
+This option is useful when the playback does not start automatically and the user has to actively trigger playback start:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Add the analytics session option</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putInt</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_ANALYTICS_SESSION_TYPE</span><span class="o">,</span> <span class="n">SdkConsts</span><span class="o">.</span><span class="na">ANALYTICS_SESSION_TYPE_PLAY</span><span class="o">);</span>
+<span class="c1">// Add the option not to start playback automatically</span>
+<span class="n">bundle</span><span class="o">.</span><span class="na">putBoolean</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_START_PLAYING</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>All the analytics plugins use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/AnalyticsMetaData.html"><code class="docutils literal"><span class="pre">AnalyticsMetaData</span></code></a>
+provided to the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> by the client application either
+explicitly through <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setAnalyticsMetaData-com.castlabs.analytics.AnalyticsMetaData-"><code class="docutils literal"><span class="pre">setAnalyticsMetaData</span></code></a>,
+or through the <code class="docutils literal"><span class="pre">Intent</span></code> (see <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a> for an example
+on how to use a <code class="docutils literal"><span class="pre">Intent</span></code> to configure the player). The analytics metadata has to be created and passed before starting the playback.</p>
+<p>Passing the metadata through the intent:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Create analytics meta-data</span>
+<span class="n">AnalyticsMetaData</span> <span class="n">analyticsMetaData</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnalyticsMetaData</span><span class="o">(</span><span class="n">isLive</span><span class="o">,</span> <span class="n">assetId</span><span class="o">);</span>
+
+<span class="c1">// Set analytics common values</span>
+<span class="n">analyticsMetaData</span><span class="o">.</span><span class="na">viewerId</span> <span class="o">=</span> <span class="n">prefs</span><span class="o">.</span><span class="na">getUserName</span><span class="o">();</span>
+<span class="c1">// ...</span>
+
+<span class="c1">// Set analytics custom values</span>
+<span class="n">Bundle</span> <span class="n">customValues</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">customValues</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;title&quot;</span><span class="o">,</span> <span class="s">&quot;.....&quot;</span><span class="o">);</span>
+<span class="n">customValues</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;cdn&quot;</span><span class="o">,</span> <span class="s">&quot;.....&quot;</span><span class="o">);</span>
+<span class="n">analyticsMetaData</span><span class="o">.</span><span class="na">extra</span><span class="o">.</span><span class="na">putBundle</span><span class="o">(</span><span class="s">&quot;media&quot;</span><span class="o">,</span> <span class="n">customValues</span><span class="o">);</span>
+
+<span class="c1">// Set the analytics meta-data</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_ANALYTICS_DATA</span><span class="o">,</span> <span class="n">analyticsMetaData</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>By default, <cite>AnalyticSession</cite> are started and stopped automatically by the <cite>PlayerController</cite>. Sessions start
+whenever playback starts, and stop whenever content ends or the <cite>PlayerController</cite> is disposed.</p>
+<p>If you want to avoid this, and persist a session beyond the <cite>PlayerController</cite> lifecycle, you can
+do the following.</p>
+<p>In your teardown code, get the reference to the currently used <cite>AnalyticsSession</cite> and detach it
+from the <cite>PlayerController</cite> before releasing it.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Keep analytics session, analyticsSession is a class variable</span>
+<span class="n">analyticsSession</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">getAnalyticsSession</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">analyticsSession</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// Unbind this AnalyticsSession from the PlayerController</span>
+    <span class="n">analyticsSession</span><span class="o">.</span><span class="na">detachFromController</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="c1">// Release player</span>
+<span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">release</span><span class="o">();</span>
+</pre></div>
+</div>
+<p>While in this state. The <cite>AnalyticsSession</cite> will be still alive and likely, depending on the analytics provider,
+sending keep-alive traces.</p>
+<p>When you want to re-attach the <cite>AnalyticsSession</cite> to the <cite>PlayerController</cite> instance, which can be
+the same or a completely new instance, you just need to set it <strong>before</strong> its <code class="docutils literal"><span class="pre">open()</span></code> method.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Restore ongoing AnalyticsSession</span>
+<span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">setAnalyticsSession</span><span class="o">(</span><span class="n">analyticsSession</span><span class="o">);</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">open</span><span class="o">(</span><span class="n">intent</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Error while opening player: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">(),</span> <span class="n">e</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>If a non-null <cite>AnalyticsSession</cite> is set, it will be used instead of creating a new session.</p>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/AnalyticsSession.html#detachFromController--"><code class="docutils literal"><span class="pre">detachFromController</span></code></a>
+method returns a boolean indicating if the AnalyticsSession could successfully unbind itself from
+the <cite>PlayerController</cite>. This <em>may not</em> be supported by all the analytics providers.</p>
+<p>You should <strong>never use the same AnalyticsSession concurrently in more than one instance of PlayerController</strong>.
+Make sure to always call <code class="docutils literal"><span class="pre">detachFromController()</span></code> before setting the <cite>AnalyticsSession</cite> to a new
+<cite>PlayerController</cite>.</p>
+<div class="section" id="id2">
+<h3>Youbora<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android bundles an integration for <a class="reference external" href="http://youbora.com/">Youbora</a>, the
+Analytics Service from <em>Nice People At Work</em>.</p>
+<p>If you are coming from a PRESTOplay SDK for Android version 4.1.9 or earlier and want to update your integration refer to the
+<a class="reference internal" href="#update-youbora-4110"><span>Update from PRESTOplay SDK for Android version 4.1.9 or earlier</span></a> section.</p>
+<p>The plugin and all its dependencies are part of the bundle repository and can be added as
+a dependency to your application build:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:youbora-plugin:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>You should also add NPAW&#8217;s public Maven repository to your gradle file in order to get their binaries:</p>
+<div class="highlight-python"><div class="highlight"><pre>repositories {
+    ...
+    maven { url &#39;http://dl.bintray.com/npaw/youbora&#39; }
+    ...
+}
+</pre></div>
+</div>
+<p>This will add the <code class="docutils literal"><span class="pre">YouboraPlugin</span></code> to your project.</p>
+<p>You can register the plugin with the SDK:</p>
+<div class="highlight-python"><div class="highlight"><pre>PlayerSDK.register(new YouboraPlugin(YOUBORA_CUSTOMER_KEY));
+</pre></div>
+</div>
+<p>Note that you have to pass a valid <em>Youbora</em> <em>accountCode</em> to the
+constructor in order to initialize the plugin and get access to the
+backend service.</p>
+<p>In addition, you can use the Youbora <a class="reference external" href="http://developer.nicepeopleatwork.com/apidocs/android6/com/npaw/youbora/lib6/plugin/Options.html" target="_blank">Options</a> object to customize
+the plugin configuration.</p>
+<p>You should create the Options object and fill it with the desired config. This object
+will be later passed to the <code class="docutils literal"><span class="pre">createMetadata</span></code>
+method.</p>
+<p>Please refer to more details about possible options to the <cite>Youbora</cite> documentation.</p>
+<p>By default, the plugin overrides the following global options upon initialization:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">accountCode</span></code> is always set to the systemId you pass in the plugin constructor</li>
+<li><code class="docutils literal"><span class="pre">username</span></code> is set to <code class="docutils literal"><span class="pre">analyticsMetadata.viewerId</span></code></li>
+<li><code class="docutils literal"><span class="pre">contentIsLive</span></code> is set to <code class="docutils literal"><span class="pre">analyticsMetadata.live</span></code></li>
+</ul>
+</div></blockquote>
+<p>Also, the following fields may be filled by the plugin, if they are not informed:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">content_id</span></code> inside <code class="docutils literal"><span class="pre">contentMetadata</span></code> will be filled with <code class="docutils literal"><span class="pre">analyticsMetadata.assetId</span></code></li>
+<li><code class="docutils literal"><span class="pre">contentDuration</span></code> will be filled with <code class="docutils literal"><span class="pre">analyticsMetadata.durationSeconds</span></code></li>
+<li><code class="docutils literal"><span class="pre">contentResource</span></code> will be filled with PlayerController&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getPath--"><code class="docutils literal"><span class="pre">getPath</span></code></a> return value</li>
+</ul>
+</div></blockquote>
+<p>The <cite>Youbora</cite> documentations lists more options you can pass in the global
+configuration.</p>
+<p>Passing <cite>Youbora</cite> configuration to the player:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Create Youbora Options object</span>
+<span class="n">Options</span> <span class="n">youboraOptions</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Options</span><span class="o">();</span>
+
+<span class="c1">// Set any desired fields</span>
+<span class="n">youboraOptions</span><span class="o">.</span><span class="na">setContentTitle</span><span class="o">(</span><span class="s">&quot;Movie&quot;</span><span class="o">);</span>
+
+<span class="c1">// Extra properties</span>
+<span class="n">Bundle</span> <span class="n">properties</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+<span class="n">properties</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;language&quot;</span><span class="o">,</span> <span class="s">&quot;English&quot;</span><span class="o">);</span>
+<span class="n">properties</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;year&quot;</span><span class="o">,</span> <span class="s">&quot;2018&quot;</span><span class="o">);</span>
+<span class="n">properties</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;price&quot;</span><span class="o">,</span> <span class="s">&quot;Free&quot;</span><span class="o">);</span>
+
+<span class="n">youboraOptions</span><span class="o">.</span><span class="na">setContentMetadata</span><span class="o">(</span><span class="n">properties</span><span class="o">);</span>
+
+<span class="c1">// Create AnalyticsMetadata</span>
+<span class="n">AnalyticsMetaData</span> <span class="n">analyticsMetaData</span> <span class="o">=</span> <span class="n">YouboraPlugin</span><span class="o">.</span><span class="na">createMetadata</span><span class="o">(</span>
+        <span class="kc">false</span><span class="o">,</span>              <span class="c1">// Live or not, will set analyticsMetadata.live</span>
+        <span class="n">prefs</span><span class="o">.</span><span class="na">getAssetId</span><span class="o">(),</span> <span class="c1">// Unique asset identifier, will set analyticsMetadata.assetId</span>
+        <span class="n">youboraOptions</span><span class="o">);</span>    <span class="c1">// Youbora Options object</span>
+
+<span class="c1">// Set a user ID</span>
+<span class="n">analyticsMetaData</span><span class="o">.</span><span class="na">viewerId</span> <span class="o">=</span> <span class="n">prefs</span><span class="o">.</span><span class="na">getUserName</span><span class="o">();</span>
+
+<span class="c1">// Set the analytics meta-data</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_ANALYTICS_DATA</span><span class="o">,</span> <span class="n">analyticsMetaData</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>In this example, we create the meta-data and then pass it to the Intent
+Bundle that is used to start playback.</p>
+<p>With this meta-data configuration in place and passed to the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> either through the
+Intent Bundle or explicitly trough <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setAnalyticsMetaData-com.castlabs.analytics.AnalyticsMetaData-"><code class="docutils literal"><span class="pre">setAnalyticsMetaData</span></code></a>,
+the session will be automatically started and stopped.</p>
+<div class="section" id="update-from-sdk-version-4-1-9-or-earlier">
+<span id="update-youbora-4110"></span><h4>Update from PRESTOplay SDK for Android version 4.1.9 or earlier<a class="headerlink" href="#update-from-sdk-version-4-1-9-or-earlier" title="Permalink to this headline">¶</a></h4>
+<p>The PRESTOplay SDK for Android version 4.1.10 updates the Youbora integration to version 6. This introduces some breaking
+changes that are detailed here.</p>
+<p>The Youbora binaries are now distributed in a Maven public repository. So you will need to add NPAW&#8217;s
+repository to your gradle file:</p>
+<div class="highlight-python"><div class="highlight"><pre>repositories {
+    ...
+    maven { url &#39;http://dl.bintray.com/npaw/youbora&#39; }
+    ...
+}
+</pre></div>
+</div>
+<p>The Youbora plugin is now configured through a custom configuration object; <code class="docutils literal"><span class="pre">Options</span></code>,
+instead of a <code class="docutils literal"><span class="pre">Map</span></code>.</p>
+<p>Refer to the Youbora developers portal for a complete explanation about these Options and how to
+migrate them to V6; <a class="reference external" href="http://developer.nicepeopleatwork.com/plugins/general/setting-youbora-options/" target="_blank">Setting Youbora Options</a>.</p>
+<p>You should create the <code class="docutils literal"><span class="pre">Options</span></code> object and fill it with the desired config. This object
+will be later passed to the <code class="docutils literal"><span class="pre">createMetadata</span></code>
+method.</p>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Nielsen<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android is integrated with <a class="reference external" href="http://www.nielsen.com/">Nielsen</a> service in the form of a plugin. This plugin needs
+to be registered and enabled by the client application:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">NielsenPlugin</span><span class="o">(</span><span class="n">NIELSEN_APP_ID</span><span class="o">,</span> <span class="n">NIELSEN_APP_NAME</span><span class="o">,</span> <span class="n">NielsenPlugin</span><span class="o">.</span><span class="na">SF_CODE_DCR</span><span class="o">));</span>
+<span class="o">...</span>
+<span class="n">NielsenPlugin</span> <span class="n">nielsen</span> <span class="o">=</span> <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">getPlugin</span><span class="o">(</span><span class="n">NielsenPlugin</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">nielsen</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">nielsen</span><span class="o">.</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The <cite>Nielsen</cite> plugin benefits from the PRESTOplay SDK for Android integrated with <cite>IMA</cite> service and provides two use cases out of
+the box: content with and without <cite>IMA</cite> advertisements. See an example above on how to use the PRESTOplay SDK for Android plugin integrated with <cite>IMA</cite>.</p>
+<p>The plugin sends content and ads metadata to the <cite>Nielsen</cite> backend. The content metadata is taken by the plugin from the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/AnalyticsMetaData.html"><code class="docutils literal"><span class="pre">AnalyticsMetaData</span></code></a>. The advertisements metadata is taken from <cite>IMA</cite> <code class="docutils literal"><span class="pre">Ad</span></code> object.
+However, when needed, the advertisement metadata can be enriched by the client application by implementing and
+registering <code class="docutils literal"><span class="pre">AdClientInterface.Listener</span></code>:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerView</span> <span class="n">playerView</span><span class="o">;</span>
+<span class="o">...</span>
+
+<span class="n">AdController</span> <span class="n">adController</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">getAdController</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">adController</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">setClientListener</span><span class="o">(</span><span class="k">new</span> <span class="n">AdClientInterface</span><span class="o">.</span><span class="na">Listener</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nd">@Nullable</span>
+        <span class="kd">public</span> <span class="n">Bundle</span> <span class="nf">onGetMetadata</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Ad</span> <span class="n">ad</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">Bundle</span> <span class="n">bundle</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Bundle</span><span class="o">();</span>
+            <span class="n">bundle</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="s">&quot;cdn&quot;</span><span class="o">,</span> <span class="s">&quot;.....&quot;</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">bundle</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>It is also possible that instead of the integrated <cite>IMA</cite> service the client uses its own implementation of an ads provider.
+In this case, the client needs to take care of content and ads playback switches and the plugin only forwards the
+ads metadata to the <cite>Nielsen</cite> backend:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">PlayerView</span> <span class="n">playerView</span><span class="o">;</span>
+<span class="o">...</span>
+
+<span class="n">AdController</span> <span class="n">adController</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">getAdController</span><span class="o">();</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">adController</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">adStarted</span><span class="o">(</span><span class="k">new</span> <span class="n">Ad</span><span class="o">());</span>
+    <span class="o">...</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">adSetPlaybackPosition</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">adSetPlaybackPosition</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+    <span class="o">...</span>
+    <span class="n">adController</span><span class="o">.</span><span class="na">adCompleted</span><span class="o">();</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Note, that in the latter case the ads metadata enrichment is also possible.</p>
+</div>
+<div class="section" id="id6">
+<h3>Conviva<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android is integrated with <a class="reference external" href="http://www.conviva.com/">Conviva</a> analytics service in the form of <cite>Conviva</cite> plugin.
+The <cite>Conviva</cite> plugin is part of the bundle repository and can be added as a dependency in the application gradle:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:conviva-plugin:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>This will add <cite>Conviva</cite> plugin to the project and the plugin can be registered with the PRESTOplay SDK for Android:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ConvivaPlugin</span> <span class="n">conviva</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConvivaPlugin</span><span class="o">(</span><span class="n">CONVIVA_CUSTOMER_KEY</span><span class="o">);</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="n">conviva</span><span class="o">.</span><span class="na">getClientSettings</span><span class="o">().</span><span class="na">gatewayUrl</span> <span class="o">=</span> <span class="n">CONVIVA_TOUCHSTONE_GATEWAY</span><span class="o">;</span>
+    <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">conviva</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="n">TAG</span><span class="o">,</span> <span class="s">&quot;Invalid Conviva customer key!&quot;</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The <cite>Conviva</cite> plugin benefits from the PRESTOplay SDK for Android integrated with <cite>IMA</cite> service and provides with two use cases
+out of the box: content with and without <cite>IMA</cite> advertisements. The content metadata is taken by the plugin from the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/AnalyticsMetaData.html"><code class="docutils literal"><span class="pre">AnalyticsMetaData</span></code></a>. The advertisements metadata is taken from
+<cite>IMA</cite> <code class="docutils literal"><span class="pre">Ad</span></code> object.</p>
+<p>Passing <cite>Conviva</cite> metadata to the player:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Create analytics meta-data</span>
+<span class="n">AnalyticsMetaData</span> <span class="n">analyticsMetaData</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnalyticsMetaData</span><span class="o">(</span><span class="n">isLive</span><span class="o">,</span> <span class="n">assetId</span><span class="o">);</span>
+<span class="n">analyticsMetaData</span><span class="o">.</span><span class="na">viewerId</span> <span class="o">=</span> <span class="s">&quot;.....&quot;</span><span class="o">;</span>
+<span class="n">analyticsMetaData</span><span class="o">.</span><span class="na">extra</span><span class="o">.</span><span class="na">putString</span><span class="o">(</span><span class="n">ConvivaAnalyticsSession</span><span class="o">.</span><span class="na">META_KEY_APPLICATION_NAME</span><span class="o">,</span> <span class="s">&quot;.....&quot;</span><span class="o">);</span>
+
+<span class="c1">// Set the analytics meta-data</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">SdkConsts</span><span class="o">.</span><span class="na">INTENT_ANALYTICS_DATA</span><span class="o">,</span> <span class="n">analyticsMetaData</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>This <cite>Conviva</cite> plugin also exposes the underlying Client instance. This may be useful for advanced use cases, such as
+sending custom events.</p>
+<p>To send a Conviva custom event:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// Get the Analytics session</span>
+<span class="n">ConvivaAnalyticsSession</span> <span class="n">convivaAnalyticsSession</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getPlayerController</span><span class="o">().</span><span class="na">getComponent</span><span class="o">(</span><span class="n">ConvivaAnalyticsSession</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">convivaAnalyticsSession</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="c1">// Fill custom map</span>
+    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">customData</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="n">customData</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;now&quot;</span><span class="o">,</span> <span class="n">Long</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()));</span>
+    <span class="n">customData</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;fizz&quot;</span><span class="o">,</span> <span class="s">&quot;buzz&quot;</span><span class="o">);</span>
+
+    <span class="kt">int</span> <span class="n">sessionKey</span> <span class="o">=</span> <span class="n">convivaAnalyticsSession</span><span class="o">.</span><span class="na">getSessionKey</span><span class="o">();</span>
+    <span class="n">String</span> <span class="n">eventName</span> <span class="o">=</span> <span class="s">&quot;customEvent&quot;</span><span class="o">;</span>
+
+    <span class="c1">// Send event</span>
+    <span class="k">try</span> <span class="o">{</span>
+        <span class="n">convivaAnalyticsSession</span><span class="o">.</span><span class="na">getClient</span><span class="o">().</span><span class="na">sendCustomEvent</span><span class="o">(</span><span class="n">sessionKey</span><span class="o">,</span> <span class="n">eventName</span><span class="o">,</span> <span class="n">customData</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ConvivaException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Log</span><span class="o">.</span><span class="na">e</span><span class="o">(</span><span class="s">&quot;TAG&quot;</span><span class="o">,</span> <span class="s">&quot;Error while sending custom event&quot;</span><span class="o">);</span>
+        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h3>Broadpeak<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>The PRESTOplay SDK for Android is integrated with <a class="reference external" href="https://www.broadpeak.tv/">Broadpeak</a> analytics service in the form of <cite>Broadpeak</cite> plugin.
+The <cite>Broadpeak</cite> plugin is part of the bundle repository and can be added as a dependency in the application gradle:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:broadpeak_plugin:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>This will add <cite>Broadpeak</cite> plugin to the project and the plugin can be registered with the PRESTOplay SDK for Android:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">BroadpeakPlugin</span> <span class="n">broadpeak</span> <span class="o">=</span> <span class="k">new</span> <span class="n">BroadpeakPlugin</span><span class="o">(</span><span class="n">ANALYTICS_URL</span><span class="o">,</span> <span class="n">allowMultipath</span><span class="o">);</span>
+
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">broadpeak</span><span class="o">);</span>
+
+<span class="c1">// ...</span>
+
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+</pre></div>
+</div>
+<p>The <cite>Broadpeak</cite> plugin uses takes care of sending player metrics and managing view lifecycle calls
+as required by the underlying <cite>OTTClient</cite> class.</p>
+<p>If you want to perform any advanced operations and interact directly with the <cite>Broadpeak</cite> SDK,
+you can use the <cite>OTTClient</cite> class.</p>
+</div>
+</div>
+<div class="section" id="crash-logging">
+<h2>Crash Logging<a class="headerlink" href="#crash-logging" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/Crashlog.html"><code class="docutils literal"><span class="pre">Crashlog</span></code></a> class can be used to hook up third party crash
+reporting frameworks (such as Crashlytics). It is used throughout the SDK to
+report additional data in case a crash occurs. These data are delegated to
+registered <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/CrashReporter.html"><code class="docutils literal"><span class="pre">CrashReporter</span></code></a> instances.</p>
+<p>In order to integrate a third party service, you will need to implement
+the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/CrashReporter.html"><code class="docutils literal"><span class="pre">CrashReporter</span></code></a> interface and register it using the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/Crashlog.html#addReporter-com.castlabs.analytics.CrashReporter-"><code class="docutils literal"><span class="pre">addReporter</span></code></a> method.</p>
+<p>The SDK logs the following meta data through the crash logger class:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Key</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CL-Playback-URL</td>
+<td>The current playback URL</td>
+</tr>
+<tr class="row-odd"><td>CL-DRM-URL</td>
+<td>The license server URL</td>
+</tr>
+<tr class="row-even"><td>CL-DRM-Offline-Id</td>
+<td>The identifier used to store the offline key</td>
+</tr>
+<tr class="row-odd"><td>CL-DRM-RequestID</td>
+<td>The log request ID generated for calls to DRMToday</td>
+</tr>
+<tr class="row-even"><td>CL-DRM-AssetID</td>
+<td>The last used asset ID</td>
+</tr>
+<tr class="row-odd"><td>CL-DRM-VariantID</td>
+<td>The last used variant ID</td>
+</tr>
+<tr class="row-even"><td>CL-DRM-Type</td>
+<td>The last used DRM type (Widevine, Playready, or OMA)</td>
+</tr>
+<tr class="row-odd"><td>CL-DRM-Audio-Type</td>
+<td>The last used DRM type for Audio tracks(Widevine, Playready, or OMA)</td>
+</tr>
+<tr class="row-even"><td>CL-DRM-Type</td>
+<td>The last used DRM type (Widevine, Playready, or OMA)</td>
+</tr>
+<tr class="row-odd"><td>CL-DRM-Device-Level</td>
+<td>The security level available for the selected DRM type</td>
+</tr>
+<tr class="row-even"><td>CL-Playback-State</td>
+<td>The current playback state</td>
+</tr>
+<tr class="row-odd"><td>CL-SDK-Version</td>
+<td>The version of the PRESTOplay SDK for Android</td>
+</tr>
+<tr class="row-even"><td>CL-Playback-Video</td>
+<td>The dimensions of the currently played video representation</td>
+</tr>
+<tr class="row-odd"><td>CL-Playback-Video-Bitrate</td>
+<td>The bitrate of the currently played video representation</td>
+</tr>
+<tr class="row-even"><td>CL-Playback-Audio-Bitrate</td>
+<td>The bitrate of the currently played audio representation</td>
+</tr>
+<tr class="row-odd"><td>CL-Playback-PositionMS</td>
+<td>The current playback position in milliseconds.
+Please note that this is updated at most with a resolution
+of one second.</td>
+</tr>
+</tbody>
+</table>
+<p>In addition to the meta-data, the PRESTOplay SDK for Android will log all Exceptions that
+raised during playback as non-fatal errors to the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/Crashlog.html"><code class="docutils literal"><span class="pre">Crashlog</span></code></a>. You
+can configure this behavior globally using the global
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html#CRASHLOG_AUTO_REPORT"><code class="docutils literal"><span class="pre">PlayerSDK.CRASHLOG_AUTO_REPORT</span></code></a>
+configuration option.</p>
+<div class="section" id="crashlytics-integration">
+<h3>Crashlytics Integration<a class="headerlink" href="#crashlytics-integration" title="Permalink to this headline">¶</a></h3>
+<p>The SDK package bundles a plugin that can be used to setup and integrate
+Crashlytics with the SDK&#8217;s <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/analytics/Crashlog.html"><code class="docutils literal"><span class="pre">Crashlog</span></code></a> mechanism. To enable the plugin,
+you will need to add it as a dependency in your project setup:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:crashlytics-connector:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>With the connector added to your project dependencies, you can load and
+register the plugin before you initialize the SDK:</p>
+<div class="highlight-python"><div class="highlight"><pre>Fabric.with(getApplicationContext(), new Crashlytics());
+PlayerSDK.register(new CrashlyticsPlugin());
+PlayerSDK.init(getApplicationContext());
+</pre></div>
+</div>
+<p>Please note that the plugin does not initialize Fabric and Crashlytics for you.
+Before you register an instance of this plugin with the SDK, please make sure
+that you initialize the Fabric SDK and add at least the Crashlytics Kit.</p>
+</div>
+</div>
+<div class="section" id="user-agent">
+<h2>User Agent<a class="headerlink" href="#user-agent" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android uses a custom user agent string for all network communications
+with our DRMtoday service and to the content provider.</p>
+<p>You can use this information to monitor which SDK version, device model, or API
+are in use. As well, castLabs compiles this information to help customers solve
+issues quickly and to help improve the overall quality of the service.</p>
+<p>The parameters found on the customer User Agent are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>SDK Version: The three digit number representing the used PRESTOplay SDK for Android version.</li>
+<li>Model: The device model.</li>
+<li>API Version: The Android API version of the device.</li>
+<li>ExoPlayer Library Version: The ExoPlayer library version used by the SDK.</li>
+<li>Customer Id: An identification string for the service provider.</li>
+<li>Device Id: The device Id as provided by the operating system.</li>
+</ul>
+</div></blockquote>
+<p>In addition to these predefined values, you can register additional key value
+pairs using the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/network/UserAgent.html#register-java.lang.String-java.lang.String-"><code class="docutils literal"><span class="pre">UserAgent.register()</span></code></a> method.
+These values will be stored globally and sent with each request.</p>
+</div>
+<div class="section" id="streamroot-plugin">
+<h2>Streamroot Plugin<a class="headerlink" href="#streamroot-plugin" title="Permalink to this headline">¶</a></h2>
+<p>The SDK package bundles a plugin that can be used to setup and integrate  <a class="reference external" href="https://streamroot.io/">Streamroot DNA</a> multi-source content delivery solutions. To enable the plugin, you will need to add it as a dependency in your project setup:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:streamroot-plugin:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>The example above integrates the plugin as a dependency. You can now
+register it with the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">StreamrootPlugin</span><span class="o">(</span>
+            <span class="s">&quot;backend_url&quot;</span><span class="o">,</span>
+            <span class="k">this</span>
+        <span class="o">));</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The streamrootKey is now set as a meta-data in the application manifest.</p>
+<div class="highlight-xml"><div class="highlight"><pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest package=&quot;com.castlabs.sdk.streamroot_demo&quot; xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+   ...
+   &lt;application ... /&gt;
+       &lt;meta-data android:name=&quot;io.streamroot.dna.StreamrootKey&quot; android:value=&quot;your_streamroot_key&quot;/&gt;
+   ...
+</pre></div>
+</div>
+<p>After the plugin is registered, the player will use Streamroot DNA to create manifest and segments proxy.</p>
+</div>
+<div class="section" id="okhttp-plugin">
+<h2>OkHttp Plugin<a class="headerlink" href="#okhttp-plugin" title="Permalink to this headline">¶</a></h2>
+<p>If you want to use the popular <a class="reference external" href="http://square.github.io/okhttp/">OkHttp Library</a>,
+the SDK bundle contains a plugin that you can use to integrate OkHttp into
+the player.</p>
+<p>To use the plugin, you need to integrate it as a dependency into you
+Application build and register the plugin with the SDK:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies{
+     ...
+     compile &#39;com.castlabs.player:okhttp-plugin:1.0.0&#39;
+     ...
+}
+</pre></div>
+</div>
+<p>The example above integrates the plugin as a dependency. You can now
+register it with the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">OkHttpPlugin</span><span class="o">());</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>After the plugin is registered, the player will use OkHttp to create HTTP
+requests to manifests and content.</p>
+<div class="section" id="intercept-traffic">
+<h3>Intercept Traffic<a class="headerlink" href="#intercept-traffic" title="Permalink to this headline">¶</a></h3>
+<p>OkHttp can be also used for debugging purposes to intercept and show the
+network traffic. Please note that you should <strong>not deploy this in
+production</strong> when you publish your Application. This is a tool used for
+development and debugging purposes. You can find more information about
+Stetho, the library used for this, on their <a class="reference external" href="http://facebook.github.io/stetho/">Website</a>.</p>
+<p>In order to use the network interceptor, you will need to add additional
+dependencies to the Stetho library and its OkHttp integration:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies{
+     ...
+     compile &#39;com.castlabs.player:okhttp-plugin:1.0.0&#39;
+     compile &#39;com.facebook.stetho:stetho:1.3.1&#39;
+     compile &#39;com.facebook.stetho:stetho-okhttp3:1.3.1&#39;
+     ...
+}
+</pre></div>
+</div>
+<p>With these dependencies in place, you can setup the plugin using the
+network interceptor:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">OkHttpPlugin</span><span class="o">(</span>
+             <span class="k">new</span> <span class="n">OkHttpClient</span><span class="o">.</span><span class="na">Builder</span><span class="o">().</span><span class="na">addNetworkInterceptor</span><span class="o">(</span>
+                 <span class="k">new</span> <span class="n">StethoInterceptor</span><span class="o">())));</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">OkHttpPlugin</span><span class="o">());</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The OkHttp plugin allows you to pass a pre-configured builder in its&#8217;
+constructor. We use that to pass in a builder configured to interecept
+network traffic using Stetho.</p>
+<p>Using this extended setup allows you to use your local chrome development
+tools to intercept and show network traffic. For that, run the Application
+on a device connected via USB, start chrome and open a tab on
+<a class="reference external" href="chrome://inspect/#devices">chrome://inspect/#devices</a>. Enable USB discovery and you will see you
+Application listed. You can now inspect the network traffic of your
+application.</p>
+<div class="figure" id="id10">
+<img alt="_images/okhttp_network_intercept.jpg" src="_images/okhttp_network_intercept.jpg" />
+<p class="caption"><span class="caption-text">Network traffic inspection with Chrome Dev Tools and Stetho</span></p>
+</div>
+</div>
+</div>
+<div class="section" id="thumbnails">
+<h2>Thumbnails<a class="headerlink" href="#thumbnails" title="Permalink to this headline">¶</a></h2>
+<p>Since version 4 of the PRESTOplay SDK for Android, the bundle contains the Thumbnail plugin.
+This plugins adds support to load and display scrubbing thumbnails in
+various formats.</p>
+<p>The plugin is distributed with the SDK and you can add it as a dependency:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>dependencies {</dt>
+<dd>...
+compile &#8216;com.castlabs.player:thumbs-plugin:4.0.0&#8217;
+...</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>Once added you can register it with the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">ThumbsPlugin</span><span class="o">(</span><span class="kc">true</span><span class="o">));</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Note that we pass <code class="docutils literal"><span class="pre">true</span></code> as the constructor argument here. This will add
+the default view that can be used for basic rendering on top of
+a <code class="docutils literal"><span class="pre">PlayerView</span></code>. You can find more about the parameter in the API
+documentation for <a class="reference external" href="../../javadoc/thumbs_plugin/com/castlabs/sdk/thumbs/ThumbsPlugin.html"><code class="docutils literal"><span class="pre">ThumbsPlugin</span></code></a>.</p>
+<p>The plugin supports the following formats:</p>
+<blockquote>
+<div><ul class="simple">
+<li>BIF Containers</li>
+<li>WebVTT index</li>
+<li>Single or gridded JPG files with a template URL</li>
+</ul>
+</div></blockquote>
+<div class="section" id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h3>
+<p>You can start loading thumbnail data directly if you registered the plugin and you are loading
+your streams through an <cite>Intent Bundle</cite> (see <a class="reference internal" href="player_basics.html#start-from-intent"><span>Starting Playback from an Intent</span></a>).
+You need to create an instance of <code class="docutils literal"><span class="pre">ThumbnailData</span></code> and add it to your intent bundle
+using the <code class="docutils literal"><span class="pre">ThumbsPlugin.INTENT_THUMBNAILS_DATA</span></code> key. For example:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ThumbnailTrackData</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ThumbnailTrackData</span><span class="o">();</span>
+<span class="n">data</span><span class="o">.</span><span class="na">setUrl</span><span class="o">(</span><span class="s">&quot;thumbs/thumbs.vtt&quot;</span><span class="o">);</span>
+<span class="n">data</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="n">ThumbnailTrackData</span><span class="o">.</span><span class="na">TYPE_WEBVTT_INDEX</span><span class="o">);</span>
+<span class="o">...</span>
+<span class="n">intent</span><span class="o">.</span><span class="na">putExtra</span><span class="o">(</span><span class="n">ThumbsPlugin</span><span class="o">.</span><span class="na">INTENT_THUMBNAILS_DATA</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>This will create a data object and add it to the intent. Note that we are
+specifying the type explicitly here. This is not strictly necessary and
+the plugin will try to infer the type from the URL extension, i.e. <cite>.vtt</cite>
+vs. <cite>.bif</cite> vs. <cite>.jpg</cite>.</p>
+<p>With the data object added to the intent, an implementation of
+<a class="reference external" href="../../javadoc/thumbs_plugin/com/castlabs/sdk/thumbs/ThumbnailProvider.html"><code class="docutils literal"><span class="pre">ThumbnailProvider</span></code></a>
+will be created automatically and is exposed as a component of the
+<code class="docutils literal"><span class="pre">PlayerController</span></code>. You can access the provider instance using
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#getComponent-java.lang.Class-"><code class="docutils literal"><span class="pre">PlayerController.getComponent()</span></code></a>.
+For example:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="n">ThumbnailProvider</span> <span class="n">provider</span> <span class="o">=</span> <span class="n">playerController</span><span class="o">.</span><span class="na">getComponent</span><span class="o">(</span><span class="n">ThumbnailProvider</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="../../javadoc/thumbs_plugin/com/castlabs/sdk/thumbs/ThumbnailProvider.html"><code class="docutils literal"><span class="pre">ThumbnailProvider</span></code></a> interface is the main
+interaction point to get access to thumbnails. It provides
+a <code class="docutils literal"><span class="pre">getThumbnail</span></code> method that asynchronously loads a thumbnail for the
+requested position and provides it back the callback implementation that
+is passed to the method.</p>
+<p>At this point a view implementation can use the provider and a callback to
+get a handle on the Bitmap and show it on screen. The PRESTOplay SDK for Android already
+bundles a simple view implementation with a relatively flexible way to
+render and position a thumbnail.</p>
+</div>
+<div class="section" id="using-the-build-in-thumbnails-view">
+<h3>Using the build in thumbnails view<a class="headerlink" href="#using-the-build-in-thumbnails-view" title="Permalink to this headline">¶</a></h3>
+<p>If you registered the thumbnails plugin and enabled the usage of the
+internal view component, you do not need to create a view or interact with
+the provider explicitly. Instead, you add your <code class="docutils literal"><span class="pre">ThumbnailData</span></code> to the
+<cite>Intent Bundle</cite> and once a <cite>PlayerView</cite> is initialized, you can access the
+thumbnail view component and show or hide thumbnails on to of your player
+view.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kt">void</span> <span class="nf">onSeekbarScrubbed</span><span class="o">(</span><span class="kt">long</span> <span class="n">positionUs</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">ThumbsPlugin</span><span class="o">.</span><span class="na">ThumbnailViewComponent</span> <span class="n">thumbsView</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getComponent</span><span class="o">(</span>
+            <span class="n">ThumbsPlugin</span><span class="o">.</span><span class="na">ThumbnailViewComponent</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">thumbsView</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+        <span class="n">thumbsView</span><span class="o">.</span><span class="na">show</span><span class="o">(</span><span class="n">positionUs</span><span class="o">,</span> <span class="k">new</span> <span class="n">DefaultThumbnailView</span><span class="o">.</span><span class="na">Callback</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getThumbnailRect</span><span class="o">(</span><span class="n">Rect</span> <span class="n">output</span><span class="o">,</span> <span class="kt">int</span> <span class="n">thumbWidth</span><span class="o">,</span> <span class="kt">int</span> <span class="n">thumbHeight</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSmallScreen</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">ViewGroup</span> <span class="n">videoView</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getVideoView</span><span class="o">();</span>
+                <span class="n">output</span><span class="o">.</span><span class="na">set</span><span class="o">(</span>
+                        <span class="n">videoView</span><span class="o">.</span><span class="na">getLeft</span><span class="o">(),</span>
+                        <span class="n">videoView</span><span class="o">.</span><span class="na">getTop</span><span class="o">(),</span>
+                        <span class="n">videoView</span><span class="o">.</span><span class="na">getRight</span><span class="o">(),</span>
+                        <span class="n">videoView</span><span class="o">.</span><span class="na">getBottom</span><span class="o">());</span>
+            <span class="o">}</span>
+        <span class="o">});</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">onSeekbarReleased</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">ThumbsPlugin</span><span class="o">.</span><span class="na">ThumbnailViewComponent</span> <span class="n">thumbsView</span> <span class="o">=</span> <span class="n">playerView</span><span class="o">.</span><span class="na">getComponent</span><span class="o">(</span>
+            <span class="n">ThumbsPlugin</span><span class="o">.</span><span class="na">ThumbnailViewComponent</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="k">if</span><span class="o">(</span><span class="n">thumbsView</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">){</span>
+        <span class="n">thumbsView</span><span class="o">.</span><span class="na">hide</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The example above demonstrates the basic interactions with the
+<code class="docutils literal"><span class="pre">ThumbnailViewComponent</span></code>. Here we assume we have to methods, one that is
+called when a Seekbar is scrubbed and thumbnails should be shown, and the
+counterpart that is triggered when scrubbing stops and the thumbnails
+should be hidden. Hiding is relatively simple and a matter of calling the
+<code class="docutils literal"><span class="pre">hide()</span></code> method. Showing the thumbnails is slightly more complex. We
+call the <code class="docutils literal"><span class="pre">show()</span></code> method and pass two parameters: the time in
+microseconds for which we would like to receive a thumbnail and
+a <code class="docutils literal"><span class="pre">Callback</span></code> implementation. The callback is triggered once the Bitmap
+data are loaded. It its called with size information about the thumbnail
+as well as an <code class="docutils literal"><span class="pre">output</span></code> rectangle. The <code class="docutils literal"><span class="pre">output</span></code> rectangle needs to be
+filled with the coordinates and size of the desired thumbnail. The
+coordinates are relative to the thumbnail view container, but the default
+view container has the same dimensions as the player view. The example
+above uses the exposed video view to place the thumbnail image full-screen
+above the video, but treat this as a simple example. You can use the
+<code class="docutils literal"><span class="pre">output</span></code> rectangle to customize the size and the position of the
+resulting thumbnail.</p>
+</div>
+<div class="section" id="downloader-integration">
+<h3>Downloader integration<a class="headerlink" href="#downloader-integration" title="Permalink to this headline">¶</a></h3>
+<p>The thumbnails plugin is integrated with the Downloader Plugin, hence
+there is offline support for thumbnails as well. This is currently limited
+to <cite>BIF</cite> and <cite>WebVTT</cite> thumbnails. Just add the <code class="docutils literal"><span class="pre">ThumbnailData</span></code> to the
+Intent that is used to initiate the download and the thumbnails will be
+fetched and downloaded as well. When you start the local playback, pass
+<em>the same</em> <code class="docutils literal"><span class="pre">ThumbnailData</span></code> to the local playback intent. The player will
+translate any remote URLs automatically to the correct local files and
+relative URLs will still resolve correctly, now relative to the local
+manifest.</p>
+</div>
+</div>
+<div class="section" id="degree-playback-plugin">
+<h2>360-Degree Playback Plugin<a class="headerlink" href="#degree-playback-plugin" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android can be used with the optional 360 Degree player plugin to enable
+360 playback using the PRESTOplay SDK for Android.</p>
+<p>The plugin is distributed with the PRESTOplay SDK for Android. You can reference and load the
+360 plugin as a separate dependency:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:360-plugin:3.2.1&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>Before you can use this plugin, you have to register it before you initialize the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">ThreesixtyPlugin</span><span class="o">());</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<div class="section" id="google-cardboard">
+<h3>Google Cardboard<a class="headerlink" href="#google-cardboard" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">PlayerView360</span></code> is an extension of the
+default <cite>PlayerView</cite>. You can add it as a view component to your own activity. The view exposes the
+underlying <cite>GvrView</cite> which needs to be passed to the Google VR SDK in your activity.</p>
+<p>You can use the <cite>PlayerView360</cite> in your own Activity (that usually extends <cite>GvrActivity</cite>). The <cite>PlayerView360</cite>
+will handle all the transformations required to render the view.</p>
+<p>An example of this is the <cite>CardboardActivity</cite> class in the &#8216;threesixty_demo&#8217; sample app.</p>
+</div>
+</div>
+<div class="section" id="google-cast-manager">
+<h2>Google cast Manager<a class="headerlink" href="#google-cast-manager" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android contains the <a class="reference external" href="../../javadoc/googlecast_plugin/com/castlabs/sdk/googlecast/GoogleCastManager.html"><code class="docutils literal"><span class="pre">GoogleCastManager</span></code></a>
+class that will ease the process of starting and managing remote cast session.</p>
+<p>This class allows to start a cast session, get the current remote player state and select
+audio, video and subtitle tracks.</p>
+</div>
+<div class="section" id="drm-device-time-checker">
+<h2>Drm Device Time Checker<a class="headerlink" href="#drm-device-time-checker" title="Permalink to this headline">¶</a></h2>
+<p>The PRESTOplay SDK for Android contains the <a class="reference external" href="../../javadoc/drm_device_time_checker_plugin/com/castlabs/sdk/drm/DrmDeviceTimeCheckerPlugin.html"><code class="docutils literal"><span class="pre">DrmDeviceTimeCheckerPlugin</span></code></a>
+Plugin which is able to perform periodic checks related to DRM licensing in order to minimize some
+Widevine limitations.</p>
+<p>The plugin is distributed with the PRESTOplay SDK for Android. You can reference and load the
+Device Time Checker plugin as a separate dependency:</p>
+<div class="highlight-python"><div class="highlight"><pre>dependencies {
+    ...
+    compile &#39;com.castlabs.player:drm-device-time-checker-plugin:1.0.0&#39;
+    ...
+}
+</pre></div>
+</div>
+<p>Before you can use this plugin, you have to register it before you initialize the SDK:</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">Application</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onCreate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">onCreate</span><span class="o">();</span>
+
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">DrmDeviceTimeCheckerPlugin</span><span class="o">());</span>
+        <span class="n">PlayerSDK</span><span class="o">.</span><span class="na">init</span><span class="o">(</span><span class="n">getApplicationContext</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Optionally, you can specify the time period at which he license checks should be performed.
+Default value is every 5 minutes.</p>
+<div class="highlight-java"><div class="highlight"><pre><span class="c1">// ...</span>
+<span class="n">PlayerSDK</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">DrmDeviceTimeCheckerPlugin</span><span class="o">(</span><span class="mi">60</span><span class="o">));</span> <span class="c1">// Check every minute</span>
+<span class="c1">// ...</span>
+</pre></div>
+</div>
+<p>This plugin needs two extra Android permissions. These permissions allow to internally keep
+track of license times.</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">ACTION_BOOT_COMPLETED</span></code></li>
+<li><code class="docutils literal"><span class="pre">ACTION_TIME_CHANGED</span></code></li>
+</ul>
+</div></blockquote>
+<p>These permissions are automatically added to your AndroidManifest file once you include this
+plugin in your build file.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> Extensions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subtitles-and-closed-captions">Subtitles and Closed Captions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recovering-from-loss-of-connectivity">Recovering From Loss Of Connectivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#offline-keys">Offline Keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-media-ads-ima">Interactive Media Ads (IMA)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#downloader">Downloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analytics">Analytics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crash-logging">Crash Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#user-agent">User Agent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#streamroot-plugin">Streamroot Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#okhttp-plugin">OkHttp Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#thumbnails">Thumbnails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#degree-playback-plugin">360-Degree Playback Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#google-cast-manager">Google cast Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#drm-device-time-checker">Drm Device Time Checker</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrade_guides.html"> Upgrade Guides</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="global_config.html" title="previous chapter">Global Configuration</a></li>
+      <li>Next: <a href="player_debugging.html" title="next chapter">Player Debugging</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

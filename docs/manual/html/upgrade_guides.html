@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Upgrade Guides &mdash; castLabs Android SDK 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="castLabs Android SDK 4.2.0 documentation" href="index.html" />
+    <link rel="prev" title="Example Projects" href="examples.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="upgrade-guides">
+<h1>Upgrade Guides<a class="headerlink" href="#upgrade-guides" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-4-2">
+<h2>Changes in 4.2<a class="headerlink" href="#changes-in-4-2" title="Permalink to this headline">¶</a></h2>
+<p>The transition from version 4.1 to version 4.2 of the PRESTOplay SDK for Android involves some breaking API changes.
+We will highlight the changes here and describe the required changes that you might need to apply
+in your Application to upgrade to version 4.2.</p>
+<div class="section" id="streamingeventlistener">
+<h3>StreamingEventListener<a class="headerlink" href="#streamingeventlistener" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/StreamingEventListener.html"><code class="docutils literal"><span class="pre">StreamingEventListener</span></code></a> was used in version 4.1 to receive events about downloads
+triggered by the player library. In order to provide more information on these callbacks, we
+decided to change the method signatures slightly. Please check the API documentation for the
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/StreamingEventListener.html"><code class="docutils literal"><span class="pre">StreamingEventListener</span></code></a> interface and update your implementations accordingly. All
+information is still present, but we are exposing the underlying <cite>DataSpec</cite> as well, which allows
+you, for instance, to access the target URI of a given request.</p>
+<p>Besides the changed order and the new parameter, the only parameter that was removed from the
+signature was the <cite>length</cite>. Please use the <cite>dataSpec.length</cite> property instead.</p>
+</div>
+<div class="section" id="abstractstreameventlistener">
+<h3>AbstractStreamEventListener<a class="headerlink" href="#abstractstreameventlistener" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">AbstractStreamEventListener</span></code> is removed and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/AbstractStreamingEventListener.html"><code class="docutils literal"><span class="pre">AbstractStreamingEventListener</span></code></a> shall be used instead.</p>
+</div>
+<div class="section" id="downloader">
+<h3>Downloader<a class="headerlink" href="#downloader" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="header-and-query-parameters">
+<h4>Header and query parameters<a class="headerlink" href="#header-and-query-parameters" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">DownloadServiceBinder#getDataSourceFactory</span></code> is deprecated and  when providing the downloader
+with the additional header and query parameters, the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_HEADER_PARAMS_BUNDLE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_HEADER_PARAMS_BUNDLE</span></code></a> and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_QUERY_PARAMS_BUNDLE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_QUERY_PARAMS_BUNDLE</span></code></a> shall be used as keys in the <code class="docutils literal"><span class="pre">Bundle</span></code> passed to
+<a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/DownloadServiceBinder.html#prepareDownload-android.content.Context-android.os.Bundle-com.castlabs.sdk.downloader.Downloader$ModelReadyCallback-"><code class="docutils literal"><span class="pre">DownloadServiceBinder.prepareDownload(android.content.Context,</span> <span class="pre">android.os.Bundle,</span> <span class="pre">com.castlabs.sdk.downloader.Downloader$ModelReadyCallback)</span></code></a>.</p>
+</div>
+<div class="section" id="download-size">
+<h4>Download size<a class="headerlink" href="#download-size" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">Download#getTotalSize</span></code> is replaced with <a class="reference external" href="../../javadoc/downloader_plugin/com/castlabs/sdk/downloader/Download.html#getEstimatedSize--"><code class="docutils literal"><span class="pre">Download.getEstimatedSize()</span></code></a></p>
+</div>
+</div>
+<div class="section" id="drm">
+<h3>DRM<a class="headerlink" href="#drm" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/DrmTodayConfiguration.Builder.html#Builder-java.lang.String-java.lang.String-java.lang.String-java.lang.String-java.lang.String-com.castlabs.android.drm.Drm-"><code class="docutils literal"><span class="pre">Builder.Builder(java.lang.String,</span> <span class="pre">java.lang.String,</span> <span class="pre">java.lang.String,</span> <span class="pre">java.lang.String,</span> <span class="pre">java.lang.String,</span> <span class="pre">com.castlabs.android.drm.Drm)</span></code></a> should now be created with explicitly set <code class="docutils literal"><span class="pre">assetId</span></code>.</p>
+</div>
+<div class="section" id="keystore">
+<h3>KeyStore<a class="headerlink" href="#keystore" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/drm/KeyStore.html"><code class="docutils literal"><span class="pre">KeyStore</span></code></a> interface got promoted to an abstract class in 4.2. This is because some
+functionality was required to be implemented at this level, and shared across all KeyStore implementations.</p>
+<p>The main motivation for this change was to perform serialization of the stored data before and after
+storing and reading the data.</p>
+<p>In order to make transition easier we renamed the old interface methods, and expect the same behaviour
+from them. These correspond to the <cite>*internal</cite> named methods.</p>
+<p>In addition new methods have been added; <cite>getAll</cite>, <cite>delete</cite>, <cite>deleteAll</cite> and <cite>getCount</cite>.</p>
+</div>
+<div class="section" id="keystore-in-playercontroller">
+<h3>KeyStore in PlayerController<a class="headerlink" href="#keystore-in-playercontroller" title="Permalink to this headline">¶</a></h3>
+<p>The <cite>setKeyStore</cite> method in the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> has been removed. The static <cite>DEFAULT_KEY_STORE</cite> field
+in the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/PlayerSDK.html"><code class="docutils literal"><span class="pre">PlayerSDK</span></code></a> class should be used from now on.</p>
+</div>
+<div class="section" id="ads-ima-plugin">
+<h3>Ads &amp; IMA plugin<a class="headerlink" href="#ads-ima-plugin" title="Permalink to this headline">¶</a></h3>
+<p>The IMA plugin is now based on the Exo Player&#8217;s ads interfaces and IMA extension. The change brings mainly
+performance benefits as all the ads are now played using the same <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerView.html"><code class="docutils literal"><span class="pre">PlayerView</span></code></a> and Exo Player&#8217;s instance.
+The following client-facing ads interfaces have being updated as well:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">AdSessionProvider</span></code> is renamed to <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/adverts/AdProvider.html"><code class="docutils literal"><span class="pre">AdProvider</span></code></a> and defines interface to create <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/adverts/AdLoader.html"><code class="docutils literal"><span class="pre">AdLoader</span></code></a>. The implementation of this interface can be used for custom-based ads provider implementations.</li>
+<li><code class="docutils literal"><span class="pre">AdController</span></code> is removed and its APIs became part of <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/adverts/AdInterface.html"><code class="docutils literal"><span class="pre">AdInterface</span></code></a> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/adverts/AdClientInterface.html"><code class="docutils literal"><span class="pre">AdClientInterface</span></code></a> accessible via <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a></li>
+<li><code class="docutils literal"><span class="pre">SdkConsts.INTENT_WAIT_FOR_ADS_TO_LOAD</span></code> is deprecated and removed</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="subtitlesviewcomponent">
+<h3>SubtitlesViewComponent<a class="headerlink" href="#subtitlesviewcomponent" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/views/SubtitlesViewComponent.html"><code class="docutils literal"><span class="pre">SubtitlesViewComponent</span></code></a> <code class="docutils literal"><span class="pre">getView()</span></code> is deprecated and <code class="docutils literal"><span class="pre">componentView()</span></code> should be used instead.</p>
+</div>
+<div class="section" id="id1">
+<h3>StreamingEventListener<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="format">
+<h4>Format<a class="headerlink" href="#format" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/FormatChangeListener.html#onVideoFormatChange-com.google.android.exoplayer2.Format-int-long-com.castlabs.android.player.models.VideoTrackQuality-"><code class="docutils literal"><span class="pre">onVideoFormatChange()</span></code></a> and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/FormatChangeListener.html#onAudioFormatChange-com.google.android.exoplayer2.Format-int-long-"><code class="docutils literal"><span class="pre">onAudioFormatChange()</span></code></a> methods have been moved out
+of the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/StreamingEventListener.html"><code class="docutils literal"><span class="pre">StreamingEventListener</span></code></a> interface to the new  <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/FormatChangeListener.html"><code class="docutils literal"><span class="pre">FormatChangeListener</span></code></a>
+interface.</p>
+<p>If you were using any of those methods, you should implement <code class="docutils literal"><span class="pre">FormatChangeListener</span></code>. Then you can add and remove
+the listener to the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html"><code class="docutils literal"><span class="pre">PlayerController</span></code></a> with the <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#addFormatChangeListener-com.castlabs.android.player.FormatChangeListener-"><code class="docutils literal"><span class="pre">addFormatChangeListener()</span></code></a> and
+<a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#removeFormatChangeListener-com.castlabs.android.player.FormatChangeListener-"><code class="docutils literal"><span class="pre">removeFormatChangeListener()</span></code></a> methods respectively.</p>
+</div>
+<div class="section" id="onloaderror">
+<h4>onLoadError<a class="headerlink" href="#onloaderror" title="Permalink to this headline">¶</a></h4>
+<p>This new method will receive load error events. Note that retries will also be notified through this callback. Fatal load
+errors will still by reported by the <code class="docutils literal"><span class="pre">PlayerListener</span></code>, but now it won&#8217;t receive Warning retry calls anymore.</p>
+</div>
+<div class="section" id="retries">
+<h4>Retries<a class="headerlink" href="#retries" title="Permalink to this headline">¶</a></h4>
+<p>Now all the methods in the <code class="docutils literal"><span class="pre">StreamingEventListener</span></code> contain two extra params: <cite>currentAttempt</cite> and <cite>maxAttempts</cite>. You
+can use these params for instance in the error callback to check for a fatal error, or to know how many retries were
+required for successful loading.</p>
+</div>
+</div>
+<div class="section" id="image-loader">
+<h3>Image loader<a class="headerlink" href="#image-loader" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>The following methods are deprecated:</dt>
+<dd><ul class="first last simple">
+<li>Use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/utils/LazyImageLoader.html#loadImage-java.lang.String-android.widget.ImageView-int-"><code class="docutils literal"><span class="pre">LazyImageLoader.loadImage(java.lang.String,</span> <span class="pre">android.widget.ImageView,</span> <span class="pre">int)</span></code></a> instead of <code class="docutils literal"><span class="pre">LazyImageLoader#displayImage</span></code></li>
+<li>Use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/utils/LazyImageLoader.html#shutdown--"><code class="docutils literal"><span class="pre">LazyImageLoader.shutdown()</span></code></a> instead of <code class="docutils literal"><span class="pre">LazyImageLoader#stopThread</span></code></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="playback-configuration">
+<h3>Playback configuration<a class="headerlink" href="#playback-configuration" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>The following playback configuration options are deprecated:</dt>
+<dd><ul class="first last simple">
+<li>Initial video quality and keep flag: use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_ABR_CONFIGURATION"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_ABR_CONFIGURATION</span></code></a> instead of <code class="docutils literal"><span class="pre">SdkConsts#INTENT_INITIAL_VIDEO_QUALITY</span></code> and :javaref:<a href="#id2"><span class="problematic" id="id3">`</span></a>SdkConsts#INTENT_INITIAL_VIDEO_QUALITY_KEEP</li>
+<li><code class="docutils literal"><span class="pre">SdkConsts#INTENT_PROGRESSIVE_DOWNLOAD_ID</span></code> is not used anymore</li>
+<li>Language preferences: use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_PREFERRED_AUDIO_LANGUAGE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_PREFERRED_AUDIO_LANGUAGE</span></code></a> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_PREFERRED_TEXT_LANGUAGE"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_PREFERRED_TEXT_LANGUAGE</span></code></a> instead of <code class="docutils literal"><span class="pre">SdkConsts#INTENT_PREFERRED_LANGUAGE</span></code></li>
+<li>Live edge latency: use <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/SdkConsts.html#INTENT_LIVE_CONFIGURATION"><code class="docutils literal"><span class="pre">SdkConsts.INTENT_LIVE_CONFIGURATION</span></code></a> instead of <code class="docutils literal"><span class="pre">SdkConsts#INTENT_LIVE_EDGE_LATENCY_MS</span></code> and <a class="reference external" href="../../javadoc/player_sdk/com/castlabs/android/player/PlayerController.html#setLiveConfiguration-com.castlabs.android.player.LiveConfiguration-"><code class="docutils literal"><span class="pre">PlayerController.setLiveConfiguration(com.castlabs.android.player.LiveConfiguration)</span></code></a> instead of <code class="docutils literal"><span class="pre">PlayerController#setLiveEdgeLatency</span></code></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/img/castlabs-logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html"> Project Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_basics.html"> Player Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_controller.html"> The Player Controller</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_view.html"> The Player View</a></li>
+<li class="toctree-l1"><a class="reference internal" href="drm.html"> DRM Protection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="global_config.html"> Global Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extensions.html"> Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="player_debugging.html"> Player Debugging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html"> Example Projects</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href=""> Upgrade Guides</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#changes-in-4-2">Changes in 4.2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player_sdk/index.html#://"> SDK API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/oma_plugin/index.html#://"> OMA-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/thumbs_plugin/index.html#://"> Thumbs-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/player-ui_plugin//index.html#://"> UI-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/okhttp_plugin/index.html#://"> OkHttp-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/ima_plugin/index.html#://"> Ads API (IMA)</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/downloader_plugin/index.html#://"> Downloader API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/nielsen_plugin/index.html#://"> Nielsen API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/youbora_plugin/index.html#://"> Youbora API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/conviva_plugin/index.html#://"> Conviva-Plugin API</a></li>
+<li class="toctree-l1"><a class="reference external" href="../../javadoc/googlecast_plugin/index.html#://"> Google Cast Manager API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="examples.html" title="previous chapter">Example Projects</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, castLabs GmbH.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

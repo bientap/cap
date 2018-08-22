@@ -1,0 +1,15 @@
+com.castlabs
+com.castlabs.analytics
+com.castlabs.android
+com.castlabs.android.adverts
+com.castlabs.android.downloader
+com.castlabs.android.drm
+com.castlabs.android.network
+com.castlabs.android.player
+com.castlabs.android.player.exceptions
+com.castlabs.android.player.models
+com.castlabs.android.subtitles
+com.castlabs.android.utils
+com.castlabs.android.views
+com.castlabs.utils
+com.google.android.exoplayer2.text.ttml

@@ -1,0 +1,271 @@
+@font-face {
+  font-family: 'Fira Sans';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Fira-Sans-regular/Fira-Sans-regular.eot');
+  src: url('fonts/Fira-Sans-regular/Fira-Sans-regular.eot?#iefix') format('embedded-opentype'),
+       local('Fira Sans'),
+       local('Fira-Sans-regular'),
+       url('fonts/Fira-Sans-regular/Fira-Sans-regular.woff2') format('woff2'),
+       url('fonts/Fira-Sans-regular/Fira-Sans-regular.woff') format('woff'),
+       url('fonts/Fira-Sans-regular/Fira-Sans-regular.ttf') format('truetype'),
+       url('fonts/Fira-Sans-regular/Fira-Sans-regular.svg#FiraSans') format('svg');
+}
+
+@font-face {
+  font-family: 'Fira Sans';
+  font-weight: 400;
+  font-style: italic;
+  src: url('fonts/Fira-Sans-italic/Fira-Sans-italic.eot');
+  src: url('fonts/Fira-Sans-italic/Fira-Sans-italic.eot?#iefix') format('embedded-opentype'),
+       local('Fira Sans Italic'),
+       local('Fira-Sans-italic'),
+       url('fonts/Fira-Sans-italic/Fira-Sans-italic.woff2') format('woff2'),
+       url('fonts/Fira-Sans-italic/Fira-Sans-italic.woff') format('woff'),
+       url('fonts/Fira-Sans-italic/Fira-Sans-italic.ttf') format('truetype'),
+       url('fonts/Fira-Sans-italic/Fira-Sans-italic.svg#FiraSans') format('svg');
+}
+
+
+@font-face {
+  font-family: 'Noto Serif';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Noto-Serif-regular/Noto-Serif-regular.eot');
+  src: url('fonts/Noto-Serif-regular/Noto-Serif-regular.eot?#iefix') format('embedded-opentype'),
+       local('Noto Serif'),
+       local('Noto-Serif-regular'),
+       url('fonts/Noto-Serif-regular/Noto-Serif-regular.woff2') format('woff2'),
+       url('fonts/Noto-Serif-regular/Noto-Serif-regular.woff') format('woff'),
+       url('fonts/Noto-Serif-regular/Noto-Serif-regular.ttf') format('truetype'),
+       url('fonts/Noto-Serif-regular/Noto-Serif-regular.svg#NotoSerif') format('svg');
+}
+
+@font-face {
+  font-family: 'Noto Serif';
+  font-weight: 700;
+  font-style: normal;
+  src: url('fonts/Noto-Serif-700/Noto-Serif-700.eot');
+  src: url('fonts/Noto-Serif-700/Noto-Serif-700.eot?#iefix') format('embedded-opentype'),
+       local('Noto Serif Bold'),
+       local('Noto-Serif-700'),
+       url('fonts/Noto-Serif-700/Noto-Serif-700.woff2') format('woff2'),
+       url('fonts/Noto-Serif-700/Noto-Serif-700.woff') format('woff'),
+       url('fonts/Noto-Serif-700/Noto-Serif-700.ttf') format('truetype'),
+       url('fonts/Noto-Serif-700/Noto-Serif-700.svg#NotoSerif') format('svg');
+}
+
+@font-face {
+  font-family: 'Noto Serif';
+  font-weight: 400;
+  font-style: italic;
+  src: url('fonts/Noto-Serif-italic/Noto-Serif-italic.eot');
+  src: url('fonts/Noto-Serif-italic/Noto-Serif-italic.eot?#iefix') format('embedded-opentype'),
+       local('Noto Serif Italic'),
+       local('Noto-Serif-italic'),
+       url('fonts/Noto-Serif-italic/Noto-Serif-italic.woff2') format('woff2'),
+       url('fonts/Noto-Serif-italic/Noto-Serif-italic.woff') format('woff'),
+       url('fonts/Noto-Serif-italic/Noto-Serif-italic.ttf') format('truetype'),
+       url('fonts/Noto-Serif-italic/Noto-Serif-italic.svg#NotoSerif') format('svg');
+}
+
+@font-face {
+  font-family: 'Noto Serif';
+  font-weight: 700;
+  font-style: italic;
+  src: url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.eot');
+  src: url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.eot?#iefix') format('embedded-opentype'),
+       local('Noto Serif Bold Italic'),
+       local('Noto-Serif-700italic'),
+       url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.woff2') format('woff2'),
+       url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.woff') format('woff'),
+       url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.ttf') format('truetype'),
+       url('fonts/Noto-Serif-700italic/Noto-Serif-700italic.svg#NotoSerif') format('svg');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-weight: 300;
+  font-style: normal;
+  src: url('fonts/Source-Code-Pro-300/Source-Code-Pro-300.eot');
+  src: url('onts/Source-Code-Pro-300/Source-Code-Pro-300.eot?#iefix') format('embedded-opentype'),
+       local('Source Code Pro Light'),
+       local('Source-Code-Pro-300'),
+       url('fonts/Source-Code-Pro-300/Source-Code-Pro-300.woff2') format('woff2'),
+       url('fonts/Source-Code-Pro-300/Source-Code-Pro-300.woff') format('woff'),
+       url('fonts/Source-Code-Pro-300/Source-Code-Pro-300.ttf') format('truetype'),
+       url('fonts/Source-Code-Pro-300/Source-Code-Pro-300.svg#SourceCodePro') format('svg');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-weight: 400;
+  font-style: normal;
+  src: url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.eot');
+  src: url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.eot?#iefix') format('embedded-opentype'),
+       local('Source Code Pro'),
+       local('Source-Code-Pro-regular'),
+       url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.woff2') format('woff2'),
+       url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.woff') format('woff'),
+       url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.ttf') format('truetype'),
+       url('fonts/Source-Code-Pro-regular/Source-Code-Pro-regular.svg#SourceCodePro') format('svg');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-weight: 500;
+  font-style: normal;
+  src: url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.eot');
+  src: url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.eot?#iefix') format('embedded-opentype'),
+       local('Source Code Pro Medium'),
+       local('Source-Code-Pro-500'),
+       url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.woff2') format('woff2'),
+       url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.woff') format('woff'),
+       url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.ttf') format('truetype'),
+       url('fonts/Source-Code-Pro-500/Source-Code-Pro-500.svg#SourceCodePro') format('svg');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-weight: 600;
+  font-style: normal;
+  src: url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.eot');
+  src: url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.eot?#iefix') format('embedded-opentype'),
+       local('Source Code Pro Semibold'),
+       local('Source-Code-Pro-600'),
+       url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.woff2') format('woff2'),
+       url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.woff') format('woff'),
+       url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.ttf') format('truetype'),
+       url('fonts/Source-Code-Pro-600/Source-Code-Pro-600.svg#SourceCodePro') format('svg');
+}
+
+
+body{
+	font-family: 'Noto Serif';
+	line-height: 130%;
+	text-align: justify;
+}
+
+div.body h1,
+div.body h2,
+div.body h3,
+div.body h4,
+div.body h5,
+div.body h6 {
+	font-family: 'Fira Sans';
+	font-weight: 400;
+}
+
+div.body h2,
+div.body h3,
+div.body h4,
+div.body h5,
+div.body h6 {
+	/*font-weight: 300;*/
+}
+
+div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {
+    margin: 40px 0px 10px 0px;
+}
+
+div.sphinxsidebar h3, div.sphinxsidebar h4{
+	font-family: 'Fira Sans';
+	font-weight: 400;
+}
+
+div.body p, div.body dd, div.body li {
+	line-height: 150%;
+	/*letter-spacing: 0.05em; */
+}
+
+.sphinxsidebar{
+	font-family: 'Fira Sans';
+}
+
+div.sphinxsidebar ul li{
+	margin-top: 5px;
+}
+
+.logo{
+	padding-bottom: 25px;
+}
+
+#searchbox{
+	padding-top: 25px;
+}
+
+.sphinxsidebarwrapper h3{
+	display: none;
+}
+
+pre, tt, code {
+	font-family: 'Source Code Pro';
+	font-size: 0.9em;
+}
+
+pre {
+	background: #F9F9F9;
+	padding: 7px 10px;
+	margin: 15px 0px;
+	line-height: 1.3em;
+}
+
+code.xref, a code {
+	background-color: transparent;
+	font-weight: normal; 
+}
+
+a:hover tt, a:hover code {
+    background: #FFF;
+}
+
+div.sphinxsidebar #searchbox input[type="text"] {
+    width: 160px;
+}
+
+tt, code {
+	background-color: #FFF;
+}
+
+.head{
+	font-family: "Fira Sans";
+}
+
+table, table.docutils {
+    border: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+table.docutils td, table.docutils th {
+    border: none;
+    border-right: 1px solid #888;
+    padding: 0.25em 0.7em;
+}
+table.docutils td:last-child, table.docutils th:last-child {
+    border: none;
+}
+
+tr:not(:last-child), thead tr{
+    border-bottom: 1px solid #888;
+}
+
+/*th:not(:last-child){*/
+th{
+    border-right: 1px solid #888;
+}
+
+dd{
+	text-align: left;
+}
+
+dt{
+	font-family: 'Fira Sans';
+	font-weight: 400;
+	font-size: 18px;
+}
+
+.warning .admonition-title {
+	display: none;
+}

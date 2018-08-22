@@ -1,0 +1,71 @@
+Android SDK documentation
+=========================
+
+Version: |version|
+
+About
+-----
+
+This is the Documentation for the |SDK| version |version|.
+
+The |SDK| provides the necessary components for partners and companies to
+implement their own player application for Android. This document
+specifically describes the capabilities of the |SDK| on the Android mobile
+platform. 
+
+CastLabs has developed and maintains a Java Android library called the
+|SDK|, which is distributed in the form of a AAR (Android Archive
+file). The SDK is based internally in Google's open source
+ExoPlayer and provides extra functionality in form of plugins.
+
+The main features of the SDK and the plugins bundled with the SDK are:
+
+ * Playback of MPEG-DASH, SmoothStreaming, HLS, and MP4 content.
+ 
+ * Playback of streaming and local content.
+ 
+ * Playback of DRM protected content using Widevine, PlayReady, or OMA.
+ 
+ * Live, event, and video-on-demand support.
+ 
+ * Extended subtitles support.
+ 
+ * Background playback using a Service. 
+ 
+ * Secondary screen handling.
+ 
+ * Offline license key storage.
+
+
+.. figure:: _static/img/sdk_circle.png
+
+   The |SDK| core and it main components, plugins, and extension
+   points.
+
+
+Table of Content
+----------------
+.. toctree::
+   :maxdepth: 2
+
+    Project Setup <setup>
+    Player Basics <player_basics>
+    The Player Controller <player_controller>
+    The Player View <player_view>
+    DRM Protection <drm>
+    Global Configuration <global_config>
+    Extensions <extensions>
+    Player Debugging <player_debugging>
+    Example Projects <examples>
+    Upgrade Guides <upgrade_guides>
+    SDK API <../../javadoc/player_sdk/index.html#://>
+    OMA-Plugin API <../../javadoc/oma_plugin/index.html#://>
+    Thumbs-Plugin API <../../javadoc/thumbs_plugin/index.html#://>
+    UI-Plugin API <../../javadoc/player-ui_plugin//index.html#://>
+    OkHttp-Plugin API <../../javadoc/okhttp_plugin/index.html#://>
+    Ads API (IMA) <../../javadoc/ima_plugin/index.html#://>
+    Downloader API <../../javadoc/downloader_plugin/index.html#://>
+    Nielsen API <../../javadoc/nielsen_plugin/index.html#://>
+    Youbora API <../../javadoc/youbora_plugin/index.html#://>
+    Conviva-Plugin API <../../javadoc/conviva_plugin/index.html#://>
+    Google Cast Manager API <../../javadoc/googlecast_plugin/index.html#://>

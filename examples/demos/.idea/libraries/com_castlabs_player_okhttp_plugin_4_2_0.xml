@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.castlabs.player:okhttp-plugin-4.2.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/okhttp-plugin-4.2.0.aar/3e13048e59c0de7d1b4e383aee2c45c8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/okhttp-plugin-4.2.0.aar/3e13048e59c0de7d1b4e383aee2c45c8/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../repository/com/castlabs/player/okhttp-plugin/4.2.0/okhttp-plugin-4.2.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
