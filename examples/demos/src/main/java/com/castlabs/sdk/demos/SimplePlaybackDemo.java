@@ -78,7 +78,7 @@ public class SimplePlaybackDemo extends Activity {
 					@Override
 					public void onError(@NonNull CastlabsPlayerException error) {
 						if (error.getType() == CastlabsPlayerException.TYPE_BEHIND_LIVE_WINDOW){
-							Log.e(TAG, "Error type: hhhhhhhhhhhhhhhhhhhhhhhhhh");
+							playerView.getPlayerController().getPlayer().seekTo(-1); // clear position
 							playerView.getPlayerController().play();
 							return;
 						}
